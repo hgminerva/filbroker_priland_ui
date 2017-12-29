@@ -20,6 +20,7 @@ import { AppComponent } from './app.component';
 import { HomeLanding } from './home/home.landing';
 import { AccountLogin } from './account/account.login';
 import { MenuIndex } from './menu/menu.index';
+import { MenuDashboard } from './menu/menu.dashboard';
 import { BrokerList } from './broker/broker.list';
 import { BrokerDetail } from './broker/broker.detail';
 import { ChecklistList } from './checklist/checklist.list';
@@ -54,7 +55,7 @@ import { UserService } from './user/user.service';
 const routes: Routes = [
   { path: '', component: HomeLanding },
   { path: 'account/login', component: AccountLogin },
-  { path: 'menu', component: MenuIndex },
+  { path: 'menu', component: MenuDashboard },
   { path: 'broker', component: BrokerList },
   { path: 'broker/:id', component: BrokerDetail },
   { path: 'checklist', component: ChecklistList },
@@ -80,7 +81,7 @@ const routes: Routes = [
     AppComponent,
     HomeLanding,
     AccountLogin,
-    MenuIndex,
+    MenuIndex,MenuDashboard,
     BrokerList, BrokerDetail,
     ChecklistList, ChecklistDetail,
     CommissionList, CommissionDetail,

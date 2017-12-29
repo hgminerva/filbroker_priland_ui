@@ -17,7 +17,6 @@ import { MstProject } from '../model/model.mst.project';
 @Component({
   templateUrl: './project.detail.html'
 })
-
 export class ProjectDetail {
   public title = 'Project Detail';
 
@@ -74,7 +73,7 @@ export class ProjectDetail {
   }
 
   public getProject() {
-    this.projectService.getProject(this.getIdParameter(), this.toastr);
+    this.projectService.getProject(this.getIdParameter());
 
     this.projectSub = this.projectService.projectObservable
       .subscribe(

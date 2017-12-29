@@ -21,6 +21,9 @@ import { SysDropDown } from '../model/model.sys.dropDown';
 @Injectable()
 export class ProjectService {
 
+    public projectsSource = new Subject<ObservableArray>();
+    public projectsObservable = this.projectsSource.asObservable();
+
     public projectSource = new Subject<MstProject>();
     public projectObservable = this.projectSource.asObservable();
 
@@ -52,15 +55,15 @@ export class ProjectService {
 
     private options = new RequestOptions({ headers: this.headers });
 
-    public getProjects(): ObservableArray {
+    public getProjects(): void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstProject/List";
-        let projectObservableArray = new ObservableArray();
+        let projects = new ObservableArray();
         this.http.get(url, this.options).subscribe(
             response => {
                 var results = new ObservableArray(response.json());
                 if (results.length > 0) {
                     for (var i = 0; i <= results.length - 1; i++) {
-                        projectObservableArray.push({
+                        projects.push({
                             id: results[i].Id,
                             projectCode: results[i].ProjectCode,
                             project: results[i].Project,
@@ -73,10 +76,12 @@ export class ProjectService {
                             updatedDateTime: results[i].UpdatedDateTime
                         });
                     }
+                    this.projectsSource.next(projects);
+                } else {
+                    this.toastr.error("No data.");   
                 }
             }
         );
-        return projectObservableArray;
     }
 
     public addProject(project: MstProject, toastr: ToastsManager): void {
@@ -137,25 +142,25 @@ export class ProjectService {
         )
     }
 
-    public getProject(id : number, toastr: ToastsManager) {
+    public getProject(id : number) {
         let project: MstProject;
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstProject/Detail/" + id;
 
         this.http.get(url, this.options).subscribe(
             response => {
-                var results = response.json();
-                if (results != null) {
+                var result = response.json();
+                if (result != null) {
                     project = {
-                        id: results.Id,
-                        projectCode: results.ProjectCode,
-                        project: results.Project,
-                        address: results.Address,
-                        status: results.Status,
-                        isLocked: results.IsLocked,
-                        createdBy: results.CreatedBy,
-                        createdDateTime: results.CreatedDateTime,
-                        updatedBy: results.UpdatedBy,
-                        updatedDateTime: results.UpdatedDateTime
+                        id: result.Id,
+                        projectCode: result.ProjectCode,
+                        project: result.Project,
+                        address: result.Address,
+                        status: result.Status,
+                        isLocked: result.IsLocked,
+                        createdBy: result.CreatedBy,
+                        createdDateTime: result.CreatedDateTime,
+                        updatedBy: result.UpdatedBy,
+                        updatedDateTime: result.UpdatedDateTime
                     };
                     this.projectSource.next(project);
                 } else {

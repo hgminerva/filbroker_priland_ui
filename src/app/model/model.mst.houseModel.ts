@@ -3,7 +3,7 @@ export class MstHouseModel {
     houseModelCode: string;
     houseModel: string;
     projectId: number;
-    project: string
+    project: string;
     tfa: number;
     price: number;
     isLocked: boolean;

@@ -30,7 +30,10 @@
                             <button class="btn btn-primary" (click)="btnAddUnitClick()" id="btnAddUnit">
                                 <i class="fa fa-plus fa-fw"></i> Add
                             </button>
-                            <button class="btn btn-danger" routerlink="/menu">
+                            <button 
+                                id="btnCloseUnit"
+                                class="btn btn-danger" 
+                                routerLink="/menu">
                                 <i class="fa fa-close fa-fw"></i> Close
                             </button>
                         </td>
@@ -40,11 +43,25 @@
 
             <!-- Filter -->
             <div class="card-header">
-                <div class="input-group">
-                    <span class="input-group-addon">
-                        <i class="fa fa-search fa-fw"></i>
-                    </span>
-                    <input type="text" class="form-control" placeholder="Filter" [(ngModel)]="filterUnit" />
+                <div class="form-horizontal">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            Project:
+                        </span>
+                        <wj-combo-box #cmbProjects 
+                            [itemsSource]="cmbProjectsData" 
+                            [placeholder]="'Select Project'" 
+                            [isEditable]="false" 
+                            [isRequired]="true"
+                            [displayMemberPath]="'project'" 
+                            [selectedValuePath]="'id'" 
+                            (selectedIndexChanged)="cmbProjectsDataOnChange()">
+                        </wj-combo-box>
+                        <span class="input-group-addon">
+                            <i class="fa fa-search fa-fw"></i>
+                        </span>
+                        <input type="text" class="form-control" placeholder="Filter" [(ngModel)]="filterUnit" />
+                    </div>
                 </div>
             </div>
 

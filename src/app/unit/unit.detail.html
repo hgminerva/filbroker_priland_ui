@@ -5,24 +5,176 @@
 <br>
 
 <div class="content-wrapper">
+
     <div class="container-fluid">
-        
+
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="/menu">Menu</a>
+                <a routerLink="/menu">Menu</a>
             </li>
             <li class="breadcrumb-item">
-                <a href="/unit">Unit List</a>
+                <a routerLink="/unit">Unit List</a>
             </li>
             <li class="breadcrumb-item active">{{title}}</li>
         </ol>
 
-        <div class="row">
-            <div class="col-12">
-                <h4>{{title}}</h4>
-                <p></p>
+
+        <div class="card">
+
+            <!-- Buttons -->
+            <div class="card-header">
+                <table border="0" style="width: 100%;">
+                    <tr>
+                        <td style="width: 59%;">
+                            <h4>{{title}}</h4>
+                        </td>
+                        <td style="width: 1%;"></td>
+                        <td style="width: 40%;" align="right">
+                            <button 
+                                id="btnLockUnit"
+                                [disabled]="unit.isLocked" 
+                                class="btn btn-primary" 
+                                (click)="btnLockUnitClick()">
+                                <i class="fa fa-lock fa-fw"></i> Lock
+                            </button>
+                            <button 
+                                id="btnUnlockUnit"
+                                [disabled]="!unit.isLocked" 
+                                class="btn btn-primary" 
+                                (click)="btnUnlockUnitClick()">
+                                <i class="fa fa-unlock fa-fw"></i> Unlock
+                            </button>
+                            <button 
+                                id="btnSaveUnit"
+                                [disabled]="unit.isLocked" 
+                                class="btn btn-primary" 
+                                (click)="btnSaveUnitClick()">
+                                <i class="fa fa-save fa-fw"></i> Save
+                            </button>
+                            <button 
+                                id="btnCloseUnit"
+                                class="btn btn-danger" 
+                                routerLink="/project">
+                                <i class="fa fa-close fa-fw"></i> Close
+                            </button>
+                        </td>
+                    </tr>
+                </table>
             </div>
+
+            <!-- Detail -->
+            <div class="card-body">
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Unit Code</label>
+                            <div class="col-sm-9">
+                                <input 
+                                    [(ngModel)]="unit.unitCode" 
+                                    disabled 
+                                    type="text" 
+                                    class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Block</label>
+                            <div class="col-sm-9">
+                                <input 
+                                    [(ngModel)]="unit.block" 
+                                    [disabled]="unit.isLocked" 
+                                    type="text" 
+                                    class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Lot</label>
+                            <div class="col-sm-9">
+                                <input 
+                                    [(ngModel)]="unit.lot" 
+                                    [disabled]="unit.isLocked" 
+                                    type="text" 
+                                    class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Project</label>
+                            <div class="col-sm-9">
+                                <input 
+                                    [(ngModel)]="unit.project" 
+                                    disabled
+                                    type="text" 
+                                    class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Model</label>
+                            <div class="col-sm-9">
+                                <wj-combo-box #cmbHouseModel
+                                    [itemsSource]="cmbHouseModelData" 
+                                    [isDisabled]="unit.isLocked" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'houseModel'" 
+                                    [selectedValuePath]="'id'" 
+                                    (selectedIndexChanged)="cmbHouseModelChange()"
+                                    [(text)]="unit.houseModel">
+                                </wj-combo-box>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Total Lot Area (sqm)</label>
+                            <div class="col-sm-9">
+                                <wj-input-number 
+                                    [(value)]="unit.tla"
+                                    [isDisabled]="unit.isLocked">
+                                </wj-input-number>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Total Floor Area (sqm)</label>
+                            <div class="col-sm-9">
+                                <wj-input-number 
+                                    [(value)]="unit.tfa"
+                                    [isDisabled]="unit.isLocked">
+                                </wj-input-number>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Price</label>
+                            <div class="col-sm-9">
+                                <wj-input-number 
+                                    [(value)]="unit.price"
+                                    format="n2"
+                                    [isDisabled]="unit.isLocked">
+                                </wj-input-number>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Status</label>
+                            <div class="col-sm-9">
+                                <wj-combo-box 
+                                    [itemsSource]="cmbUnitStatusData"
+                                    [isDisabled]="unit.isLocked" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'description'" 
+                                    [selectedValuePath]="'value'" 
+                                    [(text)]="unit.status">
+                                </wj-combo-box>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div> 
+
+            </div>
+
         </div>
 
     </div>
+
 </div>
