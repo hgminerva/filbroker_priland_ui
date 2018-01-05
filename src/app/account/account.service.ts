@@ -1,21 +1,27 @@
 import { Injectable } from "@angular/core";
+
 import { Headers, Http, RequestOptions } from '@angular/http';
 import { Router } from '@angular/router';
+
+import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Observable';
 
 import { User } from './account.user';
 
 @Injectable()
 export class AccountService {
+    public loginSource = new Subject<number>();
+    public loginObservable = this.loginSource.asObservable();   
 
-    user: User = {
+    public user: User = {
         username: "",
         password: "",
         token: ""
       };
 
-    constructor ( private router: Router, private http: Http) 
-    {
-
+    constructor ( 
+        private router: Router, 
+        private http: Http) {
     }
 
     public login(username: string, password: string): void 
@@ -31,11 +37,11 @@ export class AccountService {
                 localStorage.setItem('expires_in', response.json().expires_in);
                 localStorage.setItem('token_type', response.json().token_type);
                 localStorage.setItem('username', response.json().userName);
-                
-                this.router.navigate(['/account/login']);
+
+                this.loginSource.next(1);
             },
             error => {
-                localStorage.setItem('access_token', "Error loggin-in");
+                this.loginSource.next(0);
             }
         )
     }

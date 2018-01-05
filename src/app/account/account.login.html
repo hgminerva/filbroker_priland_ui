@@ -15,13 +15,15 @@
             <a href="/#contact" class="nav-link">Contact Us</a>
         </li>
         <li class="nav-item">
-            <a routerLink="/account/login" class="nav-link">Login</a>
+            <a (click)="loginClick()" class="nav-link">{{login}}</a>
         </li>
       </ul>
 
     </div>
 </nav>
 
+<br>
+<br>
 <br>
 <br>
 <br>
@@ -87,7 +89,7 @@
     <div class="row" style="padding-top: 1rem">
         <div class="col-md-3"></div>
         <div class="col-md-6">
-            <button type="submit" class="btn btn-success" (click)="login()"><i class="fa fa-sign-in"></i> Login</button>
+            <button type="submit" class="btn btn-success" (click)="btnLoginClick()"><i class="fa fa-sign-in"></i> {{login}}</button>
         </div>
     </div>
 </div>
