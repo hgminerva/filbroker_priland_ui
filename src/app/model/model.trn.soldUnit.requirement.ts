@@ -1,8 +1,12 @@
 export class TrnSoldUnitRequirement {
 	id: number;
 	soldUnitId: number;
-	checkListRequirementId: number;
-	checkListRequirement: string;
+	checklistRequirementId: number;
+	checklistRequirement: string;
+	checklistRequirementNo: number;
+	checklistCategory: string;
+	checklistType: string;
+	checklistWithAttachments: boolean;
 	attachment1: string;
 	attachment2: string;
 	attachment3: string;

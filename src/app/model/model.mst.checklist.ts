@@ -1,9 +1,9 @@
 export class MstChecklist {
 	id: number;
-	checkListCode: string;
-	checkList: string;
-	checkListDate: string;
-	projectId: string;
+	checklistCode: string;
+	checklist: string;
+	checklistDate: string;
+	projectId: number;
 	project: string;
 	remarks: string;
 	status: string;

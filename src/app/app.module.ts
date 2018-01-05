@@ -21,6 +21,7 @@ import { HomeLanding } from './home/home.landing';
 import { AccountLogin } from './account/account.login';
 import { MenuIndex } from './menu/menu.index';
 import { MenuDashboard } from './menu/menu.dashboard';
+import { FooterIndex } from './footer/footer.index';
 import { BrokerList } from './broker/broker.list';
 import { BrokerDetail } from './broker/broker.detail';
 import { ChecklistList } from './checklist/checklist.list';
@@ -82,6 +83,7 @@ const routes: Routes = [
     HomeLanding,
     AccountLogin,
     MenuIndex,MenuDashboard,
+    FooterIndex,
     BrokerList, BrokerDetail,
     ChecklistList, ChecklistDetail,
     CommissionList, CommissionDetail,

@@ -238,9 +238,4 @@ export class UnitDetail {
         this.unit.houseModelId = houseModelId;
     }
 
-    public btnCloseUnitClick() : void {
-        this.toastr.success("Close");
-        this.router.navigate(["/menu"]);
-    }
-
 }

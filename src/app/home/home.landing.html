@@ -1,3 +1,83 @@
-<a href="/account/login">Login</a>
-<a href="/project">Project</a>
-<button (click)="message()">Toastr</button>
+    <!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+    <a class="navbar-brand" routerLink="/">Filbroker - Priland</a>
+
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+
+        <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+            <a href="#about" class="nav-link">About</a>
+        </li>
+        <li class="nav-item">
+            <a href="#contact" class="nav-link">Contact Us</a>
+        </li>
+        <li class="nav-item">
+            <a routerLink="/account/login" class="nav-link">Login</a>
+        </li>
+        </ul>
+
+    </div>
+</nav>
+
+<header class="masthead text-center text-white d-flex">
+    <div class="container my-auto">
+        <div class="row">
+        <div class="col-lg-10 mx-auto">
+        </div>
+        <div class="col-lg-8 mx-auto">
+            <h1><a class="btn btn-xl btn-success" routerLink="/menu">Get Started!</a></h1>
+        </div>
+        </div>
+    </div>
+</header>
+
+<section id="about">
+    <div class="container">
+        <div class="row">
+        <div class="col-lg-8 mx-auto text-center">
+            <h2 class="section-heading">About</h2>
+            <hr class="light my-4">
+            <p class="text-faded mb-4">Manage your Real-estate units, e.g., Houses, Condo Units, etc., with ease.</p>
+        </div>
+        </div>
+    </div>
+</section>
+
+
+<section id="contact" class="bg-dark">
+    <div class="container">
+        <div class="row">
+        <div class="col-lg-8 mx-auto text-center">
+            <h2 class="section-heading text-white">Contact Us!</h2>
+            <hr class="my-4">
+            <p class="mb-5 text-white">For more information you can contact us at:</p>
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-lg-4 ml-auto text-center">
+            <i class="fa fa-phone fa-3x mb-3 sr-contact text-white"></i>
+            <p class="text-white">+63 32 263 2912</p>
+        </div>
+        <div class="col-lg-4 mr-auto text-center">
+            <i class="fa fa-envelope-o fa-3x mb-3 sr-contact text-white"></i>
+            <p>
+            <a href="mailto:info@innosoft.ph" class="text-white">info@innosoft.ph</a>
+            </p>
+        </div>
+        </div>
+    </div>
+</section>
+
+<footer class="app-footer">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                (c) Filbroker - Innosoft Solutions Inc. 2018
+            </div>
+        </div>
+    </div>
+</footer>

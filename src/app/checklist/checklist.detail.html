@@ -5,22 +5,24 @@
 <br>
 
 <div class="content-wrapper">
+
     <div class="container-fluid">
-        
+
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="/menu">Menu</a>
+                <a routerLink="/menu">Menu</a>
             </li>
             <li class="breadcrumb-item">
-                <a href="/checklist">Checklist List</a>
+                <a routerLink="/checklist">Checklist List</a>
             </li>
             <li class="breadcrumb-item active">{{title}}</li>
         </ol>
-        
+
+
         <div class="card">
 
-             <!-- Buttons -->
-             <div class="card-header">
+            <!-- Buttons -->
+            <div class="card-header">
                 <table border="0" style="width: 100%;">
                     <tr>
                         <td style="width: 59%;">
@@ -28,16 +30,31 @@
                         </td>
                         <td style="width: 1%;"></td>
                         <td style="width: 40%;" align="right">
-                            <button [disabled]="checklist.isLocked" class="btn btn-primary" (click)="btnLockCheckListClick()" id="btnLockCheckList">
+                            <button 
+                                id="btnLockChecklist"
+                                [disabled]="checklist.isLocked" 
+                                class="btn btn-primary" 
+                                (click)="btnLockChecklistClick()">
                                 <i class="fa fa-lock fa-fw"></i> Lock
                             </button>
-                            <button [disabled]="!checklist.isLocked" class="btn btn-primary" (click)="btnUnlockCheckListClick()" id="btnUnlockCheckList">
+                            <button 
+                                id="btnUnlockChecklist"
+                                [disabled]="!checklist.isLocked" 
+                                class="btn btn-primary" 
+                                (click)="btnUnlockChecklistClick()">
                                 <i class="fa fa-unlock fa-fw"></i> Unlock
                             </button>
-                            <button [disabled]="checklist.isLocked" class="btn btn-primary" (click)="btnSaveCheckListClick()" id="btnSaveCheckList">
+                            <button 
+                                id="btnSaveChecklist"
+                                [disabled]="checklist.isLocked" 
+                                class="btn btn-primary" 
+                                (click)="btnSaveChecklistClick()">
                                 <i class="fa fa-save fa-fw"></i> Save
                             </button>
-                            <button class="btn btn-danger" routerLink="/checklist">
+                            <button 
+                                id="btnCloseChecklist"
+                                class="btn btn-danger" 
+                                routerLink="/project">
                                 <i class="fa fa-close fa-fw"></i> Close
                             </button>
                         </td>
@@ -47,48 +64,85 @@
 
             <!-- Detail -->
             <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group row">
-                                <label class="col-sm-3 col-form-label text-right">Code</label>
-                                <div class="col-sm-9">
-                                    <input [disabled]="checklist.isLocked" [(ngModel)]="checklist.checkListCode" type="text" class="form-control" placeholder="Checklist Code..." id="checkListCode">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-3 col-form-label text-right">Checklist</label>
-                                <div class="col-sm-9">
-                                    <input [disabled]="checklist.isLocked" [(ngModel)]="checklist.checkList" type="text" class="form-control" placeholder="Checklist..." id="checkList">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-3 col-form-label text-right">Checklist Date</label>
-                                <div class="col-sm-9">
-                                    <input [disabled]="checklist.isLocked" [(ngModel)]="checklist.checkListDate" type="Date" class="form-control" placeholder="Date..." id="checkListDate">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-3 col-form-label text-right">Remarks</label>
-                                <div class="col-sm-9">
-                                    <textarea [disabled]="checklist.isLocked" [(ngModel)]="checklist.remarks" type="Date" rows="5" class="form-control" placeholder="Remarks..." id="remarks"></textarea>
-                                </div>
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Checklist Code</label>
+                            <div class="col-sm-9">
+                                <input 
+                                    [(ngModel)]="checklist.checklistCode" 
+                                    disabled 
+                                    type="text" 
+                                    class="form-control">
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group row">
-                                <label class="col-sm-3 col-form-label text-right">Status</label>
-                                <div class="col-sm-9">
-                                    <wj-combo-box [isDisabled]="checklist.isLocked" [itemsSource]="checkListData" [placeholder]="'Select Status'" [isEditable]="false" [isRequired]="true"
-                                        [displayMemberPath]="'description'" [selectedValuePath]="'value'" [(text)]="checklist.status"
-                                        style="width: 100%; ">
-                                    </wj-combo-box>
-                                </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Checklist</label>
+                            <div class="col-sm-9">
+                                <input 
+                                    [(ngModel)]="checklist.checklist" 
+                                    [disabled]="checklist.isLocked" 
+                                    type="text" 
+                                    class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Date</label>
+                            <div class="col-sm-9">
+                                <input 
+                                    [(ngModel)]="checklist.checklistDate" 
+                                    [disabled]="checklist.isLocked" 
+                                    type="text" 
+                                    class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Project</label>
+                            <div class="col-sm-9">
+                                <input 
+                                    [(ngModel)]="checklist.project" 
+                                    disabled
+                                    type="text" 
+                                    class="form-control">
                             </div>
                         </div>
                     </div>
-                </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Remarks</label>
+                            <div class="col-sm-9">
+                                <textarea 
+                                    [(ngModel)]="checklist.remarks" 
+                                    rows="5" 
+                                    class="form-control" 
+                                    [disabled]="checklist.isLocked" >
+                                </textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Status</label>
+                            <div class="col-sm-9">
+                                <wj-combo-box 
+                                    [itemsSource]="cmbChecklistStatusData"
+                                    [isDisabled]="checklist.isLocked" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'description'" 
+                                    [selectedValuePath]="'value'" 
+                                    [(text)]="checklist.status">
+                                </wj-combo-box>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div> 
+
+            </div>
+
         </div>
-        <!-- Footer  -->
 
     </div>
+
 </div>

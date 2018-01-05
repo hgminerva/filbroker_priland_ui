@@ -8,7 +8,9 @@ html {
   min-height: 100%; }
 
 body {
-  overflow-x: hidden; }
+  overflow-x: hidden; 
+  margin-bottom: 50px;
+}
 
 body.sticky-footer {
   margin-bottom: 56px; }

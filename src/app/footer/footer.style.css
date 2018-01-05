@@ -1,0 +1,13 @@
+.app-footer {
+    background-color: #212529;
+    color: gray;
+    padding: 1em;
+    font-size: 70%;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding-right: 250px;
+    z-index: 1000;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

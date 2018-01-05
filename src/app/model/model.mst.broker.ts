@@ -4,6 +4,7 @@ export class MstBroker {
 	lastName: string;
 	firstName: string;
 	middleName: string;
+	fullName: string;
 	licenseNumber: string;
 	birthDate: string;
 	civilStatus: string;

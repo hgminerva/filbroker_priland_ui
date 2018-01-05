@@ -4,6 +4,7 @@ export class MstCustomer {
 	lastName: string;
 	firstName: string;
 	middleName: string;
+	fullName: string;
 	civilStatus: string;
 	gender: string;
 	birthDate: string;

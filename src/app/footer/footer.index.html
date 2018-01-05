@@ -1,0 +1,25 @@
+<footer class="app-footer">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-6">
+                <b>{{company}}</b> {{version}}
+                <br />
+                {{support}}
+            </div>
+            <div class="col-lg-6">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <b>Created By: </b> {{ data.currentItem ? data.currentItem.createdBy : data ? data.createdBy : createdBy }}
+                        <br />
+                        <b>Created Date: </b> {{ data.currentItem ? data.currentItem.createdDateTime : data ? data.createdDateTime : createdDateTime }}
+                    </div>
+                    <div class="col-lg-8">
+                        <b>Updated By: </b> {{ data.currentItem ? data.currentItem.updatedBy : data ? data.updatedBy : updatedBy }}
+                        <br />
+                        <b>Updated Date: </b> {{ data.currentItem ? data.currentItem.updatedDateTime :  data ? data.updatedDateTime :  updatedDateTime }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

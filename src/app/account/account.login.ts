@@ -3,7 +3,8 @@ import { User } from './account.user';
 import { AccountService } from './account.service';
 
 @Component({
-  templateUrl: './account.login.html'
+  templateUrl: './account.login.html',
+  styleUrls: ['./account.style.css'],
 })
 
 export class AccountLogin {

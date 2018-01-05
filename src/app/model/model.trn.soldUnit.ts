@@ -10,8 +10,8 @@ export class TrnSoldUnit {
 	customer: string;
 	brokerId: number;
 	broker: string;
-	checkListId: number;
-	checkList: string;
+	checklistId: number;
+	checklist: string;
 	price: number;
 	totalInvestment: string;
 	paymentOptions: string;

@@ -5,24 +5,733 @@
 <br>
 
 <div class="content-wrapper">
+
     <div class="container-fluid">
-        
+
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="/menu">Menu</a>
+                <a routerLink="/menu">Menu</a>
             </li>
             <li class="breadcrumb-item">
-                <a href="/soldUnit">Sold Unit List</a>
+                <a routerLink="/unit">Sold Unit List</a>
             </li>
             <li class="breadcrumb-item active">{{title}}</li>
         </ol>
 
-        <div class="row">
-            <div class="col-12">
-                <h4>{{title}}</h4>
-                <p></p>
+
+        <div class="card">
+
+            <!-- Buttons -->
+            <div class="card-header">
+                <table border="0" style="width: 100%;">
+                    <tr>
+                        <td style="width: 59%;">
+                            <h4>{{title}}</h4>
+                        </td>
+                        <td style="width: 1%;"></td>
+                        <td style="width: 40%;" align="right">
+                            <button 
+                                id="btnPrintSoldUnit"
+                                [disabled]="!soldUnit.isLocked" 
+                                class="btn btn-primary" 
+                                (click)="btnPrintSoldUnitClick()">
+                                <i class="fa fa-print fa-fw"></i> Print
+                            </button>
+                            <button 
+                                id="btnLockSoldUnit"
+                                [disabled]="soldUnit.isLocked" 
+                                class="btn btn-primary" 
+                                (click)="btnLockSoldUnitClick()">
+                                <i class="fa fa-lock fa-fw"></i> Lock
+                            </button>
+                            <button 
+                                id="btnUnlockSoldUnit"
+                                [disabled]="!soldUnit.isLocked" 
+                                class="btn btn-primary" 
+                                (click)="btnUnlockSoldUnitClick()">
+                                <i class="fa fa-unlock fa-fw"></i> Unlock
+                            </button>
+                            <button 
+                                id="btnSaveSoldUnit"
+                                [disabled]="soldUnit.isLocked" 
+                                class="btn btn-primary" 
+                                (click)="btnSaveSoldUnitClick()">
+                                <i class="fa fa-save fa-fw"></i> Save
+                            </button>
+                            <button 
+                                id="btnCloseSoldUnit"
+                                class="btn btn-danger" 
+                                routerLink="/soldUnit">
+                                <i class="fa fa-close fa-fw"></i> Close
+                            </button>
+                        </td>
+                    </tr>
+                </table>
             </div>
+
+            <!-- Detail -->
+            <div class="card-body">
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Sold Unit No.</label>
+                            <div class="col-sm-9">
+                                <input 
+                                    [(ngModel)]="soldUnit.soldUnitNumber" 
+                                    disabled 
+                                    type="text" 
+                                    class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Project</label>
+                            <div class="col-sm-9">
+                                <wj-combo-box #cmbProjects
+                                    [itemsSource]="cmbProjectsData" 
+                                    [isDisabled]="soldUnit.isLocked" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'project'" 
+                                    [selectedValuePath]="'id'" 
+                                    (selectedIndexChanged)="cmbProjectsChange()"
+                                    [(text)]="soldUnit.project"
+                                    style="width: 100%;">
+                                </wj-combo-box>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Unit</label>
+                            <div class="col-sm-9">
+                                <wj-combo-box #cmbUnits
+                                    [itemsSource]="cmbUnitsData" 
+                                    [isDisabled]="soldUnit.isLocked" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'unitCode'" 
+                                    [selectedValuePath]="'id'" 
+                                    (selectedIndexChanged)="cmbUnitsChange()"
+                                    [(text)]="soldUnit.unit"
+                                    style="width: 100%;">
+                                </wj-combo-box>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Customer</label>
+                            <div class="col-sm-9">
+                                <wj-combo-box #cmbCustomers
+                                    [itemsSource]="cmbCustomersData" 
+                                    [isDisabled]="soldUnit.isLocked" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'fullName'" 
+                                    [selectedValuePath]="'id'" 
+                                    (selectedIndexChanged)="cmbCustomersChange()"
+                                    [(text)]="soldUnit.customer"
+                                    style="width: 100%;">
+                                </wj-combo-box>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Broker</label>
+                            <div class="col-sm-9">
+                                <wj-combo-box #cmbBrokers
+                                    [itemsSource]="cmbBrokersData" 
+                                    [isDisabled]="soldUnit.isLocked" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'fullName'" 
+                                    [selectedValuePath]="'id'" 
+                                    (selectedIndexChanged)="cmbBrokersChange()"
+                                    [(text)]="soldUnit.broker"
+                                    style="width: 100%;">
+                                </wj-combo-box>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Checklist</label>
+                            <div class="col-sm-8">
+                                <wj-combo-box #cmbChecklists
+                                    [itemsSource]="cmbChecklistsData" 
+                                    [isDisabled]="soldUnit.isLocked" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'checklist'" 
+                                    [selectedValuePath]="'id'" 
+                                    (selectedIndexChanged)="cmbChecklistsChange()"
+                                    [(text)]="soldUnit.checklist"
+                                    style="width: 100%;">
+                                </wj-combo-box>
+                            </div>
+                            <button 
+                                id="btnOpenSoldUnitRequirementsModal"
+                                class="btn btn-info col-sm-1" 
+                                [disabled]="soldUnit.isLocked"
+                                (click)="btnOpenSoldUnitRequirementsModalClick()">
+                                <i class="fa fa-refresh fa-fw"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Selling Price</label>
+                            <div class="col-sm-9">
+                                <wj-input-number 
+                                    [(value)]="soldUnit.price"
+                                    [isDisabled]="soldUnit.isLocked">
+                                </wj-input-number>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Remarks</label>
+                            <div class="col-sm-9">
+                                <textarea 
+                                    [disabled]="soldUnit.isLocked" 
+                                    [(ngModel)]="soldUnit.remarks" 
+                                    rows="3" 
+                                    class="form-control">
+                                </textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Prepared By</label>
+                            <div class="col-sm-9">
+                                <wj-combo-box #cmbPreparedBy
+                                    [itemsSource]="cmbUsersData"
+                                    [isDisabled]="soldUnit.isLocked" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'fullName'" 
+                                    [selectedValuePath]="'id'" 
+                                    (selectedIndexChanged)="cmbPreparedByChange()"
+                                    [(text)]="soldUnit.preparedByUser">
+                                </wj-combo-box>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Checked By</label>
+                            <div class="col-sm-9">
+                                <wj-combo-box #cmbCheckedBy
+                                    [itemsSource]="cmbUsersData"
+                                    [isDisabled]="soldUnit.isLocked" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'fullName'" 
+                                    [selectedValuePath]="'id'" 
+                                    (selectedIndexChanged)="cmbCheckedByChange()"
+                                    [(text)]="soldUnit.checkedByUser">
+                                </wj-combo-box>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Approved By</label>
+                            <div class="col-sm-9">
+                                <wj-combo-box #cmbApprovedBy
+                                    [itemsSource]="cmbUsersData"
+                                    [isDisabled]="soldUnit.isLocked" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'fullName'" 
+                                    [selectedValuePath]="'id'" 
+                                    (selectedIndexChanged)="cmbApprovedByChange()"
+                                    [(text)]="soldUnit.approvedByUser">
+                                </wj-combo-box>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div> 
+
+            </div>
+
+            <!-- Detail Items -->
+            <div class="card-body">
+                <div class="row">
+                    <ul class="nav nav-tabs" role="tablist" style="width:100%">
+                        <li class="nav-item">
+                            <a [ngClass]="{'active': tabDetail1[0], 'nav-link': true }" (click)="tabDetail1Click(0)" data-toggle="tab" role="tab">Checklist Requirements</a>
+                        </li>
+                        <li class="nav-item">
+                            <a [ngClass]="{'active': tabDetail1[1], 'nav-link': true }" (click)="tabDetail1Click(1)" data-toggle="tab" role="tab">Total Investments</a>
+                        </li>
+                        <li class="nav-item">
+                            <a [ngClass]="{'active': tabDetail1[2], 'nav-link': true }" (click)="tabDetail1Click(2)" data-toggle="tab" role="tab">Payment Options</a>
+                        </li>
+                        <li class="nav-item">
+                            <a [ngClass]="{'active': tabDetail1[3], 'nav-link': true }" (click)="tabDetail1Click(3)" data-toggle="tab" role="tab">Financing</a>
+                        </li>
+                    </ul>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="tab-content" style="width:100%">
+
+                        <!-- Checklist -->
+                        <div [ngClass]="{'active': tabDetail1[0], 'tab-pane': true }" role="tabpanel">
+
+                            <wj-flex-grid #fgdSoldUnitRequirements [itemsSource]="fgdSoldUnitRequirementsCollection" [selectionMode]="3" [frozenColumns]="1">
+                                <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
+                                    <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
+                                        <button 
+                                            [disabled]="soldUnit.isLocked"
+                                            class="btn btn-primary btn-sm btn-block" 
+                                            (click)="btnEditSoldUnitRequirementClick()" 
+                                            data-toggle="modal" 
+                                            data-backdrop="static"
+                                            data-keyboard="false"> 
+                                                <i class="fa fa-edit fa-fw"></i> Edit
+                                        </button>
+                                    </ng-template>
+                                </wj-flex-grid-column>
+                                <wj-flex-grid-column [header]="'No'"            [binding]="'checklistRequirementNo'"[isReadOnly]="true" [width]="100"></wj-flex-grid-column>
+                                <wj-flex-grid-column [header]="'Requirement'"   [binding]="'checklistRequirement'"  [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                                <wj-flex-grid-column [header]="'Remarks'"       [binding]="'remarks'"               [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                                <wj-flex-grid-column [header]="'Category'"      [binding]="'checklistCategory'"     [isReadOnly]="true" [width]="200"></wj-flex-grid-column>
+                                <wj-flex-grid-column [header]="'Type'"          [binding]="'checklistType'"         [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                                <wj-flex-grid-column [header]="'A'"             [binding]="'checklistWithAttachments'" [isReadOnly]="true" [width]="50"></wj-flex-grid-column>     
+                                <wj-flex-grid-column [header]="'Status'"        [binding]="'status'"                [isReadOnly]="true" [width]="200"></wj-flex-grid-column>
+                                <wj-flex-grid-column [header]="'Date'"          [binding]="'statusDate'"            [isReadOnly]="true" [width]="150"></wj-flex-grid-column>
+                            </wj-flex-grid>
+
+                            <div class="col-sm-12 btn-group" id="">
+                                <button type="button" class="btn btn-info" (click)="fgdSoldUnitRequirementsCollection.moveToFirstPage()">
+                                    <i class="fa fa-fast-backward"></i> First
+                                </button>
+                                <button type="button" class="btn btn-info"  (click)="fgdSoldUnitRequirementsCollection.moveToPreviousPage()">
+                                    <i class="fa fa-step-backward"></i> Previous
+                                </button>
+                                <button type="button" class="btn btn-info" disabled style="width:100px">
+                                    {{ fgdSoldUnitRequirementsCollection.pageIndex + 1 }} / {{ fgdSoldUnitRequirementsCollection.pageCount }}
+                                </button>
+                                <button type="button" class="btn btn-info" (click)="fgdSoldUnitRequirementsCollection.moveToNextPage()">
+                                    Next
+                                    <i class="fa fa-step-forward"></i>
+                                </button>
+                                <button type="button" class="btn btn-info" (click)="fgdSoldUnitRequirementsCollection.moveToLastPage()">
+                                    Last
+                                    <i class="fa fa-fast-forward"></i>
+                                </button>
+                            </div>
+
+                        </div>
+                        
+                        <!-- totalInvestment -->
+                        <div [ngClass]="{'active': tabDetail1[1], 'tab-pane': true }" role="tabpanel">
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <textarea 
+                                        [disabled]="soldUnit.isLocked" 
+                                        [(ngModel)]="soldUnit.totalInvestment" 
+                                        rows="6" 
+                                        class="form-control">
+                                    </textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- paymentOptions -->
+                        <div [ngClass]="{'active': tabDetail1[2], 'tab-pane': true }" role="tabpanel">
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <textarea 
+                                        [disabled]="soldUnit.isLocked" 
+                                        [(ngModel)]="soldUnit.paymentOptions" 
+                                        rows="6" 
+                                        class="form-control">
+                                    </textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- financing -->
+                        <div [ngClass]="{'active': tabDetail1[3], 'tab-pane': true }" role="tabpanel">
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <textarea 
+                                        [disabled]="soldUnit.isLocked" 
+                                        [(ngModel)]="soldUnit.financing" 
+                                        rows="6" 
+                                        class="form-control">
+                                    </textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
         </div>
 
+    </div>
+
+    <app-footer [data]="soldUnit"></app-footer>
+</div>
+
+
+
+
+
+
+<!-- New Checklist Requirements  -->
+<div id="mdlSoldUnitRequirementsModal" 
+     class="modal fade" role="dialog"
+     [ngStyle]="{'display': mdlSoldUnitRequirementsModalShow ? 'block' : 'none', 'opacity': 1}">
+     <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Checklist Requirements</h4>
+            </div>
+            <div class="modal-body">
+                Add checklist requirements?  This will delete the existing checklist requirements.
+            </div>
+            <div class="modal-footer" align="right">
+                <button type="button" id="btnSoldUnitRequirementsModalOk" class="btn btn-success" (click)="btnOkSoldUnitRequirementsModalClick()">
+                    <i class="fa fa-check fa-fw"></i> Ok</button>
+                <button type="button" id="btnSoldUnitRequirementsModalClose" class="btn btn-danger" (click)="btnCloseSoldUnitRequirementsModalClick()">
+                    <i class="fa fa-times fa-fw"></i> Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!-- Edit Checklist Requirement -->
+<div id="mdlEditSoldUnitRequirementModal" 
+     class="modal fade" role="dialog" 
+     [ngStyle]="{'display': mdlEditSoldUnitRequirementModalShow ? 'block' : 'none', 'opacity': 1}">
+     <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit Checklist Requirement</h4>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs" role="tablist" style="width:100%">
+                    <li class="nav-item">
+                        <a [ngClass]="{'active': tabDetail1Modal1[0], 'nav-link': true }" (click)="tabDetail1Modal1Click(0)" data-toggle="tab" role="tab">Requirement</a>
+                    </li>
+                    <li class="nav-item">
+                        <a [ngClass]="{'active': tabDetail1Modal1[1], 'nav-link': true }" (click)="tabDetail1Modal1Click(1)" data-toggle="tab" role="tab">Attachments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a [ngClass]="{'active': tabDetail1Modal1[2], 'nav-link': true }" (click)="tabDetail1Modal1Click(2)" data-toggle="tab" role="tab">Activities</a>
+                    </li>
+                </ul>
+                <br>
+                <div class="tab-content" style="width:100%">
+                    <div [ngClass]="{'active': tabDetail1Modal1[0], 'tab-pane': true }" role="tabpanel">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">No.</label>
+                            <div class="col-sm-9">
+                                <input 
+                                    [(ngModel)]="soldUnitRequirement.checklistRequirementNo" 
+                                    disabled 
+                                    type="text" 
+                                    class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Requirement</label>
+                            <div class="col-sm-9">
+                                <input 
+                                    [(ngModel)]="soldUnitRequirement.checklistRequirement" 
+                                    disabled 
+                                    type="text" 
+                                    class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Category</label>
+                            <div class="col-sm-9">
+                                <input 
+                                    [(ngModel)]="soldUnitRequirement.checklistCategory" 
+                                    disabled 
+                                    type="text" 
+                                    class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Remarks</label>
+                            <div class="col-sm-9">
+                                <textarea 
+                                    [(ngModel)]="soldUnitRequirement.remarks" 
+                                    rows="4" 
+                                    class="form-control">
+                                </textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Status</label>
+                            <div class="col-sm-9">
+                                <wj-combo-box 
+                                    #cmbUnitSoldRequirementStatus
+                                    [itemsSource]="cmbUnitSoldRequirementStatusData" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'value'" 
+                                    [selectedValuePath]="'value'" 
+                                    [(ngModel)]="soldUnitRequirement.status"
+                                    style="width: 100%;">
+                                </wj-combo-box>
+                            </div>
+                        </div>
+                    </div>
+                    <div [ngClass]="{'active': tabDetail1Modal1[1], 'tab-pane': true }" role="tabpanel">    
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Attachment 1</label>
+                            <div class="col-sm-6">
+                                <input 
+                                    [(ngModel)]="soldUnitRequirement.attachment1" 
+                                    disabled 
+                                    type="text" 
+                                    class="form-control">
+                            </div>
+                            <button 
+                                id="btnOpenSoldUnitRequirementAttachment1"
+                                class="btn btn-info col-sm-1 mr-1" 
+                                (click)="btnUploadSoldUnitRequirementAttachmentClick(1)">
+                                <i class="fa fa-floppy-o fa-fw"></i>
+                            </button>
+                            <button 
+                                id="btnOpenSoldUnitRequirementAttachment1"
+                                class="btn btn-info col-sm-1" 
+                                (click)="btnOpenSoldUnitRequirementAttachmentClick(1)">
+                                <i class="fa fa-search fa-fw"></i>
+                            </button>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Attachment 2</label>
+                            <div class="col-sm-6">
+                                <input 
+                                    [(ngModel)]="soldUnitRequirement.attachment2" 
+                                    disabled 
+                                    type="text" 
+                                    class="form-control">
+                            </div>
+                            <button 
+                                id="btnOpenSoldUnitRequirementAttachment2"
+                                class="btn btn-info col-sm-1 mr-1" 
+                                (click)="btnUploadSoldUnitRequirementAttachmentClick(2)">
+                                <i class="fa fa-floppy-o fa-fw"></i>
+                            </button>
+                            <button 
+                                id="btnOpenSoldUnitRequirementAttachment2"
+                                class="btn btn-info col-sm-1" 
+                                (click)="btnOpenSoldUnitRequirementAttachmentClick(2)">
+                                <i class="fa fa-search fa-fw"></i>
+                            </button>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Attachment 3</label>
+                            <div class="col-sm-6">
+                                <input 
+                                    [(ngModel)]="soldUnitRequirement.attachment3" 
+                                    disabled 
+                                    type="text" 
+                                    class="form-control">
+                            </div>
+                            <button 
+                                id="btnOpenSoldUnitRequirementAttachment3"
+                                class="btn btn-info col-sm-1 mr-1" 
+                                (click)="btnUploadSoldUnitRequirementAttachmentClick(3)">
+                                <i class="fa fa-floppy-o fa-fw"></i>
+                            </button>
+                            <button 
+                                id="btnOpenSoldUnitRequirementAttachment3"
+                                class="btn btn-info col-sm-1" 
+                                (click)="btnOpenSoldUnitRequirementAttachmentClick(3)">
+                                <i class="fa fa-search fa-fw"></i>
+                            </button>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Attachment 4</label>
+                            <div class="col-sm-6">
+                                <input 
+                                    [(ngModel)]="soldUnitRequirement.attachment4" 
+                                    disabled 
+                                    type="text" 
+                                    class="form-control">
+                            </div>
+                            <button 
+                                id="btnOpenSoldUnitRequirementAttachment4"
+                                class="btn btn-info col-sm-1 mr-1" 
+                                (click)="btnUploadSoldUnitRequirementAttachmentClick(4)">
+                                <i class="fa fa-floppy-o fa-fw"></i>
+                            </button>
+                            <button 
+                                id="btnOpenSoldUnitRequirementAttachment4"
+                                class="btn btn-info col-sm-1" 
+                                (click)="btnOpenSoldUnitRequirementAttachmentClick(4)">
+                                <i class="fa fa-search fa-fw"></i>
+                            </button>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Attachment 5</label>
+                            <div class="col-sm-6">
+                                <input 
+                                    [(ngModel)]="soldUnitRequirement.attachment5" 
+                                    disabled 
+                                    type="text" 
+                                    class="form-control">
+                            </div>
+                            <button 
+                                id="btnOpenSoldUnitRequirementAttachment5"
+                                class="btn btn-info col-sm-1 mr-1" 
+                                (click)="btnUploadSoldUnitRequirementAttachmentClick(5)">
+                                <i class="fa fa-floppy-o fa-fw"></i>
+                            </button>
+                            <button 
+                                id="btnOpenSoldUnitRequirementAttachment5"
+                                class="btn btn-info col-sm-1" 
+                                (click)="btnOpenSoldUnitRequirementAttachmentClick(5)">
+                                <i class="fa fa-search fa-fw"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div [ngClass]="{'active': tabDetail1Modal1[2], 'tab-pane': true }" role="tabpanel">
+                        <div class="card">
+
+                            <div class="card-header">
+                                <table border="0" style="width: 100%;">
+                                    <tr>
+                                        <td style="width: 100%;" align="right">
+                                            <button 
+                                                id="btnAddSoldUnitRequirementActivity"
+                                                class="btn btn-primary" 
+                                                (click)="btnAddSoldUnitRequirementActivitiesClick()">
+                                                <i class="fa fa-plus fa-fw"></i> Add
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="card-body">
+                                <wj-flex-grid #fgdSoldUnitRequirementActivities [itemsSource]="fgdSoldUnitRequirementActivitiesCollection" [selectionMode]="3" [frozenColumns]="2">
+                                    <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
+                                        <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
+                                            <button 
+                                                class="btn btn-primary btn-sm btn-block" 
+                                                (click)="btnEditSoldUnitRequirementActivitiesClick()" 
+                                                data-toggle="modal" 
+                                                data-backdrop="static"
+                                                data-keyboard="false"> 
+                                                    <i class="fa fa-edit fa-fw"></i> Edit
+                                            </button>
+                                        </ng-template>
+                                    </wj-flex-grid-column>
+                                    <wj-flex-grid-column [header]="Delete" [isReadOnly]="true" [width]="90">
+                                        <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
+                                            <button 
+                                                class="btn btn-danger btn-sm btn-block" 
+                                                (click)="btnDeleteSoldUnitRequirementActivitiesClick()" 
+                                                data-toggle="modal" 
+                                                data-backdrop="static"
+                                                data-keyboard="false">
+                                                    <i class="fa fa-trash fa-fw"></i> Delete
+                                            </button>
+                                        </ng-template>
+                                    </wj-flex-grid-column>
+                                    <wj-flex-grid-column [header]="'Date'"      [binding]="'activityDate'"      [isReadOnly]="true" [width]="100"></wj-flex-grid-column>
+                                    <wj-flex-grid-column [header]="'Activity'"  [binding]="'activity'"          [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                                    <wj-flex-grid-column [header]="'Remarks'"   [binding]="'remarks'"           [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                                    <wj-flex-grid-column [header]="'User'"      [binding]="'user'"              [isReadOnly]="true" [width]="100"></wj-flex-grid-column>
+                                </wj-flex-grid>
+                            </div>
+                            <div class="card-footer">
+                                <div class="row">
+                                    <div class="col-sm-12 btn-group" id="">
+                                        <button type="button" class="btn btn-info" (click)="fgdSoldUnitRequirementActivitiesCollection.moveToFirstPage()">
+                                            <i class="fa fa-fast-backward"></i> First
+                                        </button>
+                                        <button type="button" class="btn btn-info" (click)="fgdSoldUnitRequirementActivitiesCollection.moveToPreviousPage()">
+                                            <i class="fa fa-step-backward"></i> Previous
+                                        </button>
+                                        <button type="button" class="btn btn-info" disabled style="width:100px">
+                                            {{ fgdSoldUnitRequirementActivitiesCollection.pageIndex + 1 }} / {{ fgdSoldUnitRequirementActivitiesCollection.pageCount }}
+                                        </button>
+                                        <button type="button" class="btn btn-info" (click)="fgdSoldUnitRequirementActivitiesCollection.moveToNextPage()">
+                                            Next
+                                            <i class="fa fa-step-forward"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-info" (click)="fgdSoldUnitRequirementActivitiesCollection.moveToLastPage()">
+                                            Last
+                                            <i class="fa fa-fast-forward"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>  
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" align="right">
+                <button type="button" id="btnSaveEditSoldUnitRequirementModal" class="btn btn-success" (click)="btnSaveEditSoldUnitRequirementModalClick()">
+                    <i class="fa fa-check fa-fw"></i> Save</button>
+                <button type="button" id="btnCloseEditSoldUnitRequirementModal" class="btn btn-danger" (click)="btnCloseEditSoldUnitRequirementModalClick()">
+                    <i class="fa fa-times fa-fw"></i> Close </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<!-- Checklist Requirement Activity  -->
+<div id="mdlSoldUnitRequirementActivityModal" 
+     class="modal fade" role="dialog"
+     [ngStyle]="{'display': mdlSoldUnitRequirementActivityModalShow ? 'block' : 'none', 'opacity': 1}">
+     <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Activity</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Date</label>
+                    <div class="col-sm-9">
+                        <wj-input-date #calActivityDate
+                            [(ngModel)]="soldUnitRequirementActivity.activityDate"
+                            format="M/d/yyyy">
+                        </wj-input-date>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Activity</label>
+                    <div class="col-sm-9">
+                        <textarea 
+                            [(ngModel)]="soldUnitRequirementActivity.activity" 
+                            rows="3" 
+                            class="form-control">
+                        </textarea>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Remarks</label>
+                    <div class="col-sm-9">
+                        <textarea 
+                            [(ngModel)]="soldUnitRequirementActivity.remarks" 
+                            rows="3" 
+                            class="form-control">
+                        </textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" align="right">
+                <button type="button" id="btnSaveSoldUnitRequirementActivityModal" class="btn btn-success" (click)="btnSaveSoldUnitRequirementActivityModalClick()">
+                    <i class="fa fa-check fa-fw"></i> Save</button>
+                <button type="button" id="btnCloseSoldUnitRequirementActivityModal" class="btn btn-danger" (click)="btnCloseSoldUnitRequirementActivityModalClick()">
+                    <i class="fa fa-times fa-fw"></i> Close</button>
+            </div>
+        </div>
     </div>
 </div>

@@ -7,19 +7,151 @@
 <div class="content-wrapper">
     <div class="container-fluid">
         
+        <!-- Breadcrumbs -->
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="/menu">Menu</a>
+                <a routerLink="/menu">Menu</a>
             </li>
             <li class="breadcrumb-item active">{{title}}</li>
         </ol>
 
-        <div class="row">
-            <div class="col-12">
-                <h4>{{title}}</h4>
-                <p></p>
+        <!-- List -->
+        <div class="card">
+
+            <!-- Page Title / Add -->
+            <div class="card-header">
+                <table border="0" style="width: 100%;">
+                    <tr>
+                        <td style="width: 59%;">
+                            <h4>{{title}}</h4>
+                        </td>
+                        <td style="width: 1%;"></td>
+                        <td style="width: 40%;" align="right">
+                            <button id="btnAddSoldUnit" class="btn btn-primary" (click)="btnAddSoldUnitClick()">
+                                <i class="fa fa-plus fa-fw"></i> Add
+                            </button>
+                            <button id="btnCloseSoldUnit" class="btn btn-danger" routerLink="/menu">
+                                <i class="fa fa-close fa-fw"></i> Close
+                            </button>
+                        </td>
+                    </tr>
+                </table>
             </div>
+
+            <!-- Filter -->
+            <div class="card-header">
+                <div class="form-horizontal">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            Date Start:
+                        </span>
+                        <wj-input-date #calDateStart
+                            [(ngModel)]="calDateStartData"
+                            (textChanged)="getSoldUnits()"
+                            format="M/d/yyyy">
+                        </wj-input-date>
+                        <span class="input-group-addon">
+                            Date End:
+                        </span>
+                        <wj-input-date #calDateEnd
+                            [(ngModel)]="calDateEndData"
+                            (textChanged)="getSoldUnits()"
+                            format="M/d/yyyy">
+                        </wj-input-date>
+                        <span class="input-group-addon">
+                            <i class="fa fa-search fa-fw"></i>
+                        </span>
+                        <input type="text" class="form-control" placeholder="Filter" [(ngModel)]="filterSoldUnit" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flexgrid List -->
+            <div class="card-body">
+                <wj-flex-grid #fgdSoldUnit [itemsSource]="fgdSoldUnitCollection" [selectionMode]="3" [frozenColumns]="2">
+                    <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
+                        <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
+                            <button 
+                                class="btn btn-primary btn-sm btn-block" 
+                                (click)="btnEditSoldUnitClick()" 
+                                data-toggle="modal" 
+                                data-backdrop="static"
+                                data-keyboard="false"> 
+                                    <i class="fa fa-edit fa-fw"></i> Edit
+                            </button>
+                        </ng-template>
+                    </wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="Delete" [isReadOnly]="true" [width]="90">
+                        <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
+                            <button 
+                                class="btn btn-danger btn-sm btn-block" 
+                                data-toggle="modal" 
+                                data-backdrop="static"
+                                data-keyboard="false" 
+                                data-target="#mdlDeleteSoldUnit">
+                                    <i class="fa fa-trash fa-fw"></i> Delete
+                            </button>
+                        </ng-template>
+                    </wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Number'"    [binding]="'soldUnitNumber'"    [isReadOnly]="true" [width]="120"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Date'"      [binding]="'soldUnitDate'"      [isReadOnly]="true" [width]="100"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Project'"   [binding]="'project'"           [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Unit'"      [binding]="'unit'"              [isReadOnly]="true" [width]="100"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Customer'"  [binding]="'customer'"          [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Broker'"    [binding]="'broker'"            [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Price'"     [binding]="'price'"             [isReadOnly]="true" [width]="150"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'L'"         [binding]="'isLocked'"          [isReadOnly]="true" [width]="50"></wj-flex-grid-column>
+                </wj-flex-grid>
+            </div>
+
+            <!-- Navigation -->
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-sm-12 btn-group" id="">
+                        <button type="button" class="btn btn-info" (click)="fgdSoldUnitCollection.moveToFirstPage()">
+                            <i class="fa fa-fast-backward"></i> First
+                        </button>
+                        <button type="button" class="btn btn-info" (click)="fgdSoldUnitCollection.moveToPreviousPage()">
+                            <i class="fa fa-step-backward"></i> Previous
+                        </button>
+                        <button type="button" class="btn btn-info" disabled style="width:100px">
+                            {{ fgdSoldUnitCollection.pageIndex + 1 }} / {{ fgdSoldUnitCollection.pageCount }}
+                        </button>
+                        <button type="button" class="btn btn-info" (click)="fgdSoldUnitCollection.moveToNextPage()">
+                            Next
+                            <i class="fa fa-step-forward"></i>
+                        </button>
+                        <button type="button" class="btn btn-info" (click)="fgdSoldUnitCollection.moveToLastPage()">
+                            Last
+                            <i class="fa fa-fast-forward"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
+    </div>
+
+    <app-footer [data]="fgdSoldUnitCollection"></app-footer>
+</div>
+
+<!-- Delete Unit -->
+<div class="modal fade" id="mdlDeleteSoldUnitModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete</h4>
+            </div>
+            <div class="modal-body">
+                Delete Sold Unit?
+            </div>
+            <div class="modal-footer" align="right">
+                <button type="button" id="btnDeleteSoldUnit" class="btn btn-danger" (click)="btnDeleteSoldUnitClick()">
+                    <i class="fa fa-trash fa-fw"></i> Delete</button>
+                <button type="button" id="btnDeleteCloseSoldUnit" class="btn btn-success" data-dismiss="modal">
+                    <i class="fa fa-close fa-fw"></i> Close</button>
+            </div>
+        </div>
     </div>
 </div>
