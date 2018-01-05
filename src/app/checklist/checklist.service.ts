@@ -20,7 +20,6 @@ import { SysDropDown } from '../model/model.sys.dropDown';
 
 @Injectable()
 export class ChecklistService {
-
     // private properties
     private headers = new Headers({
         'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
@@ -56,13 +55,13 @@ export class ChecklistService {
 
     // constructor
     constructor(
-        private router:Router,
-        private http:Http,
-        private toastr:ToastsManager
-    ){}
+        private router: Router,
+        private http: Http,
+        private toastr: ToastsManager
+    ) { }
 
     // public methods
-    public getProjects() : void {
+    public getProjects(): void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstProject/List";
         let projects = new ObservableArray();
         this.http.get(url, this.options).subscribe(
@@ -85,13 +84,13 @@ export class ChecklistService {
                     }
                     this.projectsSource.next(projects);
                 } else {
-                    this.toastr.error("No projects.");   
+                    this.toastr.error("No projects.");
                 }
             }
         );
     }
 
-    public getChecklistPerProjectId(projectId : number) : void {
+    public getChecklistPerProjectId(projectId: number): void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstChecklist/ListPerProjectId/" + projectId;
         let units = new ObservableArray();
         this.http.get(url, this.options).subscribe(
@@ -100,46 +99,46 @@ export class ChecklistService {
                 if (results.length > 0) {
                     for (var i = 0; i <= results.length - 1; i++) {
                         units.push({
-                            id:results[i].Id,
-                            checklistCode:results[i].ChecklistCode,
-                            checklist:results[i].Checklist,
-                            checklistDate:results[i].ChecklistDate,
-                            projectId:results[i].ProjectId,
-                            remarks:results[i].Remarks,
-                            status:results[i].Status,
-                            isLocked:results[i].IsLocked,
-                            createdBy:results[i].CreatedBy,
-                            createdDateTime:results[i].CreatedDateTime,
-                            updatedBy:results[i].UpdatedBy,
-                            updatedDateTime:results[i].UpdatedDateTime
+                            id: results[i].Id,
+                            checklistCode: results[i].ChecklistCode,
+                            checklist: results[i].Checklist,
+                            checklistDate: results[i].ChecklistDate,
+                            projectId: results[i].ProjectId,
+                            remarks: results[i].Remarks,
+                            status: results[i].Status,
+                            isLocked: results[i].IsLocked,
+                            createdBy: results[i].CreatedBy,
+                            createdDateTime: results[i].CreatedDateTime,
+                            updatedBy: results[i].UpdatedBy,
+                            updatedDateTime: results[i].UpdatedDateTime
                         });
                     }
                     this.checklistsSource.next(units);
                 } else {
                     this.checklistsSource.next(units);
-                    this.toastr.error("No checklist for this project.");   
+                    this.toastr.error("No checklist for this project.");
                 }
             }
         );
     }
 
-    public addChecklist(checklist : MstChecklist, btnAddChecklist: Element) : void {
-        let url="http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Add";
-        this.http.post(url,JSON.stringify(checklist),this.options).subscribe(
-            response=>{
+    public addChecklist(checklist: MstChecklist, btnAddChecklist: Element): void {
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Add";
+        this.http.post(url, JSON.stringify(checklist), this.options).subscribe(
+            response => {
                 var id = response.json();
-                if(id>0){
+                if (id > 0) {
                     this.toastr.success("Add Successful.");
-                    setTimeout(()=>{
-                        this.router.navigate(['/checklist',id]);
-                    },1000);
-                }else{
+                    setTimeout(() => {
+                        this.router.navigate(['/checklist', id]);
+                    }, 1000);
+                } else {
                     this.toastr.error("Add Failed.");
                     btnAddChecklist.removeAttribute("disabled");
                     btnAddChecklist.innerHTML = "<i class='fa fa-plus fa-fw'></i> Add";
                 }
             },
-            error=>{
+            error => {
                 this.toastr.error("Server error.");
                 btnAddChecklist.removeAttribute("disabled");
                 btnAddChecklist.innerHTML = "<i class='fa fa-plus fa-fw'></i> Add";
@@ -147,14 +146,14 @@ export class ChecklistService {
         )
     }
 
-    public getChecklist(id : number) : void {
+    public getChecklist(id: number): void {
         let checklist: MstChecklist;
-        let url="http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Detail/" + id;
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Detail/" + id;
 
         this.http.get(url, this.options).subscribe(
-            response=>{
+            response => {
                 var result = response.json();
-                if(result != null){
+                if (result != null) {
                     checklist = {
                         id: result.Id,
                         checklistCode: result.ChecklistCode,
@@ -171,67 +170,67 @@ export class ChecklistService {
                         updatedDateTime: result.UpdatedDateTime
                     };
                     this.checklistSource.next(checklist);
-                }else{
+                } else {
                     this.toastr.error("No checklist.");
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         this.router.navigate(["/checklist"]);
-                    },1000);
+                    }, 1000);
                 }
             }
         );
     }
 
-    public deleteChecklist(id:number) : void {
-        let url="http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Delete/" + id;
+    public deleteChecklist(id: number): void {
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Delete/" + id;
 
         this.http.delete(url, this.options).subscribe(
-            response=>{
+            response => {
                 this.checklistDeletedSource.next(1);
             },
-            error=>{
+            error => {
                 this.checklistDeletedSource.next(0);
             }
         )
     }
 
-    public saveChecklist(checklist : MstChecklist) : void {
-        let url="http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Save";
-        this.http.put(url,JSON.stringify(checklist),this.options).subscribe(
-            response=>{
+    public saveChecklist(checklist: MstChecklist): void {
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Save";
+        this.http.put(url, JSON.stringify(checklist), this.options).subscribe(
+            response => {
                 this.checklistSavedSource.next(1);
             },
-            error=>{
+            error => {
                 this.checklistSavedSource.next(0);
             }
         )
     }
 
-    public lockChecklist(checklist : MstChecklist) : void{
-        let url="http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Lock";
-        this.http.put(url,JSON.stringify(checklist),this.options).subscribe(
-            response=>{
+    public lockChecklist(checklist: MstChecklist): void {
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Lock";
+        this.http.put(url, JSON.stringify(checklist), this.options).subscribe(
+            response => {
                 this.checklistLockedSource.next(1);
             },
-            error=>{
+            error => {
                 this.checklistLockedSource.next(0);
             }
         )
     }
 
-    public unlockChecklist(checklist : MstChecklist) : void{
-        let url="http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/UnLock";
-        this.http.put(url,JSON.stringify(checklist),this.options).subscribe(
-            reponse=>{
+    public unlockChecklist(checklist: MstChecklist): void {
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/UnLock";
+        this.http.put(url, JSON.stringify(checklist), this.options).subscribe(
+            reponse => {
                 this.checklistUnlockedSource.next(1);
             },
-            error=>{
+            error => {
                 this.checklistUnlockedSource.next(0);
             }
         )
     }
 
-    public getDropDowns(){
-        let dropDowns  = new ObservableArray();
+    public getDropDowns() {
+        let dropDowns = new ObservableArray();
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/SysDropDown/List";
 
         this.http.get(url, this.options).subscribe(
@@ -249,7 +248,7 @@ export class ChecklistService {
                     this.dropDownsSource.next(dropDowns);
                 } else {
                     this.dropDownsSource.next(dropDowns);
-                    this.toastr.error("No dropdowns.");   
+                    this.toastr.error("No dropdowns.");
                 }
             }
         );

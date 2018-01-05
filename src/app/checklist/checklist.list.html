@@ -6,7 +6,7 @@
 
 <div class="content-wrapper">
     <div class="container-fluid">
-        
+
         <!-- Breadcrumbs -->
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -30,10 +30,7 @@
                             <button class="btn btn-primary" (click)="btnAddChecklistClick()" id="btnAddChecklist">
                                 <i class="fa fa-plus fa-fw"></i> Add
                             </button>
-                            <button 
-                                id="btnCloseChecklist"
-                                class="btn btn-danger" 
-                                routerLink="/menu">
+                            <button id="btnCloseChecklist" class="btn btn-danger" routerLink="/menu">
                                 <i class="fa fa-close fa-fw"></i> Close
                             </button>
                         </td>
@@ -48,14 +45,8 @@
                         <span class="input-group-addon">
                             Project:
                         </span>
-                        <wj-combo-box #cmbProjects 
-                            [itemsSource]="cmbProjectsData" 
-                            [placeholder]="'Select Project'" 
-                            [isEditable]="false" 
-                            [isRequired]="true"
-                            [displayMemberPath]="'project'" 
-                            [selectedValuePath]="'id'" 
-                            (selectedIndexChanged)="cmbProjectsDataChange()">
+                        <wj-combo-box #cmbProjects [itemsSource]="cmbProjectsData" [placeholder]="'Select Project'" [isEditable]="false" [isRequired]="true"
+                            [displayMemberPath]="'project'" [selectedValuePath]="'id'" (selectedIndexChanged)="cmbProjectsDataChange()">
                         </wj-combo-box>
                         <span class="input-group-addon">
                             <i class="fa fa-search fa-fw"></i>
@@ -78,17 +69,16 @@
                     </wj-flex-grid-column>
                     <wj-flex-grid-column [header]="Delete" [isReadOnly]="true" [width]="90">
                         <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
-                            <button class="btn btn-danger btn-sm btn-block" data-toggle="modal" data-backdrop="static"
-                                data-keyboard="false" data-target="#mdlDeleteChecklist">
+                            <button class="btn btn-danger btn-sm btn-block" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#mdlDeleteChecklist">
                                 <i class="fa fa-trash fa-fw"></i> Delete
                             </button>
                         </ng-template>
                     </wj-flex-grid-column>
-                    <wj-flex-grid-column [header]="'Code'"      [binding]="'checklistCode'" [isReadOnly]="true" [width]="100"></wj-flex-grid-column>
-                    <wj-flex-grid-column [header]="'Checklist'" [binding]="'checklist'"     [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
-                    <wj-flex-grid-column [header]="'Date'"      [binding]="'checklistDate'" [isReadOnly]="true" [width]="100"></wj-flex-grid-column>
-                    <wj-flex-grid-column [header]="'Remarks'"   [binding]="'remarks'"       [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
-                    <wj-flex-grid-column [header]="'L'"         [binding]="'isLocked'"      [isReadOnly]="true" [width]="50"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Code'" [binding]="'checklistCode'" [isReadOnly]="true" [width]="100"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Checklist'" [binding]="'checklist'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Date'" [binding]="'checklistDate'" [isReadOnly]="true" [width]="100"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Remarks'" [binding]="'remarks'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'L'" [binding]="'isLocked'" [isReadOnly]="true" [width]="50"></wj-flex-grid-column>
                 </wj-flex-grid>
             </div>
 

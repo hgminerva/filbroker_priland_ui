@@ -6,20 +6,162 @@
 
 <div class="content-wrapper">
     <div class="container-fluid">
-        
+
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a href="/menu">Menu</a>
             </li>
-            <li class="breadcrumb-item active">{{title}}</li>
+            <li class="breadcrumb-item">
+                <a href="/project">Settings</a>
+            </li>
+
         </ol>
 
-        <div class="row">
-            <div class="col-12">
-                <h4>{{title}}</h4>
-                <p></p>
+        <div class="card">
+            <!-- Buttons -->
+            <div class="card-header">
+                <table border="0" style="width: 100%;">
+                    <tr>
+                        <td style="width: 59%;">
+                            <h4>{{title}}</h4>
+                        </td>
+                        <td style="width: 40%;" align="right">
+                            <button class="btn btn-primary" (click)="btnSaveClick()" id="btnSave">
+                                <i class="fa fa-save fa-fw"></i> Save
+                            </button>
+                        </td>
+                        <td style="width: 1%;"></td>
+                        <td style="width: 40%;" align="right">
+                            <button class="btn btn-danger" routerLink="/menu">
+                                <i class="fa fa-close fa-fw"></i> Close
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <!-- Detail -->
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right" style="padding:5px">Company Name</label>
+                            <div class="col-sm-9">
+                                <input style="width: 50%;" [(ngModel)]="settings.company" type="text" class="form-control" placeholder="Company Name..."
+                                    id="company">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right" style="padding:5px">Software Version</label>
+                            <div class="col-sm-9">
+                                <input style="width: 50%;" [(ngModel)]="settings.softwareVersion" type="text" class="form-control" placeholder="Software Version..."
+                                    id="softwareVersion">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Developer</label>
+                            <div class="col-sm-9">
+                                <input style="width: 50%;" [disabled]="" [(ngModel)]="settings.softwareDeveloper" type="text" class="form-control" placeholder="Developer..."
+                                    id="softwareDeveloper">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right" style="padding:5px">Proposal Notes</label>
+                            <div class="col-sm-9">
+                                <textarea [disabled]="" [(ngModel)]="settings.proposalFootNote" rows="5" class="form-control" placeholder="Proposal Notes..."
+                                    id="proposalFootNote"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Approved By</label>
+                            <div class="col-sm-9">
+                                <input style="width: 50%;" [disabled]="" [(ngModel)]="settings.soldUnitApprovedByUser" type="text" class="form-control" placeholder="Approved By..."
+                                    id="soldUnitApprovedByUser ">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right" style="padding:2px">Broker Requirements</label>
+                            <div class="col-sm-9">
+                                <textarea [disabled]="" [(ngModel)]="settings.brokerFootNote" rows="5" class="form-control" placeholder="Broker Requirements..."
+                                    id="brokerFootNote"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <table border="0" style="width: 100%;">
+                        <tr>
+                            <td style="width: 40%;" align="right">
+                                <button class="btn btn-info" data-toggle="modal" data-target="#modal" type="button" [routerLink]="['/settings.details.html']">
+                                    <i class='fa fa-plus fa-fw'></i> Add
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                    <div id="modal" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="">Dropdown List Values</h4>
+                                </div>
+                                <br/>
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label text-right">Category</label>
+                                    <div class="col-sm-9">
+                                        <input style="width: 50%;" [(ngModel)]="values.category" type="text" class="form-control" placeholder="Category..." id="category">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label text-right">Description</label>
+                                    <div class="col-sm-9">
+                                        <input style="width: 50%;" [(ngModel)]="values.description" type="text" class="form-control" placeholder="Description..."
+                                            id="description">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label text-right">Value</label>
+                                    <div class="col-sm-9">
+                                        <input style="width: 50%;" [(ngModel)]="values.value" type="text" class="form-control" placeholder="Value..." id="value">
+                                    </div>
+                                </div>
+                                <table border="0" style="width: 100%;">
+                                    <tr>
+                                        <td style="width: 40%;" align="right">
+                                            <button class="btn btn-primary" data-toggle="modal" data-target="#modal" type="button" routerLink="/add" (click)="btnSaveProjectClick()"
+                                                id="btnSaveProject">
+                                                <i></i> Ok
+                                            </button>
+                                            <button class="btn btn-danger" data-toggle="modal" data-target="#modal" type="button" routerLink="/add" id="add">
+                                                <i></i>Cancel
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Flexgrid List -->
+                <div class="card-body">
+                    <wj-flex-grid #projectFlexGrid [itemsSource]="projectCollection" [selectionMode]="3" [frozenColumns]="2">
+                        <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
+                                <button class="btn btn-primary btn-sm btn-block" (click)="btnEditProjectClick()" data-toggle="modal" data-backdrop="static"
+                                    data-keyboard="false" data-target="#settings-detail-modal">
+                                    <i class="fa fa-edit fa-fw"></i> Edit
+                                </button>
+                            </ng-template>
+                        </wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="Delete" [isReadOnly]="true" [width]="90">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
+                                <button class="btn btn-danger btn-sm btn-block" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#projectDeleteModal">
+                                    <i class="fa fa-trash fa-fw"></i> Delete
+                                </button>
+                            </ng-template>
+                        </wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Category'" [binding]="'category'" [isReadOnly]="true" [width]="'3*'"></wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Description'" [binding]="'description'" [isReadOnly]="true" [width]="'3*'"></wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Value'" [binding]="'value'" [isReadOnly]="true" [width]="'1.5*'"></wj-flex-grid-column>
+                    </wj-flex-grid>
+                </div>
             </div>
         </div>
-
     </div>
 </div>
