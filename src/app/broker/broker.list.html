@@ -3,10 +3,10 @@
 <br>
 
 <br>
-
 <div class="content-wrapper">
     <div class="container-fluid">
         
+        <!-- Breadcrumbs -->
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a href="/menu">Menu</a>
@@ -14,12 +14,115 @@
             <li class="breadcrumb-item active">{{title}}</li>
         </ol>
 
-        <div class="row">
-            <div class="col-12">
-                <h4>{{title}}</h4>
-                <p></p>
+        <!-- List -->
+        <div class="card">
+
+            <!-- Page Title -->
+            <div class="card-header">
+                <table border="0" style="width: 100%;">
+                    <tr>
+                        <td style="width: 59%;">
+                            <h4>{{title}}</h4>
+                        </td>
+                        <td style="width: 1%;"></td>
+                        <td style="width: 40%;" align="right">
+                            <button class="btn btn-primary" (click)="btnAddBrokerClick()" id="btnAddBroker">
+                                <i class="fa fa-plus fa-fw"></i> Add
+                            </button>
+                            <button class="btn btn-danger" routerlink="/menu">
+                                <i class="fa fa-close fa-fw"></i> Close
+                            </button>
+                        </td>
+                    </tr>
+                </table>
             </div>
+
+            <!-- Filter/Add -->
+            <div class="card-header">
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <i class="fa fa-search fa-fw"></i>
+                    </span>
+                    <input type="text"  class="form-control"placeholder="Filter" [(ngModel)]="filterProject" />
+                </div>
+            </div>
+
+            <!-- Flexgrid List -->
+            <div class="card-body">
+                <wj-flex-grid #brokerFlexGrid [itemsSource]="brokerCollection" [selectionMode]="3" [frozenColumns]="2">
+                    <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
+                        <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
+                            <button class="btn btn-primary btn-sm btn-block" (click)="btnEditBrokerClick()" data-toggle="modal" data-backdrop="static"
+                                data-keyboard="false" data-target="#project-detail-modal">
+                                <i class="fa fa-edit fa-fw"></i> Edit
+                            </button>
+                        </ng-template>
+                    </wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="Delete" [isReadOnly]="true" [width]="90">
+                        <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
+                            <button class="btn btn-danger btn-sm btn-block" data-toggle="modal" data-backdrop="static"
+                                data-keyboard="false" data-target="#brokerDeleteModal">
+                                <i class="fa fa-trash fa-fw"></i> Delete
+                            </button>
+                        </ng-template>
+                    </wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Code'" [binding]="'brokerCode'" [isReadOnly]="true" [width]="120"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Name'" [binding]="'firstName'" [isReadOnly]="true" [width]="250"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Address'" [binding]="'address'" [isReadOnly]="true" [width]="300"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'LandLine No.'" [binding]="'telephoneNumber'" [isReadOnly]="true" [width]="200"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Mobile No.'" [binding]="'mobileNumber'" [isReadOnly]="true" [width]="200"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Remarks'" [binding]="'remarks'" [isReadOnly]="true" [width]="150"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Status'" [binding]="'status'" [isReadOnly]="true" [width]="150"></wj-flex-grid-column>
+                </wj-flex-grid>
+            </div>
+
+            <!-- Navigation -->
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-sm-12 btn-group" id="">
+                        <button type="button" class="btn" (click)="brokerCollection.moveToFirstPage()">
+                            <i class="fa fa-fast-backward"></i> First
+                        </button>
+                        <button type="button" class="btn" (click)="brokerCollection.moveToPreviousPage()">
+                            <i class="fa fa-step-backward"></i> Previous
+                        </button>
+                        <button type="button" class="btn" disabled style="width:100px">
+                            {{ brokerCollection.pageIndex + 1 }} / {{ brokerCollection.pageCount }}
+                        </button>
+                        <button type="button" class="btn" (click)="brokerCollection.moveToNextPage()">
+                            Next
+                            <i class="fa fa-step-forward"></i>
+                        </button>
+                        <button type="button" class="btn" (click)="brokerCollection.moveToLastPage()">
+                            Last
+                            <i class="fa fa-fast-forward"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </div>
 </div>
+
+<!-- delete project -->
+<div class="modal fade" id="brokerDeleteModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete</h4>
+            </div>
+            <div class="modal-body">
+                Delete Broker?
+            </div>
+            <div class="modal-footer" align="right">
+                <button type="button" id="btnDeleteBroker" class="btn btn-danger" (click)="btnDeleteBrokerClick()">
+                    <i class="fa fa-trash fa-fw"></i> Delete</button>
+                <button type="button" id="btnDeleteCloseBroker" class="btn btn-success" data-dismiss="modal">
+                    <i class="fa fa-close fa-fw"></i> Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
