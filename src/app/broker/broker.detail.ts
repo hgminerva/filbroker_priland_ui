@@ -37,6 +37,7 @@ export class BrokerDetail {
     lastName: "",
     firstName: "",
     middleName: "",
+    fullName: "",
     licenseNumber: "",
     birthDate: "",
     civilStatus: "",

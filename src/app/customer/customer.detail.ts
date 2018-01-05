@@ -3,10 +3,10 @@ import { Component,ViewContainerRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 // Services
-import { CustomerService } from './customer.service';
+import { ProjectService } from '../project/project.service';
 
 // WijMo
-import {ObservableArray, CollectionView} from 'wijmo/wijmo';
+import { ObservableArray, CollectionView} from 'wijmo/wijmo';
 
 // Beautification
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
@@ -15,7 +15,7 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { MstCustomer } from '../model/model.mst.customer';
 
 @Component({
-  templateUrl: './project.detail.html'
+  templateUrl: './customer.detail.html'
 })
 
 export class CustomerDetail {
@@ -23,11 +23,11 @@ export class CustomerDetail {
 
   public customerStatusData : ObservableArray;
 
-  private customerSub : any;
-  private customerSavedSub : any;
-  private customerLockedSub : any;
-  private customerUnlockedSub : any;
-  private customerStatusSub : any;
+  private projectSub : any;
+  private projectSavedSub : any;
+  private projectLockedSub : any;
+  private projectUnlockedSub : any;
+  private projectStatusSub : any;
 
   public customer : MstCustomer = {
      id: 0,
@@ -35,6 +35,7 @@ export class CustomerDetail {
     lastName: "NA",
     firstName: "NA",
     middleName: "NA",
+    fullName: "",
     civilStatus: "NA",
     gender: "NA",
     birthDate: "NA",
@@ -103,21 +104,12 @@ export class CustomerDetail {
   }
 
   public getProject() {
-    this.projectService.getProject(this.getIdParameter(), this.toastr);
+    this.projectService.getProject(this.getIdParameter());
 
     this.projectSub = this.projectService.projectObservable
       .subscribe(
         data => {
-          this.project.id = data.id;
-          this.project.projectCode = data.projectCode;
-          this.project.project = data.project;
-          this.project.address = data.address;
-          this.project.status = data.status;
-          this.project.isLocked = data.isLocked;
-          this.project.createdBy = data.createdBy;
-          this.project.createdDateTime = data.createdDateTime;
-          this.project.updatedBy = data.updatedBy;
-          this.project.updatedDateTime= data.updatedDateTime;
+
         }
       );
   }
@@ -142,7 +134,6 @@ export class CustomerDetail {
           }
         }
 
-        this.projectStatusData = projectStatuses;
       }
     );
   }
@@ -151,7 +142,7 @@ export class CustomerDetail {
     (<HTMLButtonElement>document.getElementById("btnSaveProject")).disabled = true;
     (<HTMLButtonElement>document.getElementById("btnSaveProject")).innerHTML = "<i class='fa fa-plus fa-fw'></i> Saving...";
     
-    this.projectService.saveProject(this.project);
+    //this.projectService.saveProject(this.project);
 
     this.projectSavedSub =  this.projectService.projectSavedObservable.subscribe(
       data => {
@@ -172,13 +163,13 @@ export class CustomerDetail {
     (<HTMLButtonElement>document.getElementById("btnLockProject")).disabled = true;
     (<HTMLButtonElement>document.getElementById("btnLockProject")).innerHTML = "<i class='fa fa-lock fa-fw'></i> Locking...";
     
-    this.projectService.lockProject(this.project);
+    //this.projectService.lockProject(this.project);
 
     this.projectLockedSub =  this.projectService.projectLockedObservable.subscribe(
       data => {
           if(data == 1) {
               this.toastr.success("Locking successful.");
-              this.project.isLocked = true;
+              //this.project.isLocked = true;
               (<HTMLButtonElement>document.getElementById("btnLockProject")).disabled = false;
               (<HTMLButtonElement>document.getElementById("btnLockProject")).innerHTML = "<i class='fa fa-lock fa-fw'></i> Lock";
           } else if(data == 0) {
@@ -194,13 +185,13 @@ export class CustomerDetail {
     (<HTMLButtonElement>document.getElementById("btnUnlockProject")).disabled = true;
     (<HTMLButtonElement>document.getElementById("btnUnlockProject")).innerHTML = "<i class='fa fa-unlock fa-fw'></i> Unlocking...";
     
-    this.projectService.unlockProject(this.project);
+    //this.projectService.unlockProject(this.project);
 
     this.projectUnlockedSub = this.projectService.projectUnlockedObservable.subscribe(
       data => {
           if(data == 1) {
               this.toastr.success("Unlocking successful.");
-              this.project.isLocked = false;
+              //this.project.isLocked = false;
               (<HTMLButtonElement>document.getElementById("btnUnlockProject")).disabled = false;
               (<HTMLButtonElement>document.getElementById("btnUnlockProject")).innerHTML = "<i class='fa fa-unlock fa-fw'></i> Unlock";
           } else if(data == 0) {

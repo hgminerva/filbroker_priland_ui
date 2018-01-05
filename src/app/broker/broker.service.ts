@@ -180,6 +180,7 @@ export class BrokerService {
                         lastName: results.LastName,
                         firstName: results.FirstName,
                         middleName: results.MiddleName,
+                        fullName: results.fullName,
                         licenseNumber: results.LicenseNumber,
                         birthDate: results.BirthDate,
                         civilStatus: results.CivilStatus,

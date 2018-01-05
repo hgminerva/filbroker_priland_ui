@@ -34,6 +34,7 @@ export class BrokerList {
     lastName: "NA",
     firstName: "NA",
     middleName: "NA",
+    fullName: "",
     licenseNumber: "NA",
     birthDate: this.currentDateString,
     civilStatus: "NA",

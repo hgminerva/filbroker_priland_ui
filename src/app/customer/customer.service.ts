@@ -152,6 +152,7 @@ export class CustomerService {
                         lastName: results.lastName,
                         firstName: results.firstName,
                         middleName: results.middleName,
+                        fullName: results.fullName,
                         civilStatus: results.civilStatus,
                         gender: results.gender,
                         birthDate: results.birthDate,

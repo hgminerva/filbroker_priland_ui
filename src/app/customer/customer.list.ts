@@ -33,6 +33,7 @@ export class CustomerList {
         lastName: "NA",
         firstName: "NA",
         middleName: "NA",
+        fullName: "",
         civilStatus: "NA",
         gender: "NA",
         birthDate: "NA",
