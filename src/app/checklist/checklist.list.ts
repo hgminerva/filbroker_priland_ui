@@ -1,12 +1,12 @@
 // Angular
-import { Component, ViewContainerRef, ViewChild, ElementRef } from '@angular/core';
+import { Component,ViewContainerRef,ViewChild,ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 
 // Services
 import { ChecklistService } from './checklist.service';
 
 // WijMo
-import { ObservableArray, CollectionView } from 'wijmo/wijmo';
+import {ObservableArray, CollectionView} from 'wijmo/wijmo';
 import { WjComboBox } from 'wijmo/wijmo.angular2.input';
 
 // Messagebox 
@@ -23,14 +23,14 @@ export class ChecklistList {
   private currentDate = new Date();
   private currentDateString = [this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, this.currentDate.getDate()].join('-');
 
-  private checklistsSub: any;
-  private projectsSub: any;
-  private checklistDeletedSub: any;
+  private checklistsSub : any;
+  private projectsSub : any;
+  private checklistDeletedSub : any;
 
   //public properties
   public title = 'Checklist List';
 
-  public checklist: MstChecklist = {
+  public checklist : MstChecklist = {
     id: 0,
     checklistCode: "",
     checklist: "",
@@ -46,23 +46,26 @@ export class ChecklistList {
     updatedDateTime: this.currentDateString
   };
 
-  public fgdChecklistData: ObservableArray;
-  public fgdChecklistCollection: CollectionView;
-  public cmbProjectsData: ObservableArray;
+  public fgdChecklistData : ObservableArray;
+  public fgdChecklistCollection : CollectionView;
+  
+  public cmbProjectsData : ObservableArray;
 
   @ViewChild("cmbProjects")
-  public cmbProjects: ElementRef;
+  public cmbProjects:ElementRef;
+
+  public mdlChecklistDeleteShow : boolean = false;
 
   //constructor
   constructor(
-    private checklistService: ChecklistService,
-    private toastr: ToastsManager,
-    private viewContainer: ViewContainerRef,
-    private router: Router
-  ) {
+    private checklistService:ChecklistService,
+    private toastr:ToastsManager,
+    private viewContainer:ViewContainerRef,
+    private router:Router
+  ){
     this.toastr.setRootViewContainerRef(viewContainer);
   }
-
+  
   //ng
   ngOnInit() {
     this.fgdChecklistData = new ObservableArray();
@@ -71,14 +74,14 @@ export class ChecklistList {
     this.getProjects();
   }
 
-  ngOnDestroy() {
-    if (this.checklistsSub != null) this.checklistsSub.unsubscribe();
-    if (this.projectsSub != null) this.projectsSub.unsubscribe();
-    if (this.checklistDeletedSub != null) this.checklistDeletedSub.unsubscribe();
+  ngOnDestroy(){
+    if(this.checklistsSub!=null) this.checklistsSub.unsubscribe();
+    if(this.projectsSub!=null) this.projectsSub.unsubscribe();
+    if(this.checklistDeletedSub!=null) this.checklistDeletedSub.unsubscribe();
   }
-
+  
   // public methods
-  public getProjects(): void {
+  public getProjects() : void {
     this.checklistService.getProjects();
 
     this.projectsSub = this.checklistService.projectsObservable.subscribe(
@@ -89,8 +92,7 @@ export class ChecklistList {
       }
     );
   }
-
-  public getChecklistPerProjectId(projectId: number): void {
+  public getChecklistPerProjectId(projectId: number) : void {
     let checklist = new ObservableArray();
 
     this.checklistService.getChecklistPerProjectId(projectId);
@@ -100,13 +102,15 @@ export class ChecklistList {
         this.fgdChecklistData = data;
         this.fgdChecklistCollection = new CollectionView(this.fgdChecklistData);
         this.fgdChecklistCollection.pageSize = 15;
-        this.fgdChecklistCollection.trackChanges = true;
+        this.fgdChecklistCollection.trackChanges = true;  
       }
     );
   }
 
   //events
-  public cmbProjectsDataChange(): void {
+
+  // project combo box change
+  public cmbProjectsChange() : void {
     let index = this.cmbProjects["selectedIndex"];
     let projectId = this.cmbProjectsData[index]["id"];
     let project = this.cmbProjectsData[index]["project"];
@@ -117,48 +121,54 @@ export class ChecklistList {
     this.getChecklistPerProjectId(projectId);
   }
 
-  public btnAddChecklistClick(): void {
-    let btnAddChecklist: Element = document.getElementById("btnAddChecklist");
+  // list events
+  public btnAddChecklistClick() : void {
+    let btnAddChecklist:Element = document.getElementById("btnAddChecklist");
 
-    btnAddChecklist.setAttribute("disabled", "disabled");
+    btnAddChecklist.setAttribute("disabled","disabled");
     btnAddChecklist.innerHTML = "<i class='fa fa-plus fa-fw'></i> Adding...";
 
     this.checklistService.addChecklist(this.checklist, btnAddChecklist);
   }
-
-  public btnDeleteChecklistClick(): void {
-    let btnDeleteChecklist: Element = document.getElementById("btnDeleteChecklist");
-    let btnDeleteCloseChecklist: Element = document.getElementById("btnDeleteCloseChecklist");
-
-    let selectedChecklist = this.fgdChecklistCollection.currentItem;
-
-    btnDeleteChecklist.setAttribute("disabled", "disabled");
-    btnDeleteCloseChecklist.setAttribute("disabled", "disabled");
-
-    this.checklistService.deleteChecklist(selectedChecklist.id, );
-    this.checklistDeletedSub = this.checklistService.checklistDeletedObservable.subscribe(
-      data => {
-        if (data == 1) {
-          this.toastr.success("Delete successful.");
-          this.fgdChecklistCollection.remove​(selectedChecklist);
-
-          btnDeleteChecklist.removeAttribute("disabled");
-          btnDeleteCloseChecklist.removeAttribute("disabled");
-
-          document.getElementById("btnDeleteCloseUnit").click();
-        } else if (data == 0) {
-          this.toastr.error("Delete failed.");
-
-          btnDeleteChecklist.removeAttribute("disabled");
-          btnDeleteCloseChecklist.removeAttribute("disabled");
-        }
-      }
-    );
+  public btnDeleteChecklistClick() : void {
+    this.mdlChecklistDeleteShow = true;
   }
-
-  public btnEditChecklistClick(): void {
+  public btnEditChecklistClick() : void {
     let selectedChecklist = this.fgdChecklistCollection.currentItem;
     this.router.navigate(['/checklist', selectedChecklist.id]);
   }
 
+  // delete modal events
+  public btnOkChecklistDeleteModalClick() : void {
+    let btnOkChecklistDeleteModal:Element = document.getElementById("btnOkChecklistDeleteModal");
+    let btnCloseChecklistDeleteModal:Element = document.getElementById("btnCloseChecklistDeleteModal");
+
+    let selectedChecklist = this.fgdChecklistCollection.currentItem;
+
+    btnOkChecklistDeleteModal.setAttribute("disabled","disabled");
+    btnCloseChecklistDeleteModal.setAttribute("disabled","disabled");
+
+    this.checklistService.deleteChecklist(selectedChecklist.id,);
+    this.checklistDeletedSub = this.checklistService.checklistDeletedObservable.subscribe(
+        data => {
+            if(data == 1) {
+                this.toastr.success("Delete successful.");
+                this.fgdChecklistCollection.remove​(selectedChecklist);
+
+                btnOkChecklistDeleteModal.removeAttribute("disabled");
+                btnCloseChecklistDeleteModal.removeAttribute("disabled");
+
+                this.mdlChecklistDeleteShow = false
+            } else if(data == 0) {
+                this.toastr.error("Delete failed.");   
+
+                btnOkChecklistDeleteModal.removeAttribute("disabled");
+                btnCloseChecklistDeleteModal.removeAttribute("disabled");
+            }
+        }
+    );
+  }
+  public btnCloseChecklistDeleteModalClick() : void {
+    this.mdlChecklistDeleteShow = false
+  }
 }

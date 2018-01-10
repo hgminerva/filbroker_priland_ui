@@ -13,18 +13,31 @@ import { ObservableArray } from 'wijmo/wijmo';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 
-// Model
+// Models
 import { MstBroker } from '../model/model.mst.broker';
 import { SysDropDown } from '../model/model.sys.dropDown';
 
-
-
 @Injectable()
 export class BrokerService {
+    
+    // private properties
+    private headers = new Headers({
+        'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+        'Content-Type': 'application/json'
+    });
+    private options = new RequestOptions({ headers: this.headers });
 
+    // public properties
+
+    // broker list
+    public brokersSource = new Subject<ObservableArray>();
+    public brokersObservable = this.brokersSource.asObservable();
+
+    // broker detail
     public brokerSource = new Subject<MstBroker>();
     public brokerObservable = this.brokerSource.asObservable();
 
+    // broker operations
     public brokerDeletedSource = new Subject<number>();
     public brokerDeletedObservable = this.brokerDeletedSource.asObservable();
 
@@ -37,36 +50,33 @@ export class BrokerService {
     public brokerUnlockedSource = new Subject<number>();
     public brokerUnlockedObservable = this.brokerUnlockedSource.asObservable();
 
+    // drop downs comboboxes
     public dropDownsSource = new Subject<ObservableArray>();
     public dropDownsObservable = this.dropDownsSource.asObservable();
-
+    
+    // constructor
     constructor(
         private router: Router,
         private http: Http,
         private toastr: ToastsManager
     ) { }
 
-    private headers = new Headers({
-        'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-        'Content-Type': 'application/json'
-    });
-
-    private options = new RequestOptions({ headers: this.headers });
-
-    public getBrokers(): ObservableArray {
+    // get brokers
+    public getBrokers(): void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/List";
-        let brokerObservableArray = new ObservableArray();
+        let brokers = new ObservableArray();
         this.http.get(url, this.options).subscribe(
             response => {
                 var results = new ObservableArray(response.json());
                 if (results.length > 0) {
                     for (var i = 0; i <= results.length - 1; i++) {
-                        brokerObservableArray.push({
+                        brokers.push({
                             id: results[i].Id,
                             brokerCode: results[i].BrokerCode,
                             lastName: results[i].LastName,
                             firstName: results[i].FirstName,
                             middleName: results[i].MiddleName,
+                            fullName: results[i].FullName,
                             licenseNumber: results[i].LicenseNumber,
                             birthDate: results[i].BirthDate,
                             civilStatus: results[i].CivilStatus,
@@ -97,76 +107,17 @@ export class BrokerService {
                             updatedDateTime: results[i].UpdatedDateTime
                         });
                     }
+                    this.brokersSource.next(brokers);
                 }else{
-                    this.toastr.error("No Broker");
+                    this.brokersSource.next(brokers);
+                    this.toastr.error("No brokers.");   
                 }
             }
         );
-        return brokerObservableArray;
     }
 
-    public addBroker(broker: MstBroker, btnAddBroker: Element): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Add";
-        this.http.post(url, JSON.stringify(broker), this.options).subscribe(
-            response => {
-                var id = response.json();
-                console.log(id);
-                if (id > 0) {
-                    this.toastr.success("Add successful.");
-                    setTimeout(() => {
-                        this.router.navigate(['/broker', id]);
-                    }, 1000);
-                } else {
-                    this.toastr.error("Add failed.");
-                    btnAddBroker.removeAttribute("disabled");
-                    btnAddBroker.innerHTML = "<i class='fa fa-plus fa-fw'></i> Add";
-                }
-            },
-            error => {
-                this.toastr.error("Server error.");
-                btnAddBroker.removeAttribute("disabled");
-                btnAddBroker.innerHTML = "<i class='fa fa-plus fa-fw'></i> Add";
-            }
-        )
-    }
-
-    public saveBroker(broker: MstBroker): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Save";
-        this.http.put(url, JSON.stringify(broker), this.options).subscribe(
-            response => {
-                this.brokerSavedSource.next(1);
-            },
-            error => {
-                this.brokerSavedSource.next(0);
-            }
-        )
-    }
-
-    public lockBroker(broker: MstBroker): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Lock";
-        this.http.put(url, JSON.stringify(broker), this.options).subscribe(
-            response => {
-                this.brokerLockedSource.next(1);
-            },
-            error => {
-                this.brokerLockedSource.next(0);
-            }
-        )
-    }
-
-    public unlockBroker(broker: MstBroker): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Unlock";
-        this.http.put(url, JSON.stringify(broker), this.options).subscribe(
-            response => {
-                this.brokerUnlockedSource.next(1);
-            },
-            error => {
-                this.brokerUnlockedSource.next(0);
-            }
-        )
-    }
-
-    public getBroker(id: number) {
+    // get broker detail
+    public getBroker(id: number): void {
         let broker: MstBroker;
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Detail/" + id;
 
@@ -180,7 +131,7 @@ export class BrokerService {
                         lastName: results.LastName,
                         firstName: results.FirstName,
                         middleName: results.MiddleName,
-                        fullName: results.fullName,
+                        fullName: results.FullName,
                         licenseNumber: results.LicenseNumber,
                         birthDate: results.BirthDate,
                         civilStatus: results.CivilStatus,
@@ -221,6 +172,7 @@ export class BrokerService {
         );
     }
 
+    // get drop downs for combo boxes
     public getDropDowns() {
         let dropDowns = new ObservableArray();
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/SysDropDown/List";
@@ -244,9 +196,62 @@ export class BrokerService {
                 }
             }
         );
-
     }
 
+    // broker operations 
+    public addBroker(broker: MstBroker): void {
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Add";
+        this.http.post(url, JSON.stringify(broker), this.options).subscribe(
+            response => {
+                var id = response.json();
+                console.log(id);
+                if (id > 0) {
+                    this.toastr.success("Add successful.");
+                    setTimeout(() => {
+                        this.router.navigate(['/broker', id]);
+                    }, 1000);
+                } else {
+                    this.toastr.error("Add failed.");
+                }
+            },
+            error => {
+                this.toastr.error("Server error.");
+            }
+        )
+    }
+    public saveBroker(broker: MstBroker): void {
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Save";
+        this.http.put(url, JSON.stringify(broker), this.options).subscribe(
+            response => {
+                this.brokerSavedSource.next(1);
+            },
+            error => {
+                this.brokerSavedSource.next(0);
+            }
+        )
+    }
+    public lockBroker(broker: MstBroker): void {
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Lock";
+        this.http.put(url, JSON.stringify(broker), this.options).subscribe(
+            response => {
+                this.brokerLockedSource.next(1);
+            },
+            error => {
+                this.brokerLockedSource.next(0);
+            }
+        )
+    }
+    public unlockBroker(broker: MstBroker): void {
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Unlock";
+        this.http.put(url, JSON.stringify(broker), this.options).subscribe(
+            response => {
+                this.brokerUnlockedSource.next(1);
+            },
+            error => {
+                this.brokerUnlockedSource.next(0);
+            }
+        )
+    }
     public deleteBroker(id: number) {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Delete/" + id;
         this.http.delete(url, this.options).subscribe(
@@ -259,13 +264,4 @@ export class BrokerService {
         )
     }
 
-    public getUnits(): ObservableArray {
-        let unitObservableArray = new ObservableArray();
-        return unitObservableArray;
-    }
-
-    public getHouseModels(): ObservableArray {
-        let houseModelObservableArray = new ObservableArray();
-        return houseModelObservableArray;
-    }
 }

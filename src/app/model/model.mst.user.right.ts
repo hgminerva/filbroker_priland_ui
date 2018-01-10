@@ -9,4 +9,5 @@ export class MstUserRight {
 	canLock: boolean;
 	canUnlock: boolean;
 	canPrint: boolean;
+	canDelete: boolean;
 }

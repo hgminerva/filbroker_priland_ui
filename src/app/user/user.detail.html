@@ -1,7 +1,6 @@
 <menu-root></menu-root>
 
 <br>
-
 <br>
 
 <div class="content-wrapper">
@@ -22,28 +21,24 @@
 
             <!-- Buttons -->
             <div class="card-header">
-                <table border="0" style="width: 100%;">
-                    <tr>
-                        <td style="width: 59%;">
-                            <h4>{{title}}</h4>
-                        </td>
-                        <td style="width: 1%;"></td>
-                        <td style="width: 40%;" align="right">
-                            <!-- <button [disabled]="project.isLocked" class="btn btn-primary" (click)="btnLockProjectClick()" id="btnLockProject">
-                                <i class="fa fa-lock fa-fw"></i> Lock
-                            </button>
-                            <button [disabled]="!project.isLocked" class="btn btn-primary" (click)="btnUnlockProjectClick()" id="btnUnlockProject">
-                                <i class="fa fa-unlock fa-fw"></i> Unlock
-                            </button> -->
-                            <button class="btn btn-primary" (click)="btnSaveUserClick()" id="btnSaveUser">
-                                <i class="fa fa-save fa-fw"></i> Save
-                            </button>
-                            <button class="btn btn-danger" routerLink="/user">
-                                <i class="fa fa-close fa-fw"></i> Close
-                            </button>
-                        </td>
-                    </tr>
-                </table>
+                <div class="row">
+                    <table border="0" style="width: 100%;">
+                        <tr>
+                            <td style="width: 59%;">
+                                <h4>{{title}}</h4>
+                            </td>
+                            <td style="width: 1%;"></td>
+                            <td style="width: 40%;" align="right">
+                                <button class="btn btn-primary" (click)="btnSaveUserClick()" id="btnSaveUser">
+                                    <i class="fa fa-save fa-fw"></i> Save
+                                </button>
+                                <button class="btn btn-danger" routerLink="/user">
+                                    <i class="fa fa-close fa-fw"></i> Close
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
 
             <!-- Detail -->
@@ -65,126 +60,215 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label text-right">Status</label>
                             <div class="col-sm-9">
-                                <wj-combo-box [itemsSource]="userStatusData" [placeholder]="'Select Status'" [isEditable]="false" [isRequired]="true" [displayMemberPath]="'description'"
-                                    [selectedValuePath]="'value'" [(text)]="user.status" style="width: 100%; ">
+                                <wj-combo-box 
+                                    #cmbUserStatus
+                                    [itemsSource]="cmbUserStatusData" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'value'" 
+                                    [selectedValuePath]="'value'" 
+                                    [(ngModel)]="user.status">
                                 </wj-combo-box>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <br />
-        <div class="card">
-            <div class="card-header">
-                <table border="0" style="width: 100%;">
-                    <tr>
-                        <td style="width: 59%;">
-                            <h4>{{titleUserRights}}</h4>
-                        </td>
-                        <td style="width: 1%;"></td>
-                        <td style="width: 40%;" align="right">
-                            <button type="button" id="btnOpen" data-target="#addUserRightModal" class="btn btn-primary" data-toggle="modal" (click)="openModal(true)">
-                                <!-- <button class="btn btn-primary" data-target="#addUserRightModal" data-toggle="modal"> -->
-                                <i class="fa fa-save fa-fw"></i> Add
-                            </button>
-                            <button class="btn btn-primary" (click)="btnUnlockProjectClick()" id="btnUnlockProject">
-                                Copy Rights
-                            </button>
-                        </td>
-                    </tr>
-                </table>
-            </div>
+            
             <div class="card-body">
-                <wj-flex-grid #projectFlexGrid [itemsSource]="userRightCollection" [selectionMode]="3">
-                    <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
-                        <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
-                            <button class="btn btn-primary btn-sm btn-block" (click)="btnEditUserRightClick()" data-toggle="modal" data-backdrop="static"
-                                data-keyboard="false" data-target="#user-detail-modal">
-                                <i class="fa fa-edit fa-fw"></i> Edit
-                            </button>
-                        </ng-template>
-                    </wj-flex-grid-column>
-                    <wj-flex-grid-column [header]="Delete" [isReadOnly]="true" [width]="90">
-                        <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
-                            <button class="btn btn-danger btn-sm btn-block" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#userRightDeleteModal">
-                                <i class="fa fa-trash fa-fw"></i> Delete
-                            </button>
-                        </ng-template>
-                    </wj-flex-grid-column>
+                <div class="row">
+                    <table border="0" style="width: 100%;">
+                        <tr>
+                            <td style="width: 100%;" align="right">
+                                <button type="button" class="btn btn-primary" (click)="btnAddUserRightsClick()">
+                                    <i class="fa fa-plus"></i> Add
+                                </button>
+                                <button type="button" class="btn btn-primary" (click)="btnCopyUserRightsClick()">
+                                    <i class="fa fa-clone"></i> Copy
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
 
-                    <wj-flex-grid-column [header]="'Page'" [binding]="'page'" [isReadOnly]="true" [width]="'1.5*'"></wj-flex-grid-column>
-                    <wj-flex-grid-column [header]="'Edit'" [binding]="'edit'" [isReadOnly]="true" [width]="'2*'"></wj-flex-grid-column>
-                    <wj-flex-grid-column [header]="'Save'" [binding]="'save'" [isReadOnly]="true" [width]="'3*'"></wj-flex-grid-column>
-                    <wj-flex-grid-column [header]="'Lock'" [binding]="'lock'" [isReadOnly]="true" [width]="'1.5*'"></wj-flex-grid-column>
-                    <wj-flex-grid-column [header]="'Unlock'" [binding]="'unlock'" [isReadOnly]="true" [width]="'1.5*'"></wj-flex-grid-column>
-                    <wj-flex-grid-column [header]="'Print'" [binding]="'print'" [isReadOnly]="true" [width]="'1.5*'"></wj-flex-grid-column>
-                    <wj-flex-grid-column [header]="'Delete'" [binding]="'delete'" [isReadOnly]="true" [width]="'1.5*'"></wj-flex-grid-column>
-                </wj-flex-grid>
+                <div class="row" style="padding: 5px 0px 5px 0px;">
+                    <wj-flex-grid #fgdUserRights [itemsSource]="fgdUserRightsCollection" [selectionMode]="3">
+                        <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
+                                <button class="btn btn-primary btn-sm btn-block" (click)="btnEditUserRightsClick()">
+                                    <i class="fa fa-edit fa-fw"></i> Edit
+                                </button>
+                            </ng-template>
+                        </wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="Delete" [isReadOnly]="true" [width]="90">
+                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
+                                <button class="btn btn-danger btn-sm btn-block" (click)="btnDeleteUserRightsClick()">
+                                    <i class="fa fa-trash fa-fw"></i> Delete
+                                </button>
+                            </ng-template>
+                        </wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Page'"      [binding]="'page'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Edit'"      [binding]="'canEdit'" [isReadOnly]="true" [width]="70"></wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Save'"      [binding]="'canSave'" [isReadOnly]="true" [width]="70"></wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Lock'"      [binding]="'canLock'" [isReadOnly]="true" [width]="70"></wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Unlock'"    [binding]="'canUnlock'" [isReadOnly]="true" [width]="70"></wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Print'"     [binding]="'canPrint'" [isReadOnly]="true" [width]="70"></wj-flex-grid-column>
+                        <wj-flex-grid-column [header]="'Delete'"    [binding]="'canDelete'" [isReadOnly]="true" [width]="70"></wj-flex-grid-column>
+                    </wj-flex-grid>
+
+                    <br>
+
+                    <div class="col-sm-12 btn-group" style="padding: 5px 0px 5px 0px;">
+                        <button type="button" class="btn btn-info" (click)="fgdUserRightsCollection.moveToFirstPage()">
+                            <i class="fa fa-fast-backward"></i> First
+                        </button>
+                        <button type="button" class="btn btn-info"  (click)="fgdUserRightsCollection.moveToPreviousPage()">
+                            <i class="fa fa-step-backward"></i> Previous
+                        </button>
+                        <button type="button" class="btn btn-info" disabled style="width:100px">
+                            {{ fgdUserRightsCollection.pageIndex + 1 }} / {{ fgdUserRightsCollection.pageCount }}
+                        </button>
+                        <button type="button" class="btn btn-info" (click)="fgdUserRightsCollection.moveToNextPage()">
+                            Next
+                            <i class="fa fa-step-forward"></i>
+                        </button>
+                        <button type="button" class="btn btn-info" (click)="fgdUserRightsCollection.moveToLastPage()">
+                            Last
+                            <i class="fa fa-fast-forward"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <app-footer [data]="user"></app-footer>
+
+</div>
+
+<!-- delete user right -->
+<div id="mdlUserRightDelete" 
+     class="modal fade" 
+     role="dialog"
+     [ngStyle]="{'display': mdlUserRightDeleteShow ? 'block' : 'none', 'opacity': 1}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete User Rights</h4>
+            </div>
+            <div class="modal-body">
+                Delete {{fgdUserRightsCollection.currentItem != null ? fgdUserRightsCollection.currentItem.page : ""}}?
+            </div>
+            <div class="modal-footer" align="right">
+                <button id="btnOkUserRightDeleteModal" class="btn btn-danger" (click)="btnOkUserRightDeleteModalClick()">
+                    <i class="fa fa-trash fa-fw"></i> Ok
+                </button>
+                <button id="btnCloseUserRightDeleteModal" class="btn btn-primary" (click)="btnCloseUserRightDeleteModalClick()">
+                    <i class="fa fa-close fa-fw"></i> Close
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- <div class="modal fade" id="addUserRightModal" role="dialog">
-    <div class="modal-dialog modal-sm">
+
+<!-- copy user right -->
+<div id="mdlUserRightCopy" 
+     class="modal fade" 
+     role="dialog"
+     [ngStyle]="{'display': mdlUserRightCopyShow ? 'block' : 'none', 'opacity': 1}">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Check List Requirement Activity Detail</h4>
+                <h4 class="modal-title">Copy User Rights</h4>
             </div>
             <div class="modal-body">
-                Delete User?
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Username</label>
+                    <div class="col-sm-9">
+                        <input [(ngModel)]="copyUserRights" type="text" class="form-control">
+                    </div>
+                </div>
             </div>
             <div class="modal-footer" align="right">
-                <button type="button" id="btnDeleteUser" class="btn btn-danger" (click)="btnDeleteUserClick()">
-                    <i class="fa fa-trash fa-fw"></i> Delete</button>
-                <button type="button" id="btnDeleteCloseUser" class="btn btn-success" data-dismiss="modal">
+                <button type="button" id="btnOkUserRightCopyModal" class="btn btn-success" (click)="btnOkUserRightCopyModalClick()">
+                    <i class="fa fa-clone fa-fw"></i> Ok</button>
+                <button type="button" id="btnCloseUserRightCopyModal" class="btn btn-primary" (click)="btnCloseUserRightCopyModalClick()">
                     <i class="fa fa-close fa-fw"></i> Close</button>
             </div>
         </div>
     </div>
-</div> -->
+</div>
 
 
 
-<div id="addUserRightModal" class="modal fade" role="dialog" [ngStyle]="{'display': mdlSampleIsOpen ? 'block' : 'none', 'opacity': 1}">
-    <div class="modal-dialog modal-lg">
+<!-- Edit user right  -->
+<div id="mdlUserRightEdit" 
+     class="modal fade" role="dialog" 
+     [ngStyle]="{'display': mdlUserRightEditShow ? 'block' : 'none', 'opacity': 1}">
+     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">CHECK REQUIREMENT ACTIVITY DETAIL</h4>
+                <h4 class="modal-title">Edit User Rights</h4>
             </div>
             <div class="modal-body">
-                    <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">Status</label>
-                            <div class="col-sm-9">
-                                <wj-combo-box [itemsSource]="" [placeholder]="'Select Page'" [isEditable]="false" [isRequired]="true" [displayMemberPath]="''"
-                                    [selectedValuePath]="'value'"   style="width: 100%; ">
-                                </wj-combo-box>
-                            </div>
-                        </div>
-                    <div class="checkboxes">
-                            <label ><input type="checkbox" id="Edit" [(ngModel)]="string"  /> <span>Edit</span></label><br>
-                            <label ><input type="checkbox" id="Save" [(ngModel)]="string" /> <span>Save</span></label><br>
-                            <label ><input type="checkbox" id="Lock" [(ngModel)]="string" /> <span>Lock</span></label><br>
-                            <label ><input type="checkbox" id="Unlock" [(ngModel)]="string" /> <span>Unlock</span></label><br>
-                            <label ><input type="checkbox" id="Print" [(ngModel)]="string" /> <span>Print</span></label><br>
-                            <label ><input type="checkbox" id="Delete" [(ngModel)]="string" /> <span>Delete</span></label><br>
-                          </div>
-            </div>
-            <!-- <div class="row">
-                    <div class="form-group row">
-                            <label> Edit<input type="checkbox" value=""></label>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Page</label>
+                    <div class="col-sm-9">
+                        <wj-combo-box 
+                            #cmbUserRightPages
+                            [itemsSource]="cmbUserRightPagesData" 
+                            [isEditable]="false" 
+                            [isRequired]="true"
+                            [displayMemberPath]="'page'" 
+                            [selectedValuePath]="'id'" 
+                            [(ngModel)]="userRight.pageId">
+                        </wj-combo-box>
                     </div>
-                    <div class="form-group row">
-                            <label> Edit<input type="checkbox" value=""></label>
-                    </div> -->
-
-
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Edit</label>
+                    <div class="col-sm-9">
+                        <input type="checkbox" [(ngModel)]="userRight.canEdit"  />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Save</label>
+                    <div class="col-sm-9">
+                        <input type="checkbox" [(ngModel)]="userRight.canSave"  />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Lock</label>
+                    <div class="col-sm-9">
+                        <input type="checkbox" [(ngModel)]="userRight.canLock"  />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Unlock</label>
+                    <div class="col-sm-9">
+                        <input type="checkbox" [(ngModel)]="userRight.canUnlock"  />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Print</label>
+                    <div class="col-sm-9">
+                        <input type="checkbox" [(ngModel)]="userRight.canPrint"  />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Delete</label>
+                    <div class="col-sm-9">
+                        <input type="checkbox" [(ngModel)]="userRight.canDelete"  />
+                    </div>
+                </div>
+            </div>
             <div class="modal-footer" align="right">
-                <button type="button" id="btnOK" class="btn btn-success" (click)="btnOKClick()">
-                    <i class="fa fa-check fa-fw"></i> Ok</button>
-                <button type="button" id="btnClose" class="btn btn-danger" (click)="openModal(false)" data-dismiss="modal">
-                    <i class="fa fa-times fa-fw"></i> Cancel</button>
+                <button type="button" id="btnSaveUserRightEdit" class="btn btn-success" (click)="btnSaveUserRightEditClick()">
+                    <i class="fa fa-check fa-fw"></i> Save</button>
+                <button type="button" id="btnCloseUserRightEdit" class="btn btn-danger" (click)="btnCloseUserRightEditClick()">
+                    <i class="fa fa-times fa-fw"></i> Close </button>
             </div>
         </div>
     </div>

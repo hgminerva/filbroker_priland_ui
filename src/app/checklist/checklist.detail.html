@@ -1,7 +1,6 @@
 <menu-root></menu-root>
 
 <br>
-
 <br>
 
 <div class="content-wrapper">
@@ -30,16 +29,31 @@
                         </td>
                         <td style="width: 1%;"></td>
                         <td style="width: 40%;" align="right">
-                            <button id="btnLockChecklist" [disabled]="checklist.isLocked" class="btn btn-primary" (click)="btnLockChecklistClick()">
+                            <button 
+                                id="btnLockChecklist"
+                                [disabled]="checklist.isLocked" 
+                                class="btn btn-primary" 
+                                (click)="btnLockChecklistClick()">
                                 <i class="fa fa-lock fa-fw"></i> Lock
                             </button>
-                            <button id="btnUnlockChecklist" [disabled]="!checklist.isLocked" class="btn btn-primary" (click)="btnUnlockChecklistClick()">
+                            <button 
+                                id="btnUnlockChecklist"
+                                [disabled]="!checklist.isLocked" 
+                                class="btn btn-primary" 
+                                (click)="btnUnlockChecklistClick()">
                                 <i class="fa fa-unlock fa-fw"></i> Unlock
                             </button>
-                            <button id="btnSaveChecklist" [disabled]="checklist.isLocked" class="btn btn-primary" (click)="btnSaveChecklistClick()">
+                            <button 
+                                id="btnSaveChecklist"
+                                [disabled]="checklist.isLocked" 
+                                class="btn btn-primary" 
+                                (click)="btnSaveChecklistClick()">
                                 <i class="fa fa-save fa-fw"></i> Save
                             </button>
-                            <button id="btnCloseChecklist" class="btn btn-danger" routerLink="/project">
+                            <button 
+                                id="btnCloseChecklist"
+                                class="btn btn-danger" 
+                                routerLink="/checklist">
                                 <i class="fa fa-close fa-fw"></i> Close
                             </button>
                         </td>
@@ -49,31 +63,47 @@
 
             <!-- Detail -->
             <div class="card-body">
-                <div class="row">
 
+                <div class="row">
                     <div class="col-md-6">
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label text-right">Checklist Code</label>
                             <div class="col-sm-9">
-                                <input [(ngModel)]="checklist.checklistCode" disabled type="text" class="form-control">
+                                <input 
+                                    [(ngModel)]="checklist.checklistCode" 
+                                    disabled 
+                                    type="text" 
+                                    class="form-control">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label text-right">Checklist</label>
                             <div class="col-sm-9">
-                                <input [(ngModel)]="checklist.checklist" [disabled]="checklist.isLocked" type="text" class="form-control">
+                                <input 
+                                    [(ngModel)]="checklist.checklist" 
+                                    [disabled]="checklist.isLocked" 
+                                    type="text" 
+                                    class="form-control">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label text-right">Date</label>
                             <div class="col-sm-9">
-                                <input [(ngModel)]="checklist.checklistDate" [disabled]="checklist.isLocked" type="text" class="form-control">
+                                <input 
+                                    [(ngModel)]="checklist.checklistDate" 
+                                    [disabled]="checklist.isLocked" 
+                                    type="text" 
+                                    class="form-control">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label text-right">Project</label>
                             <div class="col-sm-9">
-                                <input [(ngModel)]="checklist.project" disabled type="text" class="form-control">
+                                <input 
+                                    [(ngModel)]="checklist.project" 
+                                    disabled
+                                    type="text" 
+                                    class="form-control">
                             </div>
                         </div>
                     </div>
@@ -82,35 +112,196 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label text-right">Remarks</label>
                             <div class="col-sm-9">
-                                <textarea [(ngModel)]="checklist.remarks" rows="5" class="form-control" [disabled]="checklist.isLocked">
+                                <textarea 
+                                    [(ngModel)]="checklist.remarks" 
+                                    rows="5" 
+                                    class="form-control" 
+                                    [disabled]="checklist.isLocked" >
                                 </textarea>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group row">
-                                <label class="col-sm-3 col-form-label text-right">Project</label>
-                                <div class="col-sm-9">
-                                    <wj-combo-box [isDisabled]="checklist.isLocked" [itemsSource]="checkListData" [placeholder]="'Select Status'" [isEditable]="false"
-                                        [isRequired]="true" [displayMemberPath]="'project'" [selectedValuePath]="'Id'" [(text)]="checklist.Project"
-                                        style="width: 100%; ">
-                                    </wj-combo-box>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group row">
-                                <label class="col-sm-3 col-form-label text-right">Status</label>
-                                <div class="col-sm-9">
-                                    <wj-combo-box [isDisabled]="checklist.isLocked" [itemsSource]="checkListData" [placeholder]="'Select Status'" [isEditable]="false"
-                                        [isRequired]="true" [displayMemberPath]="'description'" [selectedValuePath]="'value'"
-                                        [(text)]="checklist.status" style="width: 100%; ">
-                                    </wj-combo-box>
-                                </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Status</label>
+                            <div class="col-sm-9">
+                                <wj-combo-box 
+                                    #cmbChecklistStatus
+                                    [itemsSource]="cmbChecklistStatusData"
+                                    [isDisabled]="checklist.isLocked" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'description'" 
+                                    [selectedValuePath]="'value'" 
+                                    [(ngModel)]="checklist.status">
+                                </wj-combo-box>
                             </div>
                         </div>
                     </div>
+                </div> 
+
+                <div class="row">
+                    <div class="col-md-12" style="padding-bottom: 5px">
+                        <table border="0" style="width: 100%;">
+                            <tr>
+                                <td style="width: 100%;" align="right">
+                                    <button type="button" class="btn btn-primary" (click)="btnAddChecklistRequirementsClick()">
+                                        <i class="fa fa-plus"></i> Add
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-12">
+                        <wj-flex-grid #fgdChecklistRequirements [itemsSource]="fgdChecklistRequirementsCollection" [selectionMode]="3">
+                            <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
+                                    <button class="btn btn-primary btn-sm btn-block" [disabled]="checklist.isLocked" (click)="btnEditChecklistRequirementsClick()">
+                                        <i class="fa fa-edit fa-fw"></i> Edit
+                                    </button>
+                                </ng-template>
+                            </wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="Delete" [isReadOnly]="true" [width]="90">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
+                                    <button class="btn btn-danger btn-sm btn-block" [disabled]="checklist.isLocked" (click)="btnDeleteChecklistRequirementsClick()">
+                                        <i class="fa fa-trash fa-fw"></i> Delete
+                                    </button>
+                                </ng-template>
+                            </wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'No'"            [binding]="'requirementNo'"     [isReadOnly]="true" [width]="70"></wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'Requirement'"   [binding]="'requirement'"       [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'Category'"      [binding]="'category'"          [isReadOnly]="true" [width]="200"></wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'Type'"          [binding]="'type'"              [isReadOnly]="true" [width]="150"></wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'A'"             [binding]="'withAttachments'"   [isReadOnly]="true" [width]="70"></wj-flex-grid-column>
+                        </wj-flex-grid>
+                    </div>
+                    <div class="col-md-12 btn-group">
+                        <button type="button" class="btn btn-info" (click)="fgdChecklistRequirementsCollection.moveToFirstPage()">
+                            <i class="fa fa-fast-backward"></i> First
+                        </button>
+                        <button type="button" class="btn btn-info"  (click)="fgdChecklistRequirementsCollection.moveToPreviousPage()">
+                            <i class="fa fa-step-backward"></i> Previous
+                        </button>
+                        <button type="button" class="btn btn-info" disabled style="width:100px">
+                            {{ fgdChecklistRequirementsCollection.pageIndex + 1 }} / {{ fgdChecklistRequirementsCollection.pageCount }}
+                        </button>
+                        <button type="button" class="btn btn-info" (click)="fgdChecklistRequirementsCollection.moveToNextPage()">
+                            Next
+                            <i class="fa fa-step-forward"></i>
+                        </button>
+                        <button type="button" class="btn btn-info" (click)="fgdChecklistRequirementsCollection.moveToLastPage()">
+                            Last
+                            <i class="fa fa-fast-forward"></i>
+                        </button>
+                    </div>
                 </div>
+            </div>  
+
+        </div>
+
+    </div>
+
+    <app-footer [data]="checklist"></app-footer>
+
+</div>
+
+
+
+
+<!-- delete user right -->
+<div id="mdlChecklistRequirementDelete" 
+     class="modal fade" 
+     role="dialog"
+     [ngStyle]="{'display': mdlChecklistRequirementDeleteShow ? 'block' : 'none', 'opacity': 1}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Requirement</h4>
+            </div>
+            <div class="modal-body">
+                Delete {{fgdChecklistRequirementsCollection.currentItem != null ? fgdChecklistRequirementsCollection.currentItem.requirement : ""}}?
+            </div>
+            <div class="modal-footer" align="right">
+                <button id="btnOkChecklistRequirementDeleteModal" class="btn btn-danger" (click)="btnOkChecklistRequirementDeleteModalClick()">
+                    <i class="fa fa-trash fa-fw"></i> Ok
+                </button>
+                <button id="btnCloseChecklistRequirementDeleteModal" class="btn btn-primary" (click)="btnCloseChecklistRequirementDeleteModalClick()">
+                    <i class="fa fa-close fa-fw"></i> Close
+                </button>
             </div>
         </div>
     </div>
 </div>
+
+
+
+
+
+
+<!-- Edit checklist requirement  -->
+<div id="mdlChecklistRequirementEdit" 
+     class="modal fade" role="dialog" 
+     [ngStyle]="{'display': mdlChecklistRequirementEditShow ? 'block' : 'none', 'opacity': 1}">
+     <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit Checklist Requirement</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">No.</label>
+                    <div class="col-sm-9">
+                        <input 
+                            [(ngModel)]="checklistRequirement.requirementNo" 
+                            disabled 
+                            type="text" 
+                            class="form-control">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Requirement</label>
+                    <div class="col-sm-9">
+                        <input 
+                            [(ngModel)]="checklistRequirement.requirement" 
+                            type="text" 
+                            class="form-control">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Category</label>
+                    <div class="col-sm-9">
+                        <input 
+                            [(ngModel)]="checklistRequirement.category" 
+                            type="text" 
+                            class="form-control">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Type</label>
+                    <div class="col-sm-9">
+                        <wj-combo-box 
+                            #cmbChecklistRequirementType
+                            [itemsSource]="cmbChecklistRequirementTypeData" 
+                            [isEditable]="false" 
+                            [isRequired]="true"
+                            [displayMemberPath]="'value'" 
+                            [selectedValuePath]="'value'" 
+                            [(ngModel)]="checklistRequirement.type">
+                        </wj-combo-box>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">With Attachments</label>
+                    <div class="col-sm-9">
+                        <input type="checkbox" [(ngModel)]="checklistRequirement.withAttachments"  />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" align="right">
+                <button type="button" id="btnSaveChecklistRequirementEdit" class="btn btn-success" (click)="btnSaveChecklistRequirementEditClick()">
+                    <i class="fa fa-check fa-fw"></i> Save</button>
+                <button type="button" id="btnCloseChecklistRequirementEdit" class="btn btn-danger" (click)="btnCloseChecklistRequirementEditClick()">
+                    <i class="fa fa-times fa-fw"></i> Close </button>
+            </div>
+        </div>
+    </div>
+</div>
+

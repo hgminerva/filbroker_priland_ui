@@ -1,18 +1,19 @@
 <menu-root></menu-root>
 
 <br>
-
 <br>
 
 <div class="content-wrapper">
+
     <div class="container-fluid">
 
+        <!-- Breadcrumbs -->
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="/menu">Menu</a>
+                <a routerLink="/menu">Menu</a>
             </li>
             <li class="breadcrumb-item">
-                <a href="/broker">Broker List</a>
+                <a routerLink="/broker">Broker List</a>
             </li>
             <li class="breadcrumb-item active">{{title}}</li>
         </ol>
@@ -20,7 +21,7 @@
 
         <div class="card">
 
-            <!-- Buttons -->
+            <!-- Detail operations, print, lock, unlock, save, close -->
             <div class="card-header">
                 <table border="0" style="width: 100%;">
                     <tr>
@@ -29,9 +30,6 @@
                         </td>
                         <td style="width: 1%;"></td>
                         <td style="width: 49%;" align="right">
-                            <button [disabled]="broker.isLocked" class="btn btn-primary" id="btnUploadBroker">
-                                <i class="fa fa-picture-o fa-fw"></i> Upload Image
-                            </button>
                             <button [disabled]="broker.isLocked" class="btn btn-primary" id="btnPrintBroker">
                                 <i class="fa fa-print fa-fw"></i> Print
                             </button>
@@ -51,253 +49,343 @@
                     </tr>
                 </table>
             </div>
+
             <!-- Detail -->
             <div class="card-body">
+
                 <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">Broker Code</label>
-                            <div class="col-sm-9">
-                                <input [disabled]="broker.isLocked" [(ngModel)]="broker.brokerCode" type="text" class="form-control" placeholder="Broker Code..."
-                                    id="brokerCode">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">Last Name</label>
-                            <div class="col-sm-9">
-                                <input [disabled]="broker.isLocked" [(ngModel)]="broker.lastName" type="text" class="form-control" placeholder="Last Name..."
-                                    id="lastName">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">Status</label>
-                            <div class="col-sm-9">
-                                <wj-combo-box [isDisabled]="broker.isLocked"
-                                    [itemsSource]="cmbBrokerUserStatusData"
-                                    [placeholder]="'Select Status'" 
-                                    [isEditable]="false"
-                                    [isRequired]="true" 
-                                    [displayMemberPath]="'description'" 
-                                    [selectedValuePath]="'value'" 
-                                    [(text)]="broker.status"
-                                    style="width: 100%; ">
-                                </wj-combo-box>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">License No.</label>
-                            <div class="col-sm-9">
-                                <input [disabled]="broker.isLocked"
-                                        [(ngModel)]="broker.licenseNumber"
-                                        type="text" class="form-control"
-                                        placeholder="License Number..."
-                                        id="licenseNumber">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">Address</label>
-                            <div class="col-sm-9">
-                                <textarea [disabled]="broker.isLocked"
-                                        [(ngModel)]="broker.address"
-                                        rows="5" class="form-control"
-                                        placeholder="Address..."
-                                        id="brokerAddress"
-                                    >
-                                </textarea>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">Reality Firm</label>
-                            <div class="col-sm-9">
-                                <input [disabled]="broker.isLocked"
-                                        [(ngModel)]="broker.realtyFirm"
-                                        type="text" class="form-control"
-                                        placeholder="Reality Firm..."
-                                        id="realtyFirm"
-                                    >
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">Firm Address</label>
-                            <div class="col-sm-9">
-                                <textarea [disabled]="broker.isLocked" 
-                                        [(ngModel)]="broker.realtyFirmAddress"
-                                        rows="5"
-                                        class="form-control"
-                                        placeholder="Address..."
-                                        id="realtyFirmAddress"
-                                    ></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right" style="visibility:hidden;">one line</label>
-                            <div class="col-sm-9">
-                                <input placeholder="First Name..." id="firstName" style="visibility:hidden;">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">First Name</label>
-                            <div class="col-sm-9">
-                                <input [disabled]="broker.isLocked"
-                                    [(ngModel)]="broker.firstName"
-                                    type="text"
-                                    class="form-control"
-                                    placeholder="First Name..."
-                                    id="firstName"
-                                    >
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">Gender</label>
-                            <div class="col-sm-9">
-                                <wj-combo-box 
-                                    [isDisabled]="broker.isLocked"
-                                    [itemsSource]="cmbBrokerGenderData" 
-                                    [placeholder]="'Select Gender'"
-                                    [isEditable]="false"
-                                    [isRequired]="true" 
-                                    [displayMemberPath]="'description'"
-                                    [selectedValuePath]="'value'" [(text)]="broker.gender"
-                                    style="width: 100%; ">
-                                </wj-combo-box>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right" style="visibility:hidden;">one line</label>
-                            <div class="col-sm-9">
-                                <input placeholder="First Name..."
-                                 id="firstName"
-                                 style="visibility:hidden;">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-center">Province LandLine No.</label>
-                            <div class="col-sm-9">
-                                <input [disabled]="broker.isLocked"
-                                        [(ngModel)]="broker.telephoneNumber"
-                                        type="text" class="form-control" 
-                                        placeholder="Landline No...."
-                                        id="telephoneNumber" 
-                                        />
-                            </div>
-                        </div>
-                        <br>
-                        <br>
-                        <br>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">Email Address</label>
-                            <div class="col-sm-9">
-                                <input [disabled]="broker.isLocked"
-                                        [(ngModel)]="broker.realtyFirmEmailAddress"
-                                        type="text"
-                                        class="form-control" placeholder="Email Address..."
-                                        id="realtyFirmEmailAddress"
-                                    >
-                            </div>
-                        </div>
-                        <br>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">LandLine No.</label>
-                            <div class="col-sm-9">
-                                <input [disabled]="broker.isLocked"
-                                        [(ngModel)]="broker.realtyFirmTelephoneNumber"
-                                        type="text" class="form-control"
-                                        placeholder="LandLine No..."
-                                        id="realtyFirmTelephoneNumber"
-                                    >
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right" style="visibility:hidden;">one line</label>
-                            <div class="col-sm-9">
-                                <input placeholder="First Name..." id="firstName" style="visibility:hidden;">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">Middle Name</label>
-                            <div class="col-sm-9">
-                                <input [disabled]="broker.isLocked"
-                                        [(ngModel)]="broker.middleName"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="Middle Name..."
-                                        id="middleName"
-                                    >
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">Birthdate</label>
-                            <div class="col-sm-9">
-                                <input [disabled]="broker.isLocked"
-                                        [(ngModel)]="broker.birthDate"
-                                        type="date"
-                                        class="form-control"
-                                        placeholder="Birthdate..."
-                                        id="birthdate"
-                                    >
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right" style="visibility:hidden;">one line</label>
-                            <div class="col-sm-9">
-                                <input placeholder="First Name..." id="firstName" style="visibility:hidden;">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-center">Country Mobile No.</label>
-                            <div class="col-sm-9">
-                                <input [disabled]="broker.isLocked"
-                                        [(ngModel)]="broker.mobileNumber"
-                                        type="text" class="form-control"
-                                        placeholder="Mobile No..."
-                                        id="mobileNumber"
-                                    >
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">Email Address</label>
-                            <div class="col-sm-9">
-                                <input [disabled]="broker.isLocked"
-                                        [(ngModel)]="broker.emailAddress"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="Email Address..."
-                                        id="emailAddress"
-                                    >
-                            </div>
-                        </div>
-                        <br>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">Organization</label>
-                            <div class="col-sm-9">
-                                <input [disabled]="broker.isLocked"
-                                        [(ngModel)]="broker.organization" 
-                                        type="text" class="form-control" 
-                                        placeholder="Organization..."
-                                        id="organization"
-                                    >
-                            </div>
-                        </div>
-                        <br>
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">Mobile No.</label>
-                            <div class="col-sm-9">
-                                <input [disabled]="broker.isLocked"
-                                        [(ngModel)]="broker.realtyFirmMobileNumber"
-                                        type="text"
-                                        class="form-control"
-                                        placeholder="Mobile No..."
-                                        id="realtyFirmMobileNumber"
-                                    >
-                            </div>
-                        </div>
-                    </div>
+                    <ul class="nav nav-tabs" role="tablist" style="width:100%">
+                        <li class="nav-item">
+                            <a [ngClass]="{'active': tabDetail1[0], 'nav-link': true }" (click)="tabDetail1Click(0)" data-toggle="tab" role="tab">Broker Information</a>
+                        </li>
+                        <li class="nav-item">
+                            <a [ngClass]="{'active': tabDetail1[1], 'nav-link': true }" (click)="tabDetail1Click(1)" data-toggle="tab" role="tab">Realty Firm Information</a>
+                        </li>
+                    </ul>
                 </div>
-            </div>
+
+                <br>
+
+                <div class="row">
+
+                    <div class="tab-content" style="width:100%">
+
+                        <!-- Information -->
+                        <div [ngClass]="{'active': tabDetail1[0], 'tab-pane': true }" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Code</label>
+                                        <div class="col-sm-9">
+                                            <input 
+                                                [(ngModel)]="broker.brokerCode" 
+                                                [disabled]="broker.isLocked" 
+                                                type="text" 
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Last Name</label>
+                                        <div class="col-sm-9">
+                                            <input 
+                                                [(ngModel)]="broker.lastName" 
+                                                [disabled]="broker.isLocked" 
+                                                type="text" 
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">First Name</label>
+                                        <div class="col-sm-9">
+                                            <input 
+                                                [(ngModel)]="broker.firstName" 
+                                                [disabled]="broker.isLocked" 
+                                                type="text" 
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Middle Name</label>
+                                        <div class="col-sm-9">
+                                            <input 
+                                                [(ngModel)]="broker.middleName" 
+                                                [disabled]="broker.isLocked" 
+                                                type="text" 
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">License No.</label>
+                                        <div class="col-sm-9">
+                                            <input 
+                                                [(ngModel)]="broker.licenseNumber" 
+                                                [disabled]="broker.isLocked" 
+                                                type="text" 
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Address</label>
+                                        <div class="col-sm-9">
+                                            <textarea 
+                                                [disabled]="broker.isLocked" 
+                                                [(ngModel)]="broker.address" 
+                                                rows="3" 
+                                                class="form-control">
+                                            </textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Phone No.</label>
+                                        <div class="col-sm-9">
+                                            <input 
+                                                [(ngModel)]="broker.telephoneNumber" 
+                                                [disabled]="broker.isLocked" 
+                                                type="text" 
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Mobile No.</label>
+                                        <div class="col-sm-9">
+                                            <input 
+                                                [(ngModel)]="broker.mobileNumber" 
+                                                [disabled]="broker.isLocked" 
+                                                type="text" 
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Email Address</label>
+                                        <div class="col-sm-9">
+                                            <input 
+                                                [(ngModel)]="broker.emailAddress" 
+                                                [disabled]="broker.isLocked" 
+                                                type="text" 
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Status</label>
+                                        <div class="col-sm-9">
+                                            <wj-combo-box 
+                                                #cmbBrokerStatus
+                                                [itemsSource]="cmbBrokerStatusData" 
+                                                [isEditable]="false" 
+                                                [isRequired]="true"
+                                                [displayMemberPath]="'value'" 
+                                                [selectedValuePath]="'value'" 
+                                                [isDisabled]="broker.isLocked"
+                                                [(ngModel)]="broker.status">
+                                            </wj-combo-box>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-sm-3 text-right">
+                                            <p><b>{{broker.fullName}}</b></p>      
+                                            <button [disabled]="broker.isLocked" class="btn btn-primary" (click)="btnUploadPictureClick()" id="btnUploadPicture">
+                                                <i class="fa fa-camera fa-fw"></i> Upload Pic
+                                            </button>   
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <img src="..\..\assets\public\broker\0001.jpg" class="float-left img-responsive" style="width:200px; height:200px">
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Birth Date</label>
+                                        <div class="col-sm-9">
+                                            <input 
+                                                [(ngModel)]="broker.birthDate" 
+                                                [disabled]="broker.isLocked" 
+                                                type="text" 
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Civil Status</label>
+                                        <div class="col-sm-9">
+                                            <wj-combo-box 
+                                                #cmbCivilStatus
+                                                [itemsSource]="cmbCivilStatusData" 
+                                                [isEditable]="false" 
+                                                [isRequired]="true"
+                                                [displayMemberPath]="'value'" 
+                                                [selectedValuePath]="'value'" 
+                                                [isDisabled]="broker.isLocked"
+                                                [(ngModel)]="broker.civilStatus">
+                                            </wj-combo-box>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Gender</label>
+                                        <div class="col-sm-9">
+                                            <wj-combo-box 
+                                                #cmbGender
+                                                [itemsSource]="cmbGenderData" 
+                                                [isEditable]="false" 
+                                                [isRequired]="true"
+                                                [displayMemberPath]="'value'" 
+                                                [selectedValuePath]="'value'" 
+                                                [isDisabled]="broker.isLocked"
+                                                [(ngModel)]="broker.gender">
+                                            </wj-combo-box>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Religion</label>
+                                        <div class="col-sm-9">
+                                            <input 
+                                                [(ngModel)]="broker.religion" 
+                                                [disabled]="broker.isLocked" 
+                                                type="text" 
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">TIN</label>
+                                        <div class="col-sm-9">
+                                            <input 
+                                                [(ngModel)]="broker.tin" 
+                                                [disabled]="broker.isLocked" 
+                                                type="text" 
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Remarks</label>
+                                        <div class="col-sm-9">
+                                            <textarea 
+                                                [disabled]="broker.isLocked" 
+                                                [(ngModel)]="broker.remarks" 
+                                                rows="3" 
+                                                class="form-control">
+                                            </textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Realty Firm -->
+                        <div [ngClass]="{'active': tabDetail1[1], 'tab-pane': true }" role="tabpanel">
+
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Firm</label>
+                                        <div class="col-sm-9">
+                                            <input 
+                                                [(ngModel)]="broker.realtyFirm" 
+                                                [disabled]="broker.isLocked" 
+                                                type="text" 
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Telepohne No.</label>
+                                        <div class="col-sm-9">
+                                            <input 
+                                                [(ngModel)]="broker.realtyFirmTelephoneNumber" 
+                                                [disabled]="broker.isLocked" 
+                                                type="text" 
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Mobile No.</label>
+                                        <div class="col-sm-9">
+                                            <input 
+                                                [(ngModel)]="broker.realtyFirmMobileNumber" 
+                                                [disabled]="broker.isLocked" 
+                                                type="text" 
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Fax No.</label>
+                                        <div class="col-sm-9">
+                                            <input 
+                                                [(ngModel)]="broker.realtyFirmFaxNumber" 
+                                                [disabled]="broker.isLocked" 
+                                                type="text" 
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Address</label>
+                                        <div class="col-sm-9">
+                                            <textarea 
+                                                [disabled]="broker.isLocked" 
+                                                [(ngModel)]="broker.realtyFirmAddress" 
+                                                rows="3" 
+                                                class="form-control">
+                                            </textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Email Address</label>
+                                        <div class="col-sm-9">
+                                            <input 
+                                                [(ngModel)]="broker.realtyFirmEmailAddress" 
+                                                [disabled]="broker.isLocked" 
+                                                type="text" 
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Website</label>
+                                        <div class="col-sm-9">
+                                            <input 
+                                                [(ngModel)]="broker.realtyFirmWebsite" 
+                                                [disabled]="broker.isLocked" 
+                                                type="text" 
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">TIN</label>
+                                        <div class="col-sm-9">
+                                            <input 
+                                                [(ngModel)]="broker.realtyFirmTIN" 
+                                                [disabled]="broker.isLocked" 
+                                                type="text" 
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Organization</label>
+                                        <div class="col-sm-9">
+                                            <input 
+                                                [(ngModel)]="broker.organization" 
+                                                [disabled]="broker.isLocked" 
+                                                type="text" 
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>  <!-- Tab Content -->
+
+                </div>
+
+            </div> <!-- Card Body -->
+
         </div>
+
     </div>
+
+    <app-footer [data]=""></app-footer>
+    
 </div>

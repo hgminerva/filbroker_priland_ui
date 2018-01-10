@@ -1,7 +1,6 @@
 <menu-root></menu-root>
 
 <br>
-
 <br>
 
 <div class="content-wrapper">
@@ -55,7 +54,7 @@
                             [isRequired]="true"
                             [displayMemberPath]="'project'" 
                             [selectedValuePath]="'id'" 
-                            (selectedIndexChanged)="cmbProjectsDataOnChange()">
+                            (selectedIndexChanged)="cmbProjectsChange()">
                         </wj-combo-box>
                         <span class="input-group-addon">
                             <i class="fa fa-search fa-fw"></i>
@@ -67,79 +66,84 @@
 
             <!-- Flexgrid List -->
             <div class="card-body">
-                <wj-flex-grid #unitFlexGrid [itemsSource]="unitCollection" [selectionMode]="3" [frozenColumns]="2">
-                    <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
-                        <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
-                            <button class="btn btn-primary btn-sm btn-block" (click)="btnEditUnitClick()" data-toggle="modal" data-backdrop="static"
-                                data-keyboard="false">
-                                <i class="fa fa-edit fa-fw"></i> Edit
-                            </button>
-                        </ng-template>
-                    </wj-flex-grid-column>
-                    <wj-flex-grid-column [header]="Delete" [isReadOnly]="true" [width]="90">
-                        <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
-                            <button class="btn btn-danger btn-sm btn-block" data-toggle="modal" data-backdrop="static"
-                                data-keyboard="false" data-target="#unitDeleteModal">
-                                <i class="fa fa-trash fa-fw"></i> Delete
-                            </button>
-                        </ng-template>
-                    </wj-flex-grid-column>
-                    <wj-flex-grid-column [header]="'Code'" [binding]="'unitCode'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
-                    <wj-flex-grid-column [header]="'Block'" [binding]="'block'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
-                    <wj-flex-grid-column [header]="'Lot'" [binding]="'lot'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
-                    <wj-flex-grid-column [header]="'House Model'" [binding]="'houseModel'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
-                    <wj-flex-grid-column [header]="'Floor Area'" [binding]="'tfa'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
-                    <wj-flex-grid-column [header]="'Lot Area'" [binding]="'tla'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
-                    <wj-flex-grid-column [header]="'Price'" [binding]="'price'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
-                    <wj-flex-grid-column [header]="'L'" [binding]="'isLocked'" [isReadOnly]="true" [width]="50"></wj-flex-grid-column>
-                </wj-flex-grid>
-            </div>
-
-            <!-- Navigation -->
-            <div class="card-footer">
                 <div class="row">
-                    <div class="col-sm-12 btn-group" id="">
-                        <button type="button" class="btn" (click)="unitCollection.moveToFirstPage()">
+                    <div class="col-md-12">
+                        <wj-flex-grid #fgdUnits [itemsSource]="fgdUnitsCollection" [selectionMode]="3" [frozenColumns]="2">
+                            <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
+                                    <button class="btn btn-primary btn-sm btn-block" (click)="btnEditUnitClick()">
+                                        <i class="fa fa-edit fa-fw"></i> Edit
+                                    </button>
+                                </ng-template>
+                            </wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="Delete" [isReadOnly]="true" [width]="90">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
+                                    <button class="btn btn-danger btn-sm btn-block" (click)="btnDeleteUnitClick()">
+                                        <i class="fa fa-trash fa-fw"></i> Delete
+                                    </button>
+                                </ng-template>
+                            </wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'Code'" [binding]="'unitCode'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'Block'" [binding]="'block'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'Lot'" [binding]="'lot'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'House Model'" [binding]="'houseModel'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'Floor Area'" [binding]="'tfa'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'Lot Area'" [binding]="'tla'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'Price'" [binding]="'price'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'L'" [binding]="'isLocked'" [isReadOnly]="true" [width]="50"></wj-flex-grid-column>
+                        </wj-flex-grid>
+                    </div>
+                    <div class="col-md-12 btn-group" id="">
+                        <button type="button" class="btn btn-info" (click)="fgdUnitsCollection.moveToFirstPage()">
                             <i class="fa fa-fast-backward"></i> First
                         </button>
-                        <button type="button" class="btn" (click)="unitCollection.moveToPreviousPage()">
+                        <button type="button" class="btn btn-info" (click)="fgdUnitsCollection.moveToPreviousPage()">
                             <i class="fa fa-step-backward"></i> Previous
                         </button>
-                        <button type="button" class="btn" disabled style="width:100px">
-                            {{ unitCollection.pageIndex + 1 }} / {{ unitCollection.pageCount }}
+                        <button type="button" class="btn btn-info" disabled style="width:100px">
+                            {{ fgdUnitsCollection.pageIndex + 1 }} / {{ fgdUnitsCollection.pageCount }}
                         </button>
-                        <button type="button" class="btn" (click)="unitCollection.moveToNextPage()">
+                        <button type="button" class="btn btn-info" (click)="fgdUnitsCollection.moveToNextPage()">
                             Next
                             <i class="fa fa-step-forward"></i>
                         </button>
-                        <button type="button" class="btn" (click)="unitCollection.moveToLastPage()">
+                        <button type="button" class="btn btn-info" (click)="fgdUnitsCollection.moveToLastPage()">
                             Last
                             <i class="fa fa-fast-forward"></i>
                         </button>
                     </div>
                 </div>
+
             </div>
 
         </div>
 
     </div>
+
+    <app-footer [data]="fgdUnitsCollection"></app-footer>
+    
 </div>
 
-<!-- Delete Unit -->
-<div class="modal fade" id="unitDeleteModal" role="dialog">
-    <div class="modal-dialog modal-sm">
+<!-- delete project -->
+<div id="mdlUnitDelete" 
+     class="modal fade" 
+     role="dialog"
+     [ngStyle]="{'display': mdlUnitDeleteShow ? 'block' : 'none', 'opacity': 1}">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Delete</h4>
+                <h4 class="modal-title">Delete Unit</h4>
             </div>
             <div class="modal-body">
-                Delete Unit?
+                Delete {{fgdUnitsCollection.currentItem != null ? fgdUnitsCollection.currentItem.unitCode : ""}}?
             </div>
             <div class="modal-footer" align="right">
-                <button type="button" id="btnDeleteUnit" class="btn btn-danger" (click)="btnDeleteUnitClick()">
-                    <i class="fa fa-trash fa-fw"></i> Delete</button>
-                <button type="button" id="btnDeleteCloseUnit" class="btn btn-success" data-dismiss="modal">
-                    <i class="fa fa-close fa-fw"></i> Close</button>
+                <button id="btnOkUnitDeleteModal" class="btn btn-danger" (click)="btnOkUnitDeleteModalClick()">
+                    <i class="fa fa-trash fa-fw"></i> Ok
+                </button>
+                <button id="btnCloseUnitDeleteModal" class="btn btn-primary" (click)="btnCloseUnitDeleteModalClick()">
+                    <i class="fa fa-close fa-fw"></i> Close
+                </button>
             </div>
         </div>
     </div>

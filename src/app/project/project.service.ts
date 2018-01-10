@@ -16,17 +16,29 @@ import { Observable } from 'rxjs/Observable';
 // Model
 import { MstProject } from '../model/model.mst.project';
 import { SysDropDown } from '../model/model.sys.dropDown';
-
+import { MstHouseModel } from '../model/model.mst.houseModel';
 
 @Injectable()
 export class ProjectService {
 
+    // private properties
+    private headers = new Headers({
+        'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+        'Content-Type': 'application/json'
+    });
+    private options = new RequestOptions({ headers: this.headers });
+
+    // public properties
+
+    // list
     public projectsSource = new Subject<ObservableArray>();
     public projectsObservable = this.projectsSource.asObservable();
 
+    // detail
     public projectSource = new Subject<MstProject>();
     public projectObservable = this.projectSource.asObservable();
 
+    // detail operations
     public projectDeletedSource = new Subject<number>();
     public projectDeletedObservable = this.projectDeletedSource.asObservable();
 
@@ -39,22 +51,31 @@ export class ProjectService {
     public projectUnlockedSource = new Subject<number>();
     public projectUnlockedObservable = this.projectUnlockedSource.asObservable();  
 
+    // dropdown list
     public dropDownsSource = new Subject<ObservableArray>();
     public dropDownsObservable = this.dropDownsSource.asObservable();
 
+    // detail lines1 (house models) list
+    public houseModelsSource = new Subject<ObservableArray>();
+    public houseModelsObservable = this.houseModelsSource.asObservable();
+
+    // detail lines1 (house models) operations
+    public houseModelDeletedSource = new Subject<number>();
+    public houseModelDeletedObservable = this.houseModelDeletedSource.asObservable();
+
+    public houseModelSavedSource = new Subject<number>();
+    public houseModelSavedObservable = this.houseModelSavedSource.asObservable();   
+
+    // constructor
     constructor(
         private router: Router,
         private http: Http,
         private toastr: ToastsManager
     ) { }
 
-    private headers = new Headers({
-        'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-        'Content-Type': 'application/json'
-    });
+    // public methods
 
-    private options = new RequestOptions({ headers: this.headers });
-
+    // project listing
     public getProjects(): void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstProject/List";
         let projects = new ObservableArray();
@@ -84,7 +105,8 @@ export class ProjectService {
         );
     }
 
-    public addProject(project: MstProject, toastr: ToastsManager): void {
+    // project listing operations
+    public addProject(project: MstProject, btnAddProject: Element): void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstProject/Add";
         this.http.post(url, JSON.stringify(project), this.options).subscribe(
             response => {
@@ -96,52 +118,30 @@ export class ProjectService {
                     }, 1000);
                 } else {
                     this.toastr.error("Add failed.");
-                    (<HTMLButtonElement>document.getElementById("btnAddProject")).disabled = false;
-                    (<HTMLButtonElement>document.getElementById("btnAddProject")).innerHTML = "<i class='fa fa-plus fa-fw'></i> Add";
+                    btnAddProject.removeAttribute("disabled");
+                    btnAddProject.innerHTML = "<i class='fa fa-plus fa-fw'></i> Add";
                 }
             },
             error => {
                 this.toastr.error("Server error.");
+                btnAddProject.removeAttribute("disabled");
+                btnAddProject.innerHTML = "<i class='fa fa-plus fa-fw'></i> Add";
             }
         )
     }
-
-    public saveProject(project: MstProject): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstProject/Save";
-        this.http.put(url, JSON.stringify(project), this.options).subscribe(
+    public deleteProject(id : number) {
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstProject/Delete/" + id;
+        this.http.delete(url, this.options).subscribe(
             response => {
-                this.projectSavedSource.next(1);
+                this.projectDeletedSource.next(1);
             },
             error => {
-                this.projectSavedSource.next(0);
+                this.projectDeletedSource.next(0);
             }
         )
     }
 
-    public lockProject(project: MstProject): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstProject/Lock";
-        this.http.put(url, JSON.stringify(project), this.options).subscribe(
-            response => {
-                this.projectLockedSource.next(1);
-            },
-            error => {
-                this.projectLockedSource.next(0);
-            }
-        )
-    }
-
-    public unlockProject(project: MstProject): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstProject/Unlock";
-        this.http.put(url, JSON.stringify(project), this.options).subscribe(
-            response => {
-                this.projectUnlockedSource.next(1);
-            },
-            error => {
-                this.projectUnlockedSource.next(0);
-            }
-        )
-    }
-
+    // project detail
     public getProject(id : number) {
         let project: MstProject;
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstProject/Detail/" + id;
@@ -173,7 +173,43 @@ export class ProjectService {
         );
     }
 
-    public getDropDowns(toastr: ToastsManager)  {
+    // project detail operations
+    public saveProject(project: MstProject): void {
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstProject/Save";
+        this.http.put(url, JSON.stringify(project), this.options).subscribe(
+            response => {
+                this.projectSavedSource.next(1);
+            },
+            error => {
+                this.projectSavedSource.next(0);
+            }
+        )
+    }
+    public lockProject(project: MstProject): void {
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstProject/Lock";
+        this.http.put(url, JSON.stringify(project), this.options).subscribe(
+            response => {
+                this.projectLockedSource.next(1);
+            },
+            error => {
+                this.projectLockedSource.next(0);
+            }
+        )
+    }
+    public unlockProject(project: MstProject): void {
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstProject/Unlock";
+        this.http.put(url, JSON.stringify(project), this.options).subscribe(
+            response => {
+                this.projectUnlockedSource.next(1);
+            },
+            error => {
+                this.projectUnlockedSource.next(0);
+            }
+        )
+    }
+
+    // combo boxes
+    public getDropDowns()  {
         let dropDowns  = new ObservableArray();
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/SysDropDown/List";
 
@@ -198,26 +234,73 @@ export class ProjectService {
 
     }
 
-    public deleteProject(id : number) {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstProject/Delete/" + id;
-        this.http.delete(url, this.options).subscribe(
+    // get house models per project
+    public getHouseModelsPerProject(id : number) {
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstHouseModel/ListPerProjectId/" + id;
+        let houseModels = new ObservableArray();
+        this.http.get(url, this.options).subscribe(
             response => {
-                this.projectDeletedSource.next(1);
-            },
-            error => {
-                this.projectDeletedSource.next(0);
+                var results = new ObservableArray(response.json());
+                if (results.length > 0) {
+                    for (var i = 0; i <= results.length - 1; i++) {
+                        houseModels.push({
+                            id: results[i].Id,
+                            houseModelCode: results[i].HouseModelCode,
+                            houseModel: results[i].HouseModel,
+                            projectId: results[i].ProjectId,
+                            project: results[i].Project,
+                            tfa: results[i].TFA,
+                            price: results[i].Price,
+                            isLocked: results[i].IsLocked,
+                            createdBy: results[i].CreatedBy,
+                            createdDateTime: results[i].CreatedDateTime,
+                            updatedBy: results[i].UpdatedBy,
+                            updatedDateTime: results[i].UpdatedDateTime,
+                        });
+                    }
+                    this.houseModelsSource.next(houseModels);
+                } else {
+                    this.houseModelsSource.next(houseModels);
+                    this.toastr.error("No house models for this project.");   
+                }
             }
-        )
-    }
-    
-    public getUnits(): ObservableArray {
-        let unitObservableArray = new ObservableArray();
-        return unitObservableArray;
+        );
     }
 
-    public getHouseModels(): ObservableArray {
-        let houseModelObservableArray = new ObservableArray();
-        return houseModelObservableArray;
+    // house models operation
+    public saveHouseModel(houseModel: MstHouseModel): void {
+        if(houseModel.id == 0) {
+            let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstHouseModel/Add";
+            this.http.post(url, JSON.stringify(houseModel), this.options).subscribe(
+                response => {
+                    this.houseModelSavedSource.next(1);
+                },
+                error => {
+                    this.houseModelSavedSource.next(0);
+                }
+            )
+        } else {
+            let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstHouseModel/Save";
+            this.http.put(url, JSON.stringify(houseModel), this.options).subscribe(
+                response => {
+                    this.houseModelSavedSource.next(1);
+                },
+                error => {
+                    this.houseModelSavedSource.next(0);
+                }
+            )
+        }
+    }
+    public deleteHouseModel(id: number) {
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstHouseModel/Delete/" + id;
+        this.http.delete(url, this.options).subscribe(
+            response => {
+                this.houseModelDeletedSource.next(1);
+            },
+            error => {
+                this.houseModelDeletedSource.next(0);
+            }
+        )
     }
 
 }

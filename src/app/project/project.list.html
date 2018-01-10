@@ -1,7 +1,6 @@
 <menu-root></menu-root>
 
 <br>
-
 <br>
 
 <div class="content-wrapper">
@@ -50,19 +49,17 @@
 
             <!-- Flexgrid List -->
             <div class="card-body">
-                <wj-flex-grid #projectFlexGrid [itemsSource]="projectCollection" [selectionMode]="3" [frozenColumns]="2">
+                <wj-flex-grid #fgdProjects [itemsSource]="fgdProjectsCollection" [selectionMode]="3" [frozenColumns]="2">
                     <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
                         <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
-                            <button class="btn btn-primary btn-sm btn-block" (click)="btnEditProjectClick()" data-toggle="modal" data-backdrop="static"
-                                data-keyboard="false" data-target="#project-detail-modal">
+                            <button class="btn btn-primary btn-sm btn-block" (click)="btnEditProjectClick()">
                                 <i class="fa fa-edit fa-fw"></i> Edit
                             </button>
                         </ng-template>
                     </wj-flex-grid-column>
                     <wj-flex-grid-column [header]="Delete" [isReadOnly]="true" [width]="90">
                         <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
-                            <button class="btn btn-danger btn-sm btn-block" data-toggle="modal" data-backdrop="static"
-                                data-keyboard="false" data-target="#projectDeleteModal">
+                            <button class="btn btn-danger btn-sm btn-block" (click)="btnDeleteProjectClick()">
                                 <i class="fa fa-trash fa-fw"></i> Delete
                             </button>
                         </ng-template>
@@ -73,53 +70,55 @@
                     <wj-flex-grid-column [header]="'Status'" [binding]="'status'" [isReadOnly]="true" [width]="'1.5*'"></wj-flex-grid-column>
                     <wj-flex-grid-column [header]="'L'" [binding]="'isLocked'" [isReadOnly]="true" [width]="50"></wj-flex-grid-column>
                 </wj-flex-grid>
-            </div>
-
-            <!-- Navigation -->
-            <div class="card-footer">
-                <div class="row">
-                    <div class="col-sm-12 btn-group" id="">
-                        <button type="button" class="btn" (click)="projectCollection.moveToFirstPage()">
-                            <i class="fa fa-fast-backward"></i> First
-                        </button>
-                        <button type="button" class="btn" (click)="projectCollection.moveToPreviousPage()">
-                            <i class="fa fa-step-backward"></i> Previous
-                        </button>
-                        <button type="button" class="btn" disabled style="width:100px">
-                            {{ projectCollection.pageIndex + 1 }} / {{ projectCollection.pageCount }}
-                        </button>
-                        <button type="button" class="btn" (click)="projectCollection.moveToNextPage()">
-                            Next
-                            <i class="fa fa-step-forward"></i>
-                        </button>
-                        <button type="button" class="btn" (click)="projectCollection.moveToLastPage()">
-                            Last
-                            <i class="fa fa-fast-forward"></i>
-                        </button>
-                    </div>
+                <div class="col-sm-12 btn-group" style="padding: 5px 0px 5px 0px;">
+                    <button type="button" class="btn btn-info" (click)="fgdProjectsCollection.moveToFirstPage()">
+                        <i class="fa fa-fast-backward"></i> First
+                    </button>
+                    <button type="button" class="btn btn-info" (click)="fgdProjectsCollection.moveToPreviousPage()">
+                        <i class="fa fa-step-backward"></i> Previous
+                    </button>
+                    <button type="button" class="btn btn-info" disabled style="width:100px">
+                        {{ fgdProjectsCollection.pageIndex + 1 }} / {{ fgdProjectsCollection.pageCount }}
+                    </button>
+                    <button type="button" class="btn btn-info" (click)="fgdProjectsCollection.moveToNextPage()">
+                        Next
+                        <i class="fa fa-step-forward"></i>
+                    </button>
+                    <button type="button" class="btn btn-info" (click)="fgdProjectsCollection.moveToLastPage()">
+                        Last
+                        <i class="fa fa-fast-forward"></i>
+                    </button>
                 </div>
             </div>
 
         </div>
 
     </div>
+
+    <app-footer [data]="fgdProjectsCollection"></app-footer>
+    
 </div>
 
 <!-- delete project -->
-<div class="modal fade" id="projectDeleteModal" role="dialog">
-    <div class="modal-dialog modal-sm">
+<div id="mdlProjectDelete" 
+     class="modal fade" 
+     role="dialog"
+     [ngStyle]="{'display': mdlProjectDeleteShow ? 'block' : 'none', 'opacity': 1}">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Delete</h4>
+                <h4 class="modal-title">Delete Project</h4>
             </div>
             <div class="modal-body">
-                Delete Project?
+                Delete {{fgdProjectsCollection.currentItem != null ? fgdProjectsCollection.currentItem.project : ""}}?
             </div>
             <div class="modal-footer" align="right">
-                <button type="button" id="btnDeleteProject" class="btn btn-danger" (click)="btnDeleteProjectClick()">
-                    <i class="fa fa-trash fa-fw"></i> Delete</button>
-                <button type="button" id="btnDeleteCloseProject" class="btn btn-success" data-dismiss="modal">
-                    <i class="fa fa-close fa-fw"></i> Close</button>
+                <button id="btnOkProjectDeleteModal" class="btn btn-danger" (click)="btnOkProjectDeleteModalClick()">
+                    <i class="fa fa-trash fa-fw"></i> Ok
+                </button>
+                <button id="btnCloseProjectDeleteModal" class="btn btn-primary" (click)="btnCloseProjectDeleteModalClick()">
+                    <i class="fa fa-close fa-fw"></i> Close
+                </button>
             </div>
         </div>
     </div>

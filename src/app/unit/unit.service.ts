@@ -31,24 +31,20 @@ export class UnitService {
     private options = new RequestOptions({ headers: this.headers });
 
     // public properties
-    public projectsSource = new Subject<ObservableArray>();
-    public projectsObservable = this.projectsSource.asObservable();
 
+    // unit list
     public unitsSource = new Subject<ObservableArray>();
     public unitsObservable = this.unitsSource.asObservable();
 
+    // unit detail
     public unitSource = new Subject<MstUnit>();
     public unitObservable = this.unitSource.asObservable();
 
+    // unit list operations
     public unitDeletedSource = new Subject<number>();
     public unitDeletedObservable = this.unitDeletedSource.asObservable();
 
-    public houseModelsSource = new Subject<ObservableArray>();
-    public houseModelsObservable = this.houseModelsSource.asObservable();
-
-    public dropDownsSource = new Subject<ObservableArray>();
-    public dropDownsObservable = this.dropDownsSource.asObservable();
-
+    // unit detail operations
     public unitSavedSource = new Subject<number>();
     public unitSavedObservable = this.unitSavedSource.asObservable();   
 
@@ -58,6 +54,16 @@ export class UnitService {
     public unitUnlockedSource = new Subject<number>();
     public unitUnlockedObservable = this.unitUnlockedSource.asObservable();  
 
+    // combo boxes
+    public projectsSource = new Subject<ObservableArray>();
+    public projectsObservable = this.projectsSource.asObservable();
+
+    public houseModelsSource = new Subject<ObservableArray>();
+    public houseModelsObservable = this.houseModelsSource.asObservable();
+
+    public dropDownsSource = new Subject<ObservableArray>();
+    public dropDownsObservable = this.dropDownsSource.asObservable();
+
     // constructor
     constructor(
         private router: Router,
@@ -66,6 +72,8 @@ export class UnitService {
     ) { }
 
     // public methods
+
+    // list
     public getProjects(): void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstProject/List";
         let projects = new ObservableArray();
@@ -95,43 +103,7 @@ export class UnitService {
         );
     }
 
-    public getUnitsPerProjectId(projectId: number): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUnit/ListPerProjectId/" + projectId;
-        let units = new ObservableArray();
-        this.http.get(url, this.options).subscribe(
-            response => {
-                var results = new ObservableArray(response.json());
-                if (results.length > 0) {
-                    for (var i = 0; i <= results.length - 1; i++) {
-                        units.push({
-                            id: results[i].Id,
-                            unitCode: results[i].UnitCode,
-                            block: results[i].Block,
-                            lot: results[i].Lot,
-                            projectId: results[i].ProjectId,
-                            project: results[i].Project,
-                            houseModelId: results[i].HouseModelId,
-                            houseModel: results[i].HouseModel,
-                            tla: results[i].TLA,
-                            tfa: results[i].TFA,
-                            price: results[i].Price,
-                            status: results[i].Status,
-                            isLocked: results[i].IsLocked,
-                            createdBy: results[i].CreatedBy,
-                            createdDateTime: results[i].CreatedDateTime,
-                            updatedBy: results[i].UpdatedBy,
-                            updatedDateTime: results[i].UpdatedDateTime,
-                        });
-                    }
-                    this.unitsSource.next(units);
-                } else {
-                    this.unitsSource.next(units);
-                    this.toastr.error("No units for this project.");   
-                }
-            }
-        );
-    }
-
+    // list operations
     public addUnit(unit: MstUnit, btnAddUnit: Element): void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUnit/Add";
         this.http.post(url, JSON.stringify(unit), this.options).subscribe(
@@ -155,7 +127,19 @@ export class UnitService {
             }
         )
     }
+    public deleteUnit(id : number) : void {
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUnit/Delete/" + id;
+        this.http.delete(url, this.options).subscribe(
+            response => {
+                this.unitDeletedSource.next(1);
+            },
+            error => {
+                this.unitDeletedSource.next(0);
+            }
+        )
+    }
 
+    // detail
     public getUnit(id : number) : void {
         let unit: MstUnit;
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUnit/Detail/" + id;
@@ -194,18 +178,78 @@ export class UnitService {
         );    
     }
 
-    public deleteUnit(id : number) : void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUnit/Delete/" + id;
-        this.http.delete(url, this.options).subscribe(
+    // detail operations
+    public saveUnit(unit: MstUnit): void {
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUnit/Save";
+        this.http.put(url, JSON.stringify(unit), this.options).subscribe(
             response => {
-                this.unitDeletedSource.next(1);
+                this.unitSavedSource.next(1);
             },
             error => {
-                this.unitDeletedSource.next(0);
+                this.unitSavedSource.next(0);
+            }
+        )
+    }
+    public lockUnit(unit: MstUnit): void {
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUnit/Lock";
+        this.http.put(url, JSON.stringify(unit), this.options).subscribe(
+            response => {
+                this.unitLockedSource.next(1);
+            },
+            error => {
+                this.unitLockedSource.next(0);
+            }
+        )
+    }
+    public unlockUnit(unit: MstUnit): void {
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUnit/Unlock";
+        this.http.put(url, JSON.stringify(unit), this.options).subscribe(
+            response => {
+                this.unitUnlockedSource.next(1);
+            },
+            error => {
+                this.unitUnlockedSource.next(0);
             }
         )
     }
 
+    // combo boxes
+    public getUnitsPerProjectId(projectId: number): void {
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUnit/ListPerProjectId/" + projectId;
+        let units = new ObservableArray();
+        this.http.get(url, this.options).subscribe(
+            response => {
+                var results = new ObservableArray(response.json());
+                if (results.length > 0) {
+                    for (var i = 0; i <= results.length - 1; i++) {
+                        units.push({
+                            id: results[i].Id,
+                            unitCode: results[i].UnitCode,
+                            block: results[i].Block,
+                            lot: results[i].Lot,
+                            projectId: results[i].ProjectId,
+                            project: results[i].Project,
+                            houseModelId: results[i].HouseModelId,
+                            houseModel: results[i].HouseModel,
+                            tla: results[i].TLA,
+                            tfa: results[i].TFA,
+                            price: results[i].Price,
+                            status: results[i].Status,
+                            isLocked: results[i].IsLocked,
+                            createdBy: results[i].CreatedBy,
+                            createdDateTime: results[i].CreatedDateTime,
+                            updatedBy: results[i].UpdatedBy,
+                            updatedDateTime: results[i].UpdatedDateTime,
+                        });
+                    }
+                    this.unitsSource.next(units);
+                } else {
+                    this.unitsSource.next(units);
+                    this.toastr.error("No units for this project.");   
+                }
+            }
+        );
+    }
     public getHouseModelsPerProject(id : number) : void {
         let houseModels  = new ObservableArray();
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstHouseModel/ListPerProjectId/" + id;
@@ -238,7 +282,6 @@ export class UnitService {
             }
         );
     }
-
     public getDropDowns() : void {
         let dropDowns  = new ObservableArray();
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/SysDropDown/List";
@@ -262,42 +305,6 @@ export class UnitService {
                 }
             }
         );
-    }
-
-    public saveUnit(unit: MstUnit): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUnit/Save";
-        this.http.put(url, JSON.stringify(unit), this.options).subscribe(
-            response => {
-                this.unitSavedSource.next(1);
-            },
-            error => {
-                this.unitSavedSource.next(0);
-            }
-        )
-    }
-
-    public lockUnit(unit: MstUnit): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUnit/Lock";
-        this.http.put(url, JSON.stringify(unit), this.options).subscribe(
-            response => {
-                this.unitLockedSource.next(1);
-            },
-            error => {
-                this.unitLockedSource.next(0);
-            }
-        )
-    }
-
-    public unlockUnit(unit: MstUnit): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUnit/Unlock";
-        this.http.put(url, JSON.stringify(unit), this.options).subscribe(
-            response => {
-                this.unitUnlockedSource.next(1);
-            },
-            error => {
-                this.unitUnlockedSource.next(0);
-            }
-        )
     }
 
 }

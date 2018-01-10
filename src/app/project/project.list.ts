@@ -18,19 +18,18 @@ import { MstProject } from '../model/model.mst.project';
 @Component({
   templateUrl: './project.list.html'
 })
-
 export class ProjectList {
-    public title = 'Project List';
-    public filterProject : string;
 
+    // private properties
     private currentDate = new Date();
     private currentDateString = [this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, this.currentDate.getDate()].join('-');
 
     private projectsSub : any;
     private projectDeletedSub : any;
 
-    @ViewChild('btnAddProject',{read: ElementRef}) 
-    public btnAddProject: ElementRef;
+    // public properties
+    public title = 'Project List';
+    public filterProject : string;
 
     public project : MstProject = {
         id: 0,
@@ -45,9 +44,12 @@ export class ProjectList {
         updatedDateTime: this.currentDateString
     };
 
-    public projectData : ObservableArray;
-    public projectCollection : CollectionView;
+    public fgdProjectsData : ObservableArray;
+    public fgdProjectsCollection : CollectionView;
 
+    public mdlProjectDeleteShow : boolean = false;
+
+    // constructor
     constructor(
         private projectService : ProjectService,
         private toastr : ToastsManager,
@@ -57,18 +59,21 @@ export class ProjectList {
         this.toastr.setRootViewContainerRef(viewContainer);
     }
 
+    // ng
     ngOnInit() {
-        this.projectData = new ObservableArray();
-        this.projectCollection = new CollectionView(this.projectData);
+        this.fgdProjectsData = new ObservableArray();
+        this.fgdProjectsCollection = new CollectionView(this.fgdProjectsData);
 
         this.getProjects();
     }
-    
     ngOnDestroy() {
         if( this.projectDeletedSub != null) this.projectDeletedSub.unsubscribe();
         if( this.projectsSub != null) this.projectsSub.unsubscribe();
     }
 
+    // public methods
+
+    // project list
     public getProjects() : void {
         let projects = new ObservableArray();
 
@@ -77,52 +82,65 @@ export class ProjectList {
         this.projectsSub = this.projectService.projectsObservable.subscribe(
           data => {
             if (data.length > 0) {
-              this.projectData = data;
-              this.projectCollection = new CollectionView(this.projectData);
-              this.projectCollection.pageSize = 15;
-              this.projectCollection.trackChanges = true;  
+              this.fgdProjectsData = data;
+              this.fgdProjectsCollection = new CollectionView(this.fgdProjectsData);
+              this.fgdProjectsCollection.pageSize = 15;
+              this.fgdProjectsCollection.trackChanges = true;  
             }
           }
         );
     }
 
+    // events
+
+    // project list operation
     public btnAddProjectClick() : void {
         let btnAddProject:Element = document.getElementById("btnAddProject");
 
         btnAddProject.setAttribute("disabled","true");
         btnAddProject.innerHTML = "<i class='fa fa-plus fa-fw'></i> Adding...";
 
-        this.projectService.addProject(this.project, this.toastr);
+        this.projectService.addProject(this.project, btnAddProject);
     }
-
     public btnEditProjectClick() : void {
-        let selectedProject = this.projectCollection.currentItem;
+        let selectedProject = this.fgdProjectsCollection.currentItem;
         this.router.navigate(['/project', selectedProject.id]);
     }
-    
     public btnDeleteProjectClick() : void {
-        (<HTMLButtonElement>document.getElementById("btnDeleteProject")).disabled = true;
-        (<HTMLButtonElement>document.getElementById("btnDeleteCloseProject")).disabled = true;
+        this.mdlProjectDeleteShow = true;
+    }
 
-        let selectedProject = this.projectCollection.currentItem;
-        this.projectService.deleteProject(selectedProject.id);
-
+    // project delete modal operation
+    public btnOkProjectDeleteModalClick() : void {
+        let btnOkProjectDeleteModal:Element = document.getElementById("btnOkProjectDeleteModal");
+        let btnCloseProjectDeleteModal:Element = document.getElementById("btnCloseProjectDeleteModal");
+    
+        let selectedProject = this.fgdProjectsCollection.currentItem;
+    
+        btnOkProjectDeleteModal.setAttribute("disabled","disabled");
+        btnCloseProjectDeleteModal.setAttribute("disabled","disabled");
+    
+        this.projectService.deleteProject(selectedProject.id,);
         this.projectDeletedSub = this.projectService.projectDeletedObservable.subscribe(
             data => {
                 if(data == 1) {
                     this.toastr.success("Delete successful.");
-                    this.projectCollection.remove​(selectedProject);
-                    (<HTMLButtonElement>document.getElementById("btnDeleteProject")).disabled = false;
-                    (<HTMLButtonElement>document.getElementById("btnDeleteCloseProject")).disabled = false;
-                    document.getElementById("btnDeleteCloseProject").click();
+                    this.fgdProjectsCollection.remove​(selectedProject);
+    
+                    btnOkProjectDeleteModal.removeAttribute("disabled");
+                    btnCloseProjectDeleteModal.removeAttribute("disabled");
+    
+                    this.mdlProjectDeleteShow = false
                 } else if(data == 0) {
                     this.toastr.error("Delete failed.");   
-                    (<HTMLButtonElement>document.getElementById("btnDeleteProject")).disabled = false;
-                    (<HTMLButtonElement>document.getElementById("btnDeleteCloseProject")).disabled = false;
+    
+                    btnOkProjectDeleteModal.removeAttribute("disabled");
+                    btnCloseProjectDeleteModal.removeAttribute("disabled");
                 }
             }
         );
     }
-
-
+    public btnCloseProjectDeleteModalClick() : void {
+        this.mdlProjectDeleteShow = false;
+    }
 }

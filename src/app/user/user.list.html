@@ -1,7 +1,6 @@
 <menu-root></menu-root>
 
 <br>
-
 <br>
 
 <div class="content-wrapper">
@@ -10,13 +9,10 @@
         <!-- Breadcrumbs -->
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="/menu">Menu</a>
+                <a routerLink="/menu">Menu</a>
             </li>
             <li class="breadcrumb-item active">{{title}}</li>
         </ol>
-
-
-        
 
         <!-- List -->
         <div class="card">
@@ -30,13 +26,9 @@
                         </td>
                         <td style="width: 1%;"></td>
                         <td style="width: 40%;" align="right">
-                            <button class="btn btn-danger"  routerlink="/menu">
+                            <button class="btn btn-danger"  routerLink="/menu">
                                 <i class="fa fa-close fa-fw"></i> Close
                             </button>
-                            <!-- <button class="btn btn-primary" (click)="btnAddUserClick()" id="btnAddUser">
-                                <i class="fa fa-plus fa-fw"></i> Add
-                            </button> -->
-                            
                         </td>
                     </tr>
                 </table>
@@ -54,28 +46,17 @@
 
             <!-- Flexgrid List -->
             <div class="card-body">
-                <wj-flex-grid #projectFlexGrid [itemsSource]="userCollection" [selectionMode]="3" >
+                <wj-flex-grid #fgdUsers [itemsSource]="fgdUsersCollection" [selectionMode]="3" >
                     <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
                         <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
-                            <button class="btn btn-primary btn-sm btn-block" (click)="btnEditUserClick()" data-toggle="modal" data-backdrop="static"
-                                data-keyboard="false" data-target="#user-detail-modal">
+                            <button class="btn btn-primary btn-sm btn-block" (click)="btnEditUserClick()">
                                 <i class="fa fa-edit fa-fw"></i> Edit
                             </button>
                         </ng-template>
                     </wj-flex-grid-column>
-                    <!-- <wj-flex-grid-column [header]="Delete" [isReadOnly]="true" [width]="90">
-                        <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
-                            <button class="btn btn-danger btn-sm btn-block" data-toggle="modal" data-backdrop="static"
-                                data-keyboard="false" data-target="#userDeleteModal">
-                                <i class="fa fa-trash fa-fw"></i> Delete
-                            </button>
-                        </ng-template>
-                    </wj-flex-grid-column> -->
-                    <wj-flex-grid-column [header]="'Username'" [binding]="'userName'" [isReadOnly]="true" [width]="'1.5*'"></wj-flex-grid-column>
-                    <wj-flex-grid-column [header]="'Fulllname'" [binding]="'fullname'" [isReadOnly]="true" [width]="'2*'"></wj-flex-grid-column>
-                    <!-- <wj-flex-grid-column [header]="'Password'" [binding]="'password'" [isReadOnly]="true" [width]="'3*'"></wj-flex-grid-column> -->
-                    <wj-flex-grid-column [header]="'Status'" [binding]="'status'" [isReadOnly]="true" [width]="'1.5*'"></wj-flex-grid-column>
-                    <!-- <wj-flex-grid-column [header]="'L'" [binding]="'isLocked'" [isReadOnly]="true" [width]="50"></wj-flex-grid-column> -->
+                    <wj-flex-grid-column [header]="'Username'"  [binding]="'userName'"  [isReadOnly]="true" [width]="300"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Fulllname'" [binding]="'fullname'"  [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Status'"    [binding]="'status'"    [isReadOnly]="true" [width]="200"></wj-flex-grid-column>
                 </wj-flex-grid>
             </div>
 
@@ -83,20 +64,20 @@
             <div class="card-footer">
                 <div class="row">
                     <div class="col-sm-12 btn-group" id="">
-                        <button type="button" class="btn" (click)="userCollection.moveToFirstPage()">
+                        <button type="button" class="btn btn-info" (click)="fgdUsersCollection.moveToFirstPage()">
                             <i class="fa fa-fast-backward"></i> First
                         </button>
-                        <button type="button" class="btn" (click)="userCollection.moveToPreviousPage()">
+                        <button type="button" class="btn btn-info" (click)="fgdUsersCollection.moveToPreviousPage()">
                             <i class="fa fa-step-backward"></i> Previous
                         </button>
-                        <button type="button" class="btn" disabled style="width:100px">
-                            {{ userCollection.pageIndex + 1 }} / {{ userCollection.pageCount }}
+                        <button type="button" class="btn btn-info" disabled style="width:100px">
+                            {{ fgdUsersCollection.pageIndex + 1 }} / {{ fgdUsersCollection.pageCount }}
                         </button>
-                        <button type="button" class="btn" (click)="userCollection.moveToNextPage()">
+                        <button type="button" class="btn btn-info" (click)="fgdUsersCollection.moveToNextPage()">
                             Next
                             <i class="fa fa-step-forward"></i>
                         </button>
-                        <button type="button" class="btn" (click)="userCollection.moveToLastPage()">
+                        <button type="button" class="btn btn-info" (click)="fgdUsersCollection.moveToLastPage()">
                             Last
                             <i class="fa fa-fast-forward"></i>
                         </button>
@@ -107,25 +88,9 @@
         </div>
 
     </div>
+
+    <app-footer [data]="fgdUsersCollection"></app-footer>
+    
 </div>
 
-<!-- delete user -->
-<div class="modal fade" id="userDeleteModal" role="dialog">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Delete</h4>
-            </div>
-            <div class="modal-body">
-                Delete User?
-            </div>
-            <div class="modal-footer" align="right">
-                <button type="button" id="btnDeleteUser" class="btn btn-danger" (click)="btnDeleteUserClick()">
-                    <i class="fa fa-trash fa-fw"></i> Delete</button>
-                <button type="button" id="btnDeleteCloseUser" class="btn btn-success" data-dismiss="modal">
-                    <i class="fa fa-close fa-fw"></i> Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 

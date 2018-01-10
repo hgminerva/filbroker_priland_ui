@@ -8,7 +8,7 @@ import { UserService } from './user.service';
 // WijMo
 import {ObservableArray, CollectionView} from 'wijmo/wijmo';
 
-// Beautification
+// Message box
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
 // Model
@@ -17,28 +17,31 @@ import { MstUser } from '../model/model.mst.user';
 @Component({
   templateUrl: './user.list.html'
 })
-
 export class UserList {
-    public title = 'User List';
-    public filterUser : string;
 
+    // private properties
     private currentDate = new Date();
     private currentDateString = [this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, this.currentDate.getDate()].join('-');
 
-    private userDeletedSub : any;
+    private usersSub : any;
+
+    // public properties
+    public title = 'User List';
+    public filterUser : string;
 
     public user : MstUser = {
         id: 0,
-        username: "NA",
-        fullName: "NA",
-        password: "NA",
-        status: "OPEN",
+        username: "",
+        fullName: "",
+        password: "",
+        status: "",
         aspNetId:""
     };
 
-    public userData : ObservableArray;
-    public userCollection : CollectionView;
+    public fgdUsersData : ObservableArray;
+    public fgdUsersCollection : CollectionView;
 
+    // constructor
     constructor(
         private userService : UserService,
         private toastr : ToastsManager,
@@ -48,54 +51,35 @@ export class UserList {
         this.toastr.setRootViewContainerRef(viewContainer);
     }
 
-    public ngOnInit() {
+    // ng
+    ngOnInit() {
+        this.fgdUsersData = new ObservableArray();
+        this.fgdUsersCollection = new CollectionView(this.fgdUsersData);
+    
         this.getUsers();
     }
+    ngOnDestroy() {
+        if( this.usersSub != null) this.usersSub.unsubscribe();
+    }
 
+    // public methods
     public getUsers() : void {
-        this.userData = this.userService.getUsers();
-        this.userCollection = new CollectionView(this.userData);
-        this.userCollection.pageSize = 15;
-        this.userCollection.trackChanges = true;
-    }
+        this.userService.getUsers();
 
-    public btnAddUserClick() : void {
-        (<HTMLButtonElement>document.getElementById("btnAddUser")).disabled = true;
-        (<HTMLButtonElement>document.getElementById("btnAddUser")).innerHTML = "<i class='fa fa-plus fa-fw'></i> Adding...";
-        
-        this.userService.addUser(this.user, this.toastr);
-    }
-
-    public btnEditUserClick() : void {
-        let selectedUser = this.userCollection.currentItem;
-        this.router.navigate(['/user', selectedUser.id]);
-    }
-    
-    public btnDeleteUserClick() : void {
-        (<HTMLButtonElement>document.getElementById("btnDeleteUser")).disabled = true;
-        (<HTMLButtonElement>document.getElementById("btnDeleteCloseUser")).disabled = true;
-
-        let selectedUser = this.userCollection.currentItem;
-        this.userService.deleteUser(selectedUser.id);
-
-        this.userDeletedSub = this.userService.userDeletedObservable.subscribe(
-            data => {
-                if(data == 1) {
-                    this.toastr.success("Delete successful.");
-                    this.userCollection.remove​(selectedUser);
-                    (<HTMLButtonElement>document.getElementById("btnDeleteUser")).disabled = false;
-                    (<HTMLButtonElement>document.getElementById("btnDeleteCloseUser")).disabled = false;
-                    document.getElementById("btnDeleteCloseUser").click();
-                } else if(data == 0) {
-                    this.toastr.error("Delete failed.");   
-                    (<HTMLButtonElement>document.getElementById("btnDeleteUser")).disabled = false;
-                    (<HTMLButtonElement>document.getElementById("btnDeleteCloseUser")).disabled = false;
-                }
-            }
+        this.usersSub = this.userService.usersObservable.subscribe(
+          data => {
+            this.fgdUsersData = data;
+            this.fgdUsersCollection = new CollectionView(this.fgdUsersData);
+            this.fgdUsersCollection.pageSize = 15;
+            this.fgdUsersCollection.trackChanges = true;  
+          }
         );
     }
 
-    ngOnDestroy() {
-        if( this.userDeletedSub != null) this.userDeletedSub.unsubscribe();
+    // events
+    public btnEditUserClick() : void {
+        let selectedUser = this.fgdUsersCollection.currentItem;
+        this.router.navigate(['/user', selectedUser.id]);
     }
+
 }

@@ -115,27 +115,27 @@ export class CustomerDetail {
   }
 
   public getDropDowns() : void {
-    this.projectService.getDropDowns(this.toastr);
+    // this.projectService.getDropDowns(this.toastr);
 
-    this.projectStatusSub = this.projectService.dropDownsObservable.subscribe(
-      data => {
-        let projectStatuses = new ObservableArray();
+    // this.projectStatusSub = this.projectService.dropDownsObservable.subscribe(
+    //   data => {
+    //     let projectStatuses = new ObservableArray();
 
-        if (data.length > 0) {
-          for (var i = 0; i <= data.length - 1; i++) {
-            if (data[i].category == "PROJECT STATUS") {
-              projectStatuses.push({
-                id: data[i].id,
-                category: data[i].category,
-                description: data[i].description,
-                value: data[i].value
-              });
-            }
-          }
-        }
+    //     if (data.length > 0) {
+    //       for (var i = 0; i <= data.length - 1; i++) {
+    //         if (data[i].category == "PROJECT STATUS") {
+    //           projectStatuses.push({
+    //             id: data[i].id,
+    //             category: data[i].category,
+    //             description: data[i].description,
+    //             value: data[i].value
+    //           });
+    //         }
+    //       }
+    //     }
 
-      }
-    );
+    //   }
+    // );
   }
 
   public btnSaveProjectClick() : void {

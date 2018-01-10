@@ -8,28 +8,29 @@ import { BrokerService } from './broker.service';
 // WijMo
 import { ObservableArray, CollectionView } from 'wijmo/wijmo';
 
-// Beautification
+// Message Box
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
 // Model
 import { MstBroker } from '../model/model.mst.broker';
-import { Observable } from 'rxjs/Observable';
+
 
 @Component({
   templateUrl: './broker.detail.html'
 })
-
 export class BrokerDetail {
-  public title = 'Broker Detail';
-
+  
+  // private properties
   private brokerSub: any;
+
   private brokerSavedSub: any;
   private brokerLockedSub: any;
   private brokerUnlockedSub: any;
-  private brokerStatusSub: any;
 
-  private cmbBrokerGenderSub: any;
-  private cmbBrokerUserStatusSub: any;
+  private dropDownsSub: any;
+
+  // public properties
+  public title = 'Broker Detail';
 
   public broker: MstBroker = {
     id: 0,
@@ -68,8 +69,13 @@ export class BrokerDetail {
     updatedDateTime: "",
   };
 
-  public cmbBrokerUserStatusData: ObservableArray;
-  public cmbBrokerGenderData: ObservableArray;
+  // combo box data sources
+  public cmbBrokerStatusData: ObservableArray;
+  public cmbCivilStatusData: ObservableArray;
+  public cmbGenderData: ObservableArray;
+
+  // tab index
+  public tabDetail1 = new Array(true, false, false);
 
   //constructor
   constructor(
@@ -82,22 +88,22 @@ export class BrokerDetail {
     this.toastr.setRootViewContainerRef(viewContainer);
   }
 
-  public ngOnInit() {
+  // ng
+  ngOnInit() {
     this.getBroker();
   }
-
-  public ngOnDestroy() {
+  ngOnDestroy() {
     if (this.brokerSub != null) this.brokerSub.unsubscribe();
-
-    if (this.cmbBrokerUserStatusSub != null) this.cmbBrokerUserStatusSub.unsubscribe();
-    if (this.cmbBrokerGenderSub != null) this.cmbBrokerGenderSub.unsubscribe();
 
     if (this.brokerSavedSub != null) this.brokerSavedSub.unsubscribe();
     if (this.brokerLockedSub != null) this.brokerLockedSub.unsubscribe();
     if (this.brokerUnlockedSub != null) this.brokerUnlockedSub.unsubscribe();
+
+    if (this.dropDownsSub != null) this.dropDownsSub.unsubscribe();
   }
 
-  public getIdParameter() {
+  // private methods
+  private getIdParameter(): number {
     let id = 0;
     this.activatedRoute.params.subscribe(params => {
       id = params['id'];
@@ -105,103 +111,91 @@ export class BrokerDetail {
     return id;
   }
 
-  //GET BROKER & CMB GENDER, STATUS
+  // get broker data
   public getBroker() {
     this.brokerService.getBroker(this.getIdParameter());
 
     this.brokerSub = this.brokerService.brokerObservable
       .subscribe(
-      data => {
-        this.broker.id = data.id;
-        this.broker.brokerCode = data.brokerCode;
-        this.broker.lastName = data.lastName;
-        this.broker.firstName = data.firstName;
-        this.broker.middleName = data.middleName;
-        this.broker.licenseNumber = data.licenseNumber;
-        this.broker.birthDate = data.birthDate;
-        this.broker.civilStatus = data.civilStatus;
-        this.broker.gender = data.gender;
-        this.broker.address = data.address;
-        this.broker.telephoneNumber = data.telephoneNumber;
-        this.broker.mobileNumber = data.mobileNumber;
-        this.broker.religion = data.religion;
-        this.broker.emailAddress = data.emailAddress;
-        this.broker.tin = data.tin;
-        this.broker.realtyFirm = data.realtyFirm;
-        this.broker.realtyFirmAddress = data.realtyFirmAddress;
-        this.broker.realtyFirmTelephoneNumber = data.realtyFirmTelephoneNumber;
-        this.broker.realtyFirmTelephoneNumber = data.realtyFirmTelephoneNumber;
-        this.broker.realtyFirmMobileNumber = data.realtyFirmMobileNumber;
-        this.broker.realtyFirmFaxNumber = data.realtyFirmFaxNumber;
-        this.broker.realtyFirmEmailAddress = data.realtyFirmEmailAddress;
-        this.broker.realtyFirmWebsite = data.realtyFirmWebsite;
-        this.broker.realtyFirmTIN = data.realtyFirmTIN;
-        this.broker.organization = data.organization;
-        this.broker.remarks = data.remarks;
-        this.broker.picture = data.picture;
-        this.broker.status = data.status;
-        this.broker.isLocked = data.isLocked;
-        this.broker.createdBy = data.createdBy;
-        this.broker.createdDateTime = data.createdDateTime;
-        this.broker.updatedBy = data.updatedBy;
-        this.broker.updatedDateTime = data.updatedDateTime;
+        data => {
+          this.broker.id = data.id;
+          this.broker.brokerCode = data.brokerCode;
+          this.broker.lastName = data.lastName;
+          this.broker.firstName = data.firstName;
+          this.broker.middleName = data.middleName;
+          this.broker.fullName = data.fullName;
+          this.broker.licenseNumber = data.licenseNumber;
+          this.broker.birthDate = data.birthDate;
+          this.broker.civilStatus = data.civilStatus;
+          this.broker.gender = data.gender;
+          this.broker.address = data.address;
+          this.broker.telephoneNumber = data.telephoneNumber;
+          this.broker.mobileNumber = data.mobileNumber;
+          this.broker.religion = data.religion;
+          this.broker.emailAddress = data.emailAddress;
+          this.broker.tin = data.tin;
+          this.broker.realtyFirm = data.realtyFirm;
+          this.broker.realtyFirmAddress = data.realtyFirmAddress;
+          this.broker.realtyFirmTelephoneNumber = data.realtyFirmTelephoneNumber;
+          this.broker.realtyFirmMobileNumber = data.realtyFirmMobileNumber;
+          this.broker.realtyFirmFaxNumber = data.realtyFirmFaxNumber;
+          this.broker.realtyFirmEmailAddress = data.realtyFirmEmailAddress;
+          this.broker.realtyFirmWebsite = data.realtyFirmWebsite;
+          this.broker.realtyFirmTIN = data.realtyFirmTIN;
+          this.broker.organization = data.organization;
+          this.broker.remarks = data.remarks;
+          this.broker.picture = data.picture;
+          this.broker.status = data.status;
+          this.broker.isLocked = data.isLocked;
+          this.broker.createdBy = data.createdBy;
+          this.broker.createdDateTime = data.createdDateTime;
+          this.broker.updatedBy = data.updatedBy;
+          this.broker.updatedDateTime = data.updatedDateTime;
 
-        this.getCmbBrokerGenderData();
-        this.getCmbBrokerStatusData();
-      }
+          this.getDropdownData();
+        }
       );
   }
-  public getCmbBrokerStatusData(): void {
-    this.brokerService.getDropDowns();
 
-    this.cmbBrokerUserStatusSub = this.brokerService.dropDownsObservable.subscribe(
+  // get combo box data sources
+  public getDropdownData() {
+    this.brokerService.getDropDowns();
+    this.dropDownsSub = this.brokerService.dropDownsObservable.subscribe(
       data => {
-        let brokerUserStatuses = new ObservableArray();
+        let brokerStatus = new ObservableArray();
+        let civilStatus = new ObservableArray();
+        let gender = new ObservableArray();
 
         if (data.length > 0) {
           for (var i = 0; i <= data.length - 1; i++) {
-            if (data[i].category == "USER STATUS") {
-              brokerUserStatuses.push({
-                id: data[i].id,
-                category: data[i].category,
+            if (data[i].category == "BROKER STATUS") {
+              brokerStatus.push({
                 description: data[i].description,
                 value: data[i].value
               });
             }
-          }
-        }
-        this.cmbBrokerUserStatusData = brokerUserStatuses;
-      }
-    );
-  }
-
-  //CMB BROKER GENDER
-  public getCmbBrokerGenderData(): void {
-    this.brokerService.getDropDowns();
-
-    this.cmbBrokerGenderSub = this.brokerService.dropDownsObservable.subscribe(
-      data => {
-        let brokerGenders = new ObservableArray();
-
-        if (data.length > 0) {
-          for (var i = 0; i <= data.length - 1; i++) {
             if (data[i].category == "GENDER") {
-              brokerGenders.push({
-                id: data[i].id,
-                category: data[i].category,
+              gender.push({
+                description: data[i].description,
+                value: data[i].value
+              });
+            }
+            if (data[i].category == "CIVIL STATUS") {
+              civilStatus.push({
                 description: data[i].description,
                 value: data[i].value
               });
             }
           }
         }
-
-        this.cmbBrokerGenderData = brokerGenders;
+        this.cmbBrokerStatusData = brokerStatus;
+        this.cmbGenderData = gender;
+        this.cmbCivilStatusData = civilStatus;
       }
     );
   }
 
-  //SAVE BROKER ON CLICK
+  // events
   public btnSaveBrokerClick(): void {
     let btnSaveBroker: Element = document.getElementById("btnSaveBroker");
 
@@ -223,8 +217,6 @@ export class BrokerDetail {
       }
     );
   }
-
-  //LOCK BROKER ON CLICK
   public btnLockBrokerClick(): void {
     let btnLockBroker: Element = document.getElementById("btnLockBroker");
 
@@ -247,8 +239,6 @@ export class BrokerDetail {
       }
     );
   }
-
-  //UNLOCK BROKER ON CLICK
   public btnUnlockBrokerClick(): void {
     let btnUnlockBroker: Element = document.getElementById("btnUnlockBroker");
 
@@ -270,6 +260,14 @@ export class BrokerDetail {
         }
       }
     );
+  }
+
+  // tab index click
+  public tabDetail1Click(index: number) {
+    for (var i = 0; i <= this.tabDetail1.length - 1; i++) {
+      if(index==i) this.tabDetail1[i] = true;
+      else this.tabDetail1[i] = false;
+    }
   }
 
 }

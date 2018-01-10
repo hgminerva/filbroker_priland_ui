@@ -29,11 +29,6 @@ export class UnitList {
 
   // public properties
   public title = 'Unit List';
-  
-  @ViewChild("cmbProjects")
-  public cmbProjects:ElementRef;
-
-  public cmbProjectsData : ObservableArray;
 
   public unit : MstUnit = {
     id: 0,
@@ -55,8 +50,17 @@ export class UnitList {
     updatedDateTime: this.currentDateString
   };
 
-  public unitData : ObservableArray;
-  public unitCollection : CollectionView;
+  // combo boxes
+  @ViewChild("cmbProjects")
+  public cmbProjects:ElementRef;
+
+  public cmbProjectsData : ObservableArray;
+
+  // list data source
+  public fgdUnitsData : ObservableArray;
+  public fgdUnitsCollection : CollectionView;
+
+  public mdlUnitDeleteShow : boolean = false;
 
   // constructor
   constructor(
@@ -70,12 +74,11 @@ export class UnitList {
 
   // ng
   ngOnInit() {
-    this.unitData = new ObservableArray();
-    this.unitCollection = new CollectionView(this.unitData);
+    this.fgdUnitsData = new ObservableArray();
+    this.fgdUnitsCollection = new CollectionView(this.fgdUnitsData);
 
     this.getProjects();
   }
-
   ngOnDestroy() {
     if( this.unitsSub != null) this.unitsSub.unsubscribe();
     if( this.projectsSub != null) this.projectsSub.unsubscribe();
@@ -91,14 +94,13 @@ export class UnitList {
 
     this.unitsSub = this.unitService.unitsObservable.subscribe(
       data => {
-        this.unitData = data;
-        this.unitCollection = new CollectionView(this.unitData);
-        this.unitCollection.pageSize = 15;
-        this.unitCollection.trackChanges = true;  
+        this.fgdUnitsData = data;
+        this.fgdUnitsCollection = new CollectionView(this.fgdUnitsData);
+        this.fgdUnitsCollection.pageSize = 15;
+        this.fgdUnitsCollection.trackChanges = true;  
       }
     );
   }
-
   public getProjects() : void {
     this.unitService.getProjects();
 
@@ -113,7 +115,7 @@ export class UnitList {
   }
 
   // events
-  public cmbProjectsDataOnChange() : void {
+  public cmbProjectsChange() : void {
     let projectId = this.cmbProjectsData[this.cmbProjects["selectedIndex"]]["id"];
     let project = this.cmbProjectsData[this.cmbProjects["selectedIndex"]]["project"];
 
@@ -123,6 +125,7 @@ export class UnitList {
     this.getUnitsPerProjectId(projectId);
   }
 
+  // list operations
   public btnAddUnitClick() : void {
     let btnAddUnit:Element = document.getElementById("btnAddUnit");
 
@@ -131,41 +134,46 @@ export class UnitList {
 
     this.unitService.addUnit(this.unit, btnAddUnit);
   }
-
   public btnDeleteUnitClick() : void {
-    let btnDeleteUnit:Element = document.getElementById("btnDeleteUnit");
-    let btnDeleteCloseUnit:Element = document.getElementById("btnDeleteCloseUnit");
+    this.mdlUnitDeleteShow = true;
+  }
+  public btnEditUnitClick() : void {
+    let selectedUnit = this.fgdUnitsCollection.currentItem;
+    this.router.navigate(['/unit', selectedUnit.id]);
+  }
 
-    let selectedUnit = this.unitCollection.currentItem;
+  // delete modal operations
+  public btnOkUnitDeleteModalClick() : void {
+    let btnOkUnitDeleteModal:Element = document.getElementById("btnOkUnitDeleteModal");
+    let btnCloseUnitDeleteModal:Element = document.getElementById("btnCloseUnitDeleteModal");
 
-    btnDeleteUnit.setAttribute("disabled","disabled");
-    btnDeleteCloseUnit.setAttribute("disabled","disabled");
+    let selectedUnit = this.fgdUnitsCollection.currentItem;
+
+    btnOkUnitDeleteModal.setAttribute("disabled","disabled");
+    btnCloseUnitDeleteModal.setAttribute("disabled","disabled");
 
     this.unitService.deleteUnit(selectedUnit.id,);
     this.unitDeletedSub = this.unitService.unitDeletedObservable.subscribe(
         data => {
             if(data == 1) {
                 this.toastr.success("Delete successful.");
-                this.unitCollection.remove​(selectedUnit);
+                this.fgdUnitsCollection.remove​(selectedUnit);
 
-                btnDeleteUnit.removeAttribute("disabled");
-                btnDeleteCloseUnit.removeAttribute("disabled");
+                btnOkUnitDeleteModal.removeAttribute("disabled");
+                btnCloseUnitDeleteModal.removeAttribute("disabled");
 
-                document.getElementById("btnDeleteCloseUnit").click();
+                this.mdlUnitDeleteShow = false;
             } else if(data == 0) {
                 this.toastr.error("Delete failed.");   
 
-                btnDeleteUnit.removeAttribute("disabled");
-                btnDeleteCloseUnit.removeAttribute("disabled");
+                btnOkUnitDeleteModal.removeAttribute("disabled");
+                btnCloseUnitDeleteModal.removeAttribute("disabled");
             }
         }
     );
-
   }
-
-  public btnEditUnitClick() : void {
-    let selectedUnit = this.unitCollection.currentItem;
-    this.router.navigate(['/unit', selectedUnit.id]);
+  public btnCloseUnitDeleteModalClick() : void {
+    this.mdlUnitDeleteShow = false;
   }
 
 }
