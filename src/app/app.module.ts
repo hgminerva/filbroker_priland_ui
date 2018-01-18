@@ -52,6 +52,7 @@ import { SettingsService } from './settings/settings.service';
 import { SoldUnitService } from './soldUnit/soldUnit.service';
 import { UnitService } from './unit/unit.service';
 import { UserService } from './user/user.service';
+import { FooterService } from './footer/footer.service';
 
 const routes: Routes = [
   { path: '', component: HomeLanding },
@@ -119,7 +120,8 @@ const routes: Routes = [
     SettingsService,
     SoldUnitService,
     UnitService,
-    UserService
+    UserService,
+    FooterService
   ],
   bootstrap: [AppComponent]
 })

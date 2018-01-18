@@ -4,14 +4,16 @@
 <br>
 
 <div class="content-wrapper">
+
     <div class="container-fluid">
 
+        <!-- crumbs -->
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="/menu">Menu</a>
+                <a routerLink="/menu">Menu</a>
             </li>
             <li class="breadcrumb-item">
-                <a href="/user">User List</a>
+                <a routerLink="/user">User List</a>
             </li>
             <li class="breadcrumb-item active">{{title}}</li>
         </ol>
@@ -19,29 +21,27 @@
 
         <div class="card">
 
-            <!-- Buttons -->
+            <!-- detail operations, e.g., save, close -->
             <div class="card-header">
-                <div class="row">
-                    <table border="0" style="width: 100%;">
-                        <tr>
-                            <td style="width: 59%;">
-                                <h4>{{title}}</h4>
-                            </td>
-                            <td style="width: 1%;"></td>
-                            <td style="width: 40%;" align="right">
-                                <button class="btn btn-primary" (click)="btnSaveUserClick()" id="btnSaveUser">
-                                    <i class="fa fa-save fa-fw"></i> Save
-                                </button>
-                                <button class="btn btn-danger" routerLink="/user">
-                                    <i class="fa fa-close fa-fw"></i> Close
-                                </button>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+                <table border="0" style="width: 100%;">
+                    <tr>
+                        <td style="width: 59%;">
+                            <h4>{{title}}</h4>
+                        </td>
+                        <td style="width: 1%;"></td>
+                        <td style="width: 40%;" align="right">
+                            <button class="btn btn-primary" (click)="btnSaveUserClick()" id="btnSaveUser">
+                                <i class="fa fa-save fa-fw"></i> Save
+                            </button>
+                            <button class="btn btn-danger" routerLink="/user">
+                                <i class="fa fa-close fa-fw"></i> Close
+                            </button>
+                        </td>
+                    </tr>
+                </table>
             </div>
 
-            <!-- Detail -->
+            <!-- detail fields  -->
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
@@ -73,81 +73,80 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> <!-- <div class="card-body"> -->
             
+            <!-- detail line1 (user rights) -->
             <div class="card-body">
                 <div class="row">
-                    <table border="0" style="width: 100%;">
-                        <tr>
-                            <td style="width: 100%;" align="right">
+                    <div class="col-md-12">
+                        <div class="col-sm-12" style="padding: 5px 0px 5px 0px;">
+                            <p class="float-right">
                                 <button type="button" class="btn btn-primary" (click)="btnAddUserRightsClick()">
                                     <i class="fa fa-plus"></i> Add
                                 </button>
                                 <button type="button" class="btn btn-primary" (click)="btnCopyUserRightsClick()">
                                     <i class="fa fa-clone"></i> Copy
                                 </button>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div class="row" style="padding: 5px 0px 5px 0px;">
-                    <wj-flex-grid #fgdUserRights [itemsSource]="fgdUserRightsCollection" [selectionMode]="3">
-                        <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
-                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
-                                <button class="btn btn-primary btn-sm btn-block" (click)="btnEditUserRightsClick()">
-                                    <i class="fa fa-edit fa-fw"></i> Edit
-                                </button>
-                            </ng-template>
-                        </wj-flex-grid-column>
-                        <wj-flex-grid-column [header]="Delete" [isReadOnly]="true" [width]="90">
-                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
-                                <button class="btn btn-danger btn-sm btn-block" (click)="btnDeleteUserRightsClick()">
-                                    <i class="fa fa-trash fa-fw"></i> Delete
-                                </button>
-                            </ng-template>
-                        </wj-flex-grid-column>
-                        <wj-flex-grid-column [header]="'Page'"      [binding]="'page'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
-                        <wj-flex-grid-column [header]="'Edit'"      [binding]="'canEdit'" [isReadOnly]="true" [width]="70"></wj-flex-grid-column>
-                        <wj-flex-grid-column [header]="'Save'"      [binding]="'canSave'" [isReadOnly]="true" [width]="70"></wj-flex-grid-column>
-                        <wj-flex-grid-column [header]="'Lock'"      [binding]="'canLock'" [isReadOnly]="true" [width]="70"></wj-flex-grid-column>
-                        <wj-flex-grid-column [header]="'Unlock'"    [binding]="'canUnlock'" [isReadOnly]="true" [width]="70"></wj-flex-grid-column>
-                        <wj-flex-grid-column [header]="'Print'"     [binding]="'canPrint'" [isReadOnly]="true" [width]="70"></wj-flex-grid-column>
-                        <wj-flex-grid-column [header]="'Delete'"    [binding]="'canDelete'" [isReadOnly]="true" [width]="70"></wj-flex-grid-column>
-                    </wj-flex-grid>
-
-                    <br>
-
-                    <div class="col-sm-12 btn-group" style="padding: 5px 0px 5px 0px;">
-                        <button type="button" class="btn btn-info" (click)="fgdUserRightsCollection.moveToFirstPage()">
-                            <i class="fa fa-fast-backward"></i> First
-                        </button>
-                        <button type="button" class="btn btn-info"  (click)="fgdUserRightsCollection.moveToPreviousPage()">
-                            <i class="fa fa-step-backward"></i> Previous
-                        </button>
-                        <button type="button" class="btn btn-info" disabled style="width:100px">
-                            {{ fgdUserRightsCollection.pageIndex + 1 }} / {{ fgdUserRightsCollection.pageCount }}
-                        </button>
-                        <button type="button" class="btn btn-info" (click)="fgdUserRightsCollection.moveToNextPage()">
-                            Next
-                            <i class="fa fa-step-forward"></i>
-                        </button>
-                        <button type="button" class="btn btn-info" (click)="fgdUserRightsCollection.moveToLastPage()">
-                            Last
-                            <i class="fa fa-fast-forward"></i>
-                        </button>
+                            </p>
+                        </div>
+                        <wj-flex-grid #fgdUserRights [itemsSource]="fgdUserRightsCollection" [selectionMode]="3">
+                            <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
+                                    <button class="btn btn-primary btn-sm btn-block" (click)="btnEditUserRightsClick()">
+                                        <i class="fa fa-edit fa-fw"></i> Edit
+                                    </button>
+                                </ng-template>
+                            </wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="Delete" [isReadOnly]="true" [width]="90">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
+                                    <button class="btn btn-danger btn-sm btn-block" (click)="btnDeleteUserRightsClick()">
+                                        <i class="fa fa-trash fa-fw"></i> Delete
+                                    </button>
+                                </ng-template>
+                            </wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'Page'"      [binding]="'page'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'Edit'"      [binding]="'canEdit'" [isReadOnly]="true" [width]="70"></wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'Save'"      [binding]="'canSave'" [isReadOnly]="true" [width]="70"></wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'Lock'"      [binding]="'canLock'" [isReadOnly]="true" [width]="70"></wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'Unlock'"    [binding]="'canUnlock'" [isReadOnly]="true" [width]="70"></wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'Print'"     [binding]="'canPrint'" [isReadOnly]="true" [width]="70"></wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'Delete'"    [binding]="'canDelete'" [isReadOnly]="true" [width]="70"></wj-flex-grid-column>
+                        </wj-flex-grid>
+                        <div class="col-sm-12 btn-group" style="padding: 5px 0px 5px 0px;">
+                            <button type="button" class="btn btn-info" (click)="fgdUserRightsCollection.moveToFirstPage()">
+                                <i class="fa fa-fast-backward"></i> First
+                            </button>
+                            <button type="button" class="btn btn-info"  (click)="fgdUserRightsCollection.moveToPreviousPage()">
+                                <i class="fa fa-step-backward"></i> Previous
+                            </button>
+                            <button type="button" class="btn btn-info" disabled style="width:100px">
+                                {{ fgdUserRightsCollection.pageIndex + 1 }} / {{ fgdUserRightsCollection.pageCount }}
+                            </button>
+                            <button type="button" class="btn btn-info" (click)="fgdUserRightsCollection.moveToNextPage()">
+                                Next
+                                <i class="fa fa-step-forward"></i>
+                            </button>
+                            <button type="button" class="btn btn-info" (click)="fgdUserRightsCollection.moveToLastPage()">
+                                Last
+                                <i class="fa fa-fast-forward"></i>
+                            </button>
+                        </div>
                     </div>
-                </div>
+                </div>  
+            </div> <!-- <div class="card-body"> -->
 
-            </div>
-        </div>
-    </div>
+        </div> <!-- <div class="card"> -->
+
+    </div> <!-- <div class="container-fluid"> -->
 
     <app-footer [data]="user"></app-footer>
 
-</div>
+</div> <!-- <div class="content-wrapper"> -->
 
-<!-- delete user right -->
+
+
+
+<!-- delete user right modal -->
 <div id="mdlUserRightDelete" 
      class="modal fade" 
      role="dialog"
@@ -173,7 +172,9 @@
 </div>
 
 
-<!-- copy user right -->
+
+
+<!-- copy user right modal -->
 <div id="mdlUserRightCopy" 
      class="modal fade" 
      role="dialog"
@@ -203,7 +204,8 @@
 
 
 
-<!-- Edit user right  -->
+
+<!-- edit user right modal -->
 <div id="mdlUserRightEdit" 
      class="modal fade" role="dialog" 
      [ngStyle]="{'display': mdlUserRightEditShow ? 'block' : 'none', 'opacity': 1}">

@@ -1,79 +1,106 @@
-// Angular
+// angular
 import { Component,ViewContainerRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-// Services
-import { ProjectService } from '../project/project.service';
-
-// WijMo
+// wijmo
 import { ObservableArray, CollectionView} from 'wijmo/wijmo';
 
-// Beautification
+// message box
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
-// Model
+// service(s)
+import { CustomerService } from './customer.service';
+
+// model(s)
 import { MstCustomer } from '../model/model.mst.customer';
 
 @Component({
   templateUrl: './customer.detail.html'
 })
-
 export class CustomerDetail {
-  public title = 'Customer Detail';
 
-  public customerStatusData : ObservableArray;
+  // ==================
+  // private properties
+  // ==================
 
-  private projectSub : any;
-  private projectSavedSub : any;
-  private projectLockedSub : any;
-  private projectUnlockedSub : any;
-  private projectStatusSub : any;
+  // detail
+  private customerSub: any;
 
+  // detail operations
+  private customerSavedSub: any;
+  private customerLockedSub: any;
+  private customerUnlockedSub: any;
+
+  // combo boxes
+  private dropDownsSub: any;
+
+  // =================
+  // public properties
+  // =================
+
+  public title: string = 'Customer Detail';
+
+  // model(s)
   public customer : MstCustomer = {
-     id: 0,
-    customerCode: "NA",
-    lastName: "NA",
-    firstName: "NA",
-    middleName: "NA",
+    id: 0,
+    customerCode: "",
+    lastName: "",
+    firstName: "",
+    middleName: "",
     fullName: "",
-    civilStatus: "NA",
-    gender: "NA",
-    birthDate: "NA",
-    tin: "NA",
-    idType: "NA",
-    idNumber: "NA",
-    address: "NA",
-    city: "NA",
-    province: "NA",
-    country: "NA",
-    zipCode: "NA",
-    emailAddress: "NA",
-    telephoneNumber: "NA",
-    mobileNumber: "NA",
-    employer: "NA",
-    employerIndustry: "NA",
-    noOfYearsEmployed: "NA",
-    position: "NA",
-    employmentStatus: "OPEN",
-    employerAddress: "NA",
-    employerCity: "NA",
-    employerProvince: "NA",
-    employerCountry: "NA",
-    employerZipCode: "NA",
-    employerTelephoneNumber: "NA",
-    employerMobileNumber: "NA",
-    remarks: "NA",
-    status: "OPEN",
-    picture: "NA",
-    isLocked: "false",
-    createdBy: "",
+    civilStatus: "SINGLE",
+    gender: "MALE",
+    birthDate: "",
+    tin: "",
+    idType: "DRIVERS LICENSE",
+    idNumber: "",
+    address: "",
+    city: "",
+    province: "",
+    country: "",
+    zipCode: "",
+    emailAddress: "",
+    telephoneNumber: "",
+    mobileNumber: "",
+    employer: "",
+    employerIndustry: "",
+    noOfYearsEmployed: 0,
+    position: "",
+    employmentStatus: "PERMANENT",
+    employerAddress: "",
+    employerCity: "",
+    employerProvince: "",
+    employerCountry: "",
+    employerZipCode: "",
+    employerTelephoneNumber: "",
+    employerMobileNumber: "",
+    remarks: "",
+    status: "ACTIVE",
+    picture: "",
+    isLocked: false,
+    createdBy: 0,
     createdDateTime: "",
-    updatedBy: "",
+    updatedBy: 0,
     updatedDateTime: ""
   };
 
+  // combo box data sources
+  public cmbStatusData: ObservableArray;
+  public cmbCivilStatusData: ObservableArray;
+  public cmbGenderData: ObservableArray;
+  public cmbIDTypeData: ObservableArray;
+  public cmbEmploymentStatusData: ObservableArray;
+
+  // tab index (for large number of fields)
+  public tabDetail1 = new Array(true, false);
+
+  // =======
+  // angular
+  // =======
+
+  // constructor
   constructor(
-    private projectService: ProjectService,
+    private customerService: CustomerService,
     private router: Router,
     private toastr: ToastsManager,
     private viewContainer: ViewContainerRef,
@@ -82,20 +109,23 @@ export class CustomerDetail {
     this.toastr.setRootViewContainerRef(viewContainer);
   }
 
+  // ng
   public ngOnInit() {
-    this.getDropDowns();
-    this.getProject();
+    this.getCustomer();
   }
-  
   public ngOnDestroy() {
-    if( this.projectSub != null) this.projectSub.unsubscribe();
-    if( this.projectSavedSub != null) this.projectSavedSub.unsubscribe();
-    if( this.projectStatusSub != null) this.projectStatusSub.unsubscribe();
-    if( this.projectLockedSub != null) this.projectLockedSub.unsubscribe();
-    if( this.projectUnlockedSub != null) this.projectUnlockedSub.unsubscribe();
+    if( this.customerSub != null) this.customerSub.unsubscribe();
+    if( this.customerSavedSub != null) this.customerSavedSub.unsubscribe();
+    if( this.customerLockedSub != null) this.customerLockedSub.unsubscribe();
+    if( this.customerUnlockedSub != null) this.customerUnlockedSub.unsubscribe();
+    if( this.dropDownsSub != null) this.dropDownsSub.unsubscribe();
   }
 
-  public getIdParameter() {
+  // ===============
+  // private methods
+  // ===============
+
+  private getIdParameter() {
     let id = 0;
     this.activatedRoute.params.subscribe(params => {
       id = params['id'];
@@ -103,107 +133,211 @@ export class CustomerDetail {
     return id;
   }
 
-  public getProject() {
-    this.projectService.getProject(this.getIdParameter());
+  // ==============
+  // public methods
+  // ==============
 
-    this.projectSub = this.projectService.projectObservable
+  // detail
+  public getCustomer() {
+    this.customerService.getCustomer(this.getIdParameter());
+
+    this.customerSub = this.customerService.customerObservable
       .subscribe(
         data => {
+          this.customer.id = data.id;
+          this.customer.customerCode = data.customerCode;
+          this.customer.lastName = data.lastName;
+          this.customer.firstName = data.firstName;
+          this.customer.middleName = data.middleName;
+          this.customer.fullName = data.fullName;
+          this.customer.civilStatus = data.civilStatus;
+          this.customer.gender = data.gender;
+          this.customer.birthDate = data.birthDate;
+          this.customer.tin = data.tin;
+          this.customer.idType = data.idType;
+          this.customer.idNumber = data.idNumber;
+          this.customer.address = data.address;
+          this.customer.city = data.city;
+          this.customer.province = data.province;
+          this.customer.country = data.country;
+          this.customer.zipCode = data.zipCode;
+          this.customer.emailAddress = data.emailAddress;
+          this.customer.telephoneNumber = data.telephoneNumber;
+          this.customer.mobileNumber = data.mobileNumber;
+          this.customer.employer = data.employer;
+          this.customer.employerIndustry = data.employerIndustry;
+          this.customer.noOfYearsEmployed = data.noOfYearsEmployed;
+          this.customer.position = data.position;
+          this.customer.employmentStatus = data.employmentStatus;
+          this.customer.employerAddress = data.employerAddress;
+          this.customer.employerCity = data.employerCity;
+          this.customer.employerProvince = data.employerProvince;
+          this.customer.employerCountry = data.employerCountry;
+          this.customer.employerZipCode = data.employerZipCode;
+          this.customer.employerTelephoneNumber = data.employerTelephoneNumber;
+          this.customer.employerMobileNumber = data.employerMobileNumber;
+          this.customer.remarks = data.remarks;
+          this.customer.status = data.status;
+          this.customer.picture = data.picture;
+          this.customer.isLocked = data.isLocked;
+          this.customer.createdBy = data.createdBy;
+          this.customer.createdDateTime = data.createdDateTime;
+          this.customer.updatedBy = data.updatedBy;
+          this.customer.updatedDateTime = data.updatedDateTime;    
 
+          this.getDropDowns(data);
         }
       );
   }
 
-  public getDropDowns() : void {
-    // this.projectService.getDropDowns(this.toastr);
+  // detail combo boxes
+  public getDropDowns(defaultValues: any) : void {
+    this.customerService.getDropDowns();
+    this.dropDownsSub = this.customerService.dropDownsObservable.subscribe(
+      data => {
+        let statuses = new ObservableArray();
+        let civilStatuses = new ObservableArray();
+        let genders = new ObservableArray();
+        let idTypes = new ObservableArray();
+        let employmentStatuses = new ObservableArray();
 
-    // this.projectStatusSub = this.projectService.dropDownsObservable.subscribe(
-    //   data => {
-    //     let projectStatuses = new ObservableArray();
+        if (data.length > 0) {
+          for (var i = 0; i <= data.length - 1; i++) {
+            if (data[i].category == "CUSTOMER STATUS") {
+              statuses.push({
+                description: data[i].description,
+                value: data[i].value
+              });
+            }
+            if (data[i].category == "GENDER") {
+              genders.push({
+                description: data[i].description,
+                value: data[i].value
+              });
+            }
+            if (data[i].category == "CIVIL STATUS") {
+              civilStatuses.push({
+                description: data[i].description,
+                value: data[i].value
+              });
+            }
+            if (data[i].category == "ID TYPE") {
+              idTypes.push({
+                description: data[i].description,
+                value: data[i].value
+              });
+            }
+            if (data[i].category == "EMPLOYMENT STATUS") {
+              employmentStatuses.push({
+                description: data[i].description,
+                value: data[i].value
+              });
+            }
+          }
+        }
+        this.cmbStatusData = statuses;
+        this.cmbCivilStatusData = civilStatuses;
+        this.cmbGenderData = genders;
+        this.cmbIDTypeData = idTypes;
+        this.cmbEmploymentStatusData = employmentStatuses;
 
-    //     if (data.length > 0) {
-    //       for (var i = 0; i <= data.length - 1; i++) {
-    //         if (data[i].category == "PROJECT STATUS") {
-    //           projectStatuses.push({
-    //             id: data[i].id,
-    //             category: data[i].category,
-    //             description: data[i].description,
-    //             value: data[i].value
-    //           });
-    //         }
-    //       }
-    //     }
-
-    //   }
-    // );
+        setTimeout(() => { this.customer.status = defaultValues.status; }, 100);
+        setTimeout(() => { this.customer.civilStatus = defaultValues.civilStatus; }, 100);
+        setTimeout(() => { this.customer.gender = defaultValues.gender; }, 100);
+        setTimeout(() => { this.customer.idType = defaultValues.idType; }, 100);
+        setTimeout(() => { this.customer.employmentStatus = defaultValues.employmentStatus; }, 100);
+      }
+    );
   }
+  
+  // ======
+  // events
+  // ======
 
-  public btnSaveProjectClick() : void {
-    (<HTMLButtonElement>document.getElementById("btnSaveProject")).disabled = true;
-    (<HTMLButtonElement>document.getElementById("btnSaveProject")).innerHTML = "<i class='fa fa-plus fa-fw'></i> Saving...";
+  // detail operations
+  public btnSaveCustomerClick() : void {
+    let btnSaveCustomer:Element = document.getElementById("btnSaveCustomer");
+
+    btnSaveCustomer.setAttribute("disabled","disabled");
+    btnSaveCustomer.innerHTML = "<i class='fa fa-plus fa-fw'></i> Saving...";
     
-    //this.projectService.saveProject(this.project);
-
-    this.projectSavedSub =  this.projectService.projectSavedObservable.subscribe(
+    this.customerService.saveCustomer(this.customer);
+    this.customerSavedSub =  this.customerService.customerSavedObservable.subscribe(
       data => {
           if(data == 1) {
               this.toastr.success("Saving successful.");
-              (<HTMLButtonElement>document.getElementById("btnSaveProject")).disabled = false;
-              (<HTMLButtonElement>document.getElementById("btnSaveProject")).innerHTML = "<i class='fa fa-plus fa-fw'></i> Save";
+              btnSaveCustomer.removeAttribute("disabled");
+              btnSaveCustomer.innerHTML = "<i class='fa fa-plus fa-fw'></i> Save";
           } else if(data == 0) {
               this.toastr.error("Saving failed.");   
-              (<HTMLButtonElement>document.getElementById("btnSaveProject")).disabled = true;
-              (<HTMLButtonElement>document.getElementById("btnSaveProject")).innerHTML = "<i class='fa fa-plus fa-fw'></i> Save";
+              btnSaveCustomer.removeAttribute("disabled");
+              btnSaveCustomer.innerHTML = "<i class='fa fa-plus fa-fw'></i> Save";
           }
       }
     );
   }
+  public btnLockCustomerClick() : void {
+    let btnLockCustomer:Element = document.getElementById("btnLockCustomer");
 
-  public btnLockProjectClick() : void {
-    (<HTMLButtonElement>document.getElementById("btnLockProject")).disabled = true;
-    (<HTMLButtonElement>document.getElementById("btnLockProject")).innerHTML = "<i class='fa fa-lock fa-fw'></i> Locking...";
-    
-    //this.projectService.lockProject(this.project);
+    btnLockCustomer.setAttribute("disabled","disabled");
+    btnLockCustomer.innerHTML = "<i class='fa fa-plus fa-fw'></i> Locking...";
 
-    this.projectLockedSub =  this.projectService.projectLockedObservable.subscribe(
+    this.customerService.lockCustomer(this.customer);
+    this.customerLockedSub =  this.customerService.customerLockedObservable.subscribe(
       data => {
           if(data == 1) {
               this.toastr.success("Locking successful.");
-              //this.project.isLocked = true;
-              (<HTMLButtonElement>document.getElementById("btnLockProject")).disabled = false;
-              (<HTMLButtonElement>document.getElementById("btnLockProject")).innerHTML = "<i class='fa fa-lock fa-fw'></i> Lock";
+              this.customer.isLocked = true;
+              btnLockCustomer.removeAttribute("disabled");
+              btnLockCustomer.innerHTML = "<i class='fa fa-lock fa-fw'></i> Lock";
           } else if(data == 0) {
               this.toastr.error("Locking failed.");   
-              (<HTMLButtonElement>document.getElementById("btnLockProject")).disabled = false;
-              (<HTMLButtonElement>document.getElementById("btnLockProject")).innerHTML = "<i class='fa fa-lock fa-fw'></i> Lock";
+              btnLockCustomer.removeAttribute("disabled");
+              btnLockCustomer.innerHTML = "<i class='fa fa-lock fa-fw'></i> Lock";
           }
       }
     );
   }
+  public btnUnlockCustomerClick() : void {
+    let btnUnlockCustomer:Element = document.getElementById("btnUnlockCustomer");
 
-  public btnUnlockProjectClick() : void {
-    (<HTMLButtonElement>document.getElementById("btnUnlockProject")).disabled = true;
-    (<HTMLButtonElement>document.getElementById("btnUnlockProject")).innerHTML = "<i class='fa fa-unlock fa-fw'></i> Unlocking...";
-    
-    //this.projectService.unlockProject(this.project);
+    btnUnlockCustomer.setAttribute("disabled","disabled");
+    btnUnlockCustomer.innerHTML = "<i class='fa fa-plus fa-fw'></i> Unlocking...";
 
-    this.projectUnlockedSub = this.projectService.projectUnlockedObservable.subscribe(
+    this.customerService.unlockCustomer(this.customer);
+    this.customerUnlockedSub = this.customerService.customerUnlockedObservable.subscribe(
       data => {
           if(data == 1) {
               this.toastr.success("Unlocking successful.");
-              //this.project.isLocked = false;
-              (<HTMLButtonElement>document.getElementById("btnUnlockProject")).disabled = false;
-              (<HTMLButtonElement>document.getElementById("btnUnlockProject")).innerHTML = "<i class='fa fa-unlock fa-fw'></i> Unlock";
+              this.customer.isLocked = false;
+              btnUnlockCustomer.removeAttribute("disabled");
+              btnUnlockCustomer.innerHTML = "<i class='fa fa-lock fa-fw'></i> Unlock";
           } else if(data == 0) {
               this.toastr.error("Unlocking failed.");   
-              (<HTMLButtonElement>document.getElementById("btnUnlockProject")).disabled = false;
-              (<HTMLButtonElement>document.getElementById("btnUnlockProject")).innerHTML = "<i class='fa fa-unlock fa-fw'></i> Unlock";
+              btnUnlockCustomer.removeAttribute("disabled");
+              btnUnlockCustomer.innerHTML = "<i class='fa fa-lock fa-fw'></i> Unlock";
           }
       }
     );
   }
 
+  // detail tab event (for multiple detail number of fields)
+  public tabDetail1Click(index: number) {
+    for (var i = 0; i <= this.tabDetail1.length - 1; i++) {
+      if(index==i) this.tabDetail1[i] = true;
+      else this.tabDetail1[i] = false;
+    }
+  }
 
-
-
+  //  full name events
+  public txtFirstNameKeyup() : void {
+    this.customer.fullName = this.customer.lastName + ", " + this.customer.firstName + " " + this.customer.middleName;
+  }
+  public txtMiddleNameKeyup() : void {
+    this.customer.fullName = this.customer.lastName + ", " + this.customer.firstName + " " + this.customer.middleName;
+  }
+  public txtLastNameKeyup() : void {
+    this.customer.fullName = this.customer.lastName + ", " + this.customer.firstName + " " + this.customer.middleName;
+  }
+  
 }

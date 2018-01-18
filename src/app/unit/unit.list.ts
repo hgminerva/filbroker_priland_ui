@@ -1,34 +1,45 @@
-// Angular
+// angular
 import { Component,ViewContainerRef,ViewChild,ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 
-// Services
+// services
 import { UnitService } from './unit.service';
 
-// WijMo
+// wijmo
 import {ObservableArray, CollectionView} from 'wijmo/wijmo';
 import { WjComboBox } from 'wijmo/wijmo.angular2.input';
 
-// Messagebox 
+// message box 
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
-// Model
+// model(s)
 import { MstUnit } from '../model/model.mst.unit';
 
 @Component({
   templateUrl: './unit.list.html'
 })
 export class UnitList {
+
+  // ==================
   // private properties
+  // ==================
+
   private currentDate = new Date();
   private currentDateString = [this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, this.currentDate.getDate()].join('-');
 
+  // list and list operations
   private unitsSub : any;
-  private projectsSub : any;
   private unitDeletedSub : any;
 
+  // filters
+  private projectsSub : any;
+  
+  // =================
   // public properties
-  public title = 'Unit List';
+  // =================
+
+  public title : string = 'Unit List';
+  public filterUnit : string;
 
   public unit : MstUnit = {
     id: 0,
@@ -50,17 +61,23 @@ export class UnitList {
     updatedDateTime: this.currentDateString
   };
 
-  // combo boxes
+  // combo boxes data
+  public cmbProjectsData : ObservableArray;
+
+  // combo boxes element (if there are events)
   @ViewChild("cmbProjects")
   public cmbProjects:ElementRef;
 
-  public cmbProjectsData : ObservableArray;
-
-  // list data source
+  // unit list data source
   public fgdUnitsData : ObservableArray;
   public fgdUnitsCollection : CollectionView;
 
+  // modals
   public mdlUnitDeleteShow : boolean = false;
+
+  // =======
+  // angular
+  // =======
 
   // constructor
   constructor(
@@ -86,7 +103,11 @@ export class UnitList {
     if( this.unitDeletedSub != null) this.unitDeletedSub.unsubscribe();
   }
 
+  // ==============
   // public methods
+  // ==============
+
+  // unit list
   public getUnitsPerProjectId(projectId: number) : void {
     let units = new ObservableArray();
 
@@ -101,6 +122,8 @@ export class UnitList {
       }
     );
   }
+
+  // filters
   public getProjects() : void {
     this.unitService.getProjects();
 
@@ -114,7 +137,11 @@ export class UnitList {
     );
   }
 
+  // ======
   // events
+  // ======
+
+  // filter events
   public cmbProjectsChange() : void {
     let projectId = this.cmbProjectsData[this.cmbProjects["selectedIndex"]]["id"];
     let project = this.cmbProjectsData[this.cmbProjects["selectedIndex"]]["project"];
@@ -125,7 +152,7 @@ export class UnitList {
     this.getUnitsPerProjectId(projectId);
   }
 
-  // list operations
+  // unit list operations
   public btnAddUnitClick() : void {
     let btnAddUnit:Element = document.getElementById("btnAddUnit");
 
@@ -142,7 +169,7 @@ export class UnitList {
     this.router.navigate(['/unit', selectedUnit.id]);
   }
 
-  // delete modal operations
+  // delete unit modal operations
   public btnOkUnitDeleteModalClick() : void {
     let btnOkUnitDeleteModal:Element = document.getElementById("btnOkUnitDeleteModal");
     let btnCloseUnitDeleteModal:Element = document.getElementById("btnCloseUnitDeleteModal");

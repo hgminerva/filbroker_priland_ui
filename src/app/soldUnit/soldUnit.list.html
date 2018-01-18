@@ -1,13 +1,13 @@
 <menu-root></menu-root>
 
 <br>
-
 <br>
 
 <div class="content-wrapper">
+
     <div class="container-fluid">
         
-        <!-- Breadcrumbs -->
+        <!-- crumbs -->
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a routerLink="/menu">Menu</a>
@@ -15,10 +15,10 @@
             <li class="breadcrumb-item active">{{title}}</li>
         </ol>
 
-        <!-- List -->
+        <!-- list -->
         <div class="card">
 
-            <!-- Page Title / Add -->
+            <!-- title, list operations, e.g., add -->
             <div class="card-header">
                 <table border="0" style="width: 100%;">
                     <tr>
@@ -38,7 +38,7 @@
                 </table>
             </div>
 
-            <!-- Filter -->
+            <!-- filters -->
             <div class="card-header">
                 <div class="form-horizontal">
                     <div class="input-group">
@@ -66,17 +66,14 @@
                 </div>
             </div>
 
-            <!-- Flexgrid List -->
+            <!-- sold unit list -->
             <div class="card-body">
                 <wj-flex-grid #fgdSoldUnit [itemsSource]="fgdSoldUnitCollection" [selectionMode]="3" [frozenColumns]="2">
                     <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
                         <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
                             <button 
                                 class="btn btn-primary btn-sm btn-block" 
-                                (click)="btnEditSoldUnitClick()" 
-                                data-toggle="modal" 
-                                data-backdrop="static"
-                                data-keyboard="false"> 
+                                (click)="btnEditSoldUnitClick()"> 
                                     <i class="fa fa-edit fa-fw"></i> Edit
                             </button>
                         </ng-template>
@@ -85,10 +82,7 @@
                         <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
                             <button 
                                 class="btn btn-danger btn-sm btn-block" 
-                                data-toggle="modal" 
-                                data-backdrop="static"
-                                data-keyboard="false" 
-                                data-target="#mdlDeleteSoldUnit">
+                                (click)="btnDeleteSoldUnitClick()"> 
                                     <i class="fa fa-trash fa-fw"></i> Delete
                             </button>
                         </ng-template>
@@ -102,54 +96,55 @@
                     <wj-flex-grid-column [header]="'Price'"     [binding]="'price'"             [isReadOnly]="true" [width]="150"></wj-flex-grid-column>
                     <wj-flex-grid-column [header]="'L'"         [binding]="'isLocked'"          [isReadOnly]="true" [width]="50"></wj-flex-grid-column>
                 </wj-flex-grid>
-            </div>
-
-            <!-- Navigation -->
-            <div class="card-footer">
-                <div class="row">
-                    <div class="col-sm-12 btn-group" id="">
-                        <button type="button" class="btn btn-info" (click)="fgdSoldUnitCollection.moveToFirstPage()">
-                            <i class="fa fa-fast-backward"></i> First
-                        </button>
-                        <button type="button" class="btn btn-info" (click)="fgdSoldUnitCollection.moveToPreviousPage()">
-                            <i class="fa fa-step-backward"></i> Previous
-                        </button>
-                        <button type="button" class="btn btn-info" disabled style="width:100px">
-                            {{ fgdSoldUnitCollection.pageIndex + 1 }} / {{ fgdSoldUnitCollection.pageCount }}
-                        </button>
-                        <button type="button" class="btn btn-info" (click)="fgdSoldUnitCollection.moveToNextPage()">
-                            Next
-                            <i class="fa fa-step-forward"></i>
-                        </button>
-                        <button type="button" class="btn btn-info" (click)="fgdSoldUnitCollection.moveToLastPage()">
-                            Last
-                            <i class="fa fa-fast-forward"></i>
-                        </button>
-                    </div>
+                <div class="col-sm-12 btn-group" style="padding: 5px 0px 5px 0px;">
+                    <button type="button" class="btn btn-info" (click)="fgdSoldUnitCollection.moveToFirstPage()">
+                        <i class="fa fa-fast-backward"></i> First
+                    </button>
+                    <button type="button" class="btn btn-info" (click)="fgdSoldUnitCollection.moveToPreviousPage()">
+                        <i class="fa fa-step-backward"></i> Previous
+                    </button>
+                    <button type="button" class="btn btn-info" disabled style="width:100px">
+                        {{ fgdSoldUnitCollection.pageIndex + 1 }} / {{ fgdSoldUnitCollection.pageCount }}
+                    </button>
+                    <button type="button" class="btn btn-info" (click)="fgdSoldUnitCollection.moveToNextPage()">
+                        Next
+                        <i class="fa fa-step-forward"></i>
+                    </button>
+                    <button type="button" class="btn btn-info" (click)="fgdSoldUnitCollection.moveToLastPage()">
+                        Last
+                        <i class="fa fa-fast-forward"></i>
+                    </button>
                 </div>
             </div>
 
-        </div>
+        </div> <!-- <div class="card"> -->
 
-    </div>
+    </div> <!-- <div class="container-fluid"> -->
 
     <app-footer [data]="fgdSoldUnitCollection"></app-footer>
-</div>
 
-<!-- Delete Unit -->
-<div class="modal fade" id="mdlDeleteSoldUnitModal" role="dialog">
-    <div class="modal-dialog modal-sm">
+</div> <!-- <div class="content-wrapper"> -->
+
+
+
+
+<!-- delete sold unit -->
+<div id="mdlSoldUnitDelete" 
+     class="modal fade" 
+     role="dialog"
+     [ngStyle]="{'display': mdlSoldUnitDeleteShow ? 'block' : 'none', 'opacity': 1}">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Delete</h4>
+                <h4 class="modal-title">Delete Sold Unit</h4>
             </div>
             <div class="modal-body">
-                Delete Sold Unit?
+                Delete {{fgdSoldUnitCollection.currentItem != null ? fgdSoldUnitCollection.currentItem.soldUnitNumber : ""}}?
             </div>
             <div class="modal-footer" align="right">
-                <button type="button" id="btnDeleteSoldUnit" class="btn btn-danger" (click)="btnDeleteSoldUnitClick()">
-                    <i class="fa fa-trash fa-fw"></i> Delete</button>
-                <button type="button" id="btnDeleteCloseSoldUnit" class="btn btn-success" data-dismiss="modal">
+                <button type="button" id="btnOkSoldUnitDeleteModal" class="btn btn-danger" (click)="btnOkSoldUnitDeleteModalClick()">
+                    <i class="fa fa-trash fa-fw"></i> Ok</button>
+                <button type="button" id="btnCloseSoldUnitDeleteModal" class="btn btn-primary" (click)="btnCloseSoldUnitDeleteModalClick()">
                     <i class="fa fa-close fa-fw"></i> Close</button>
             </div>
         </div>

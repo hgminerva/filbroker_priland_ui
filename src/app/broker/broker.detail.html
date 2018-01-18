@@ -7,7 +7,7 @@
 
     <div class="container-fluid">
 
-        <!-- Breadcrumbs -->
+        <!-- crumbs -->
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a routerLink="/menu">Menu</a>
@@ -21,7 +21,7 @@
 
         <div class="card">
 
-            <!-- Detail operations, print, lock, unlock, save, close -->
+            <!-- detail operations, print, lock, unlock, save, close -->
             <div class="card-header">
                 <table border="0" style="width: 100%;">
                     <tr>
@@ -50,11 +50,11 @@
                 </table>
             </div>
 
-            <!-- Detail -->
+            <!-- detail -->
             <div class="card-body">
 
                 <div class="row">
-                    <ul class="nav nav-tabs" role="tablist" style="width:100%">
+                    <ul class="nav nav-pills" role="tablist" style="width:100%">
                         <li class="nav-item">
                             <a [ngClass]="{'active': tabDetail1[0], 'nav-link': true }" (click)="tabDetail1Click(0)" data-toggle="tab" role="tab">Broker Information</a>
                         </li>
@@ -79,7 +79,7 @@
                                         <div class="col-sm-9">
                                             <input 
                                                 [(ngModel)]="broker.brokerCode" 
-                                                [disabled]="broker.isLocked" 
+                                                [disabled]=true 
                                                 type="text" 
                                                 class="form-control">
                                         </div>
@@ -169,8 +169,8 @@
                                         <label class="col-sm-3 col-form-label text-right">Status</label>
                                         <div class="col-sm-9">
                                             <wj-combo-box 
-                                                #cmbBrokerStatus
-                                                [itemsSource]="cmbBrokerStatusData" 
+                                                #cmbStatus
+                                                [itemsSource]="cmbStatusData" 
                                                 [isEditable]="false" 
                                                 [isRequired]="true"
                                                 [displayMemberPath]="'value'" 
@@ -198,11 +198,11 @@
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label text-right">Birth Date</label>
                                         <div class="col-sm-9">
-                                            <input 
-                                                [(ngModel)]="broker.birthDate" 
-                                                [disabled]="broker.isLocked" 
-                                                type="text" 
-                                                class="form-control">
+                                            <wj-input-date #calBirthDate
+                                                [(text)]="broker.birthDate"
+                                                [isDisabled]="broker.isLocked"
+                                                format="M/d/yyyy">
+                                            </wj-input-date>
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -382,10 +382,10 @@
 
             </div> <!-- Card Body -->
 
-        </div>
+        </div> <!-- <div class="card"> -->
 
-    </div>
+    </div> <!-- <div class="container-fluid"> -->
 
-    <app-footer [data]=""></app-footer>
+    <app-footer [data]="broker"></app-footer>
     
-</div>
+</div> <!-- <div class="content-wrapper"> -->

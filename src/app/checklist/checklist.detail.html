@@ -7,6 +7,7 @@
 
     <div class="container-fluid">
 
+        <!-- crumbs -->
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a routerLink="/menu">Menu</a>
@@ -17,10 +18,9 @@
             <li class="breadcrumb-item active">{{title}}</li>
         </ol>
 
-
         <div class="card">
 
-            <!-- Buttons -->
+            <!-- detail operations -->
             <div class="card-header">
                 <table border="0" style="width: 100%;">
                     <tr>
@@ -29,29 +29,25 @@
                         </td>
                         <td style="width: 1%;"></td>
                         <td style="width: 40%;" align="right">
-                            <button 
-                                id="btnLockChecklist"
+                            <button id="btnLockChecklist"
                                 [disabled]="checklist.isLocked" 
                                 class="btn btn-primary" 
                                 (click)="btnLockChecklistClick()">
                                 <i class="fa fa-lock fa-fw"></i> Lock
                             </button>
-                            <button 
-                                id="btnUnlockChecklist"
+                            <button id="btnUnlockChecklist"
                                 [disabled]="!checklist.isLocked" 
                                 class="btn btn-primary" 
                                 (click)="btnUnlockChecklistClick()">
                                 <i class="fa fa-unlock fa-fw"></i> Unlock
                             </button>
-                            <button 
-                                id="btnSaveChecklist"
+                            <button id="btnSaveChecklist"
                                 [disabled]="checklist.isLocked" 
                                 class="btn btn-primary" 
                                 (click)="btnSaveChecklistClick()">
                                 <i class="fa fa-save fa-fw"></i> Save
                             </button>
-                            <button 
-                                id="btnCloseChecklist"
+                            <button id="btnCloseChecklist"
                                 class="btn btn-danger" 
                                 routerLink="/checklist">
                                 <i class="fa fa-close fa-fw"></i> Close
@@ -61,7 +57,7 @@
                 </table>
             </div>
 
-            <!-- Detail -->
+            <!-- detail -->
             <div class="card-body">
 
                 <div class="row">
@@ -89,11 +85,11 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label text-right">Date</label>
                             <div class="col-sm-9">
-                                <input 
-                                    [(ngModel)]="checklist.checklistDate" 
-                                    [disabled]="checklist.isLocked" 
-                                    type="text" 
-                                    class="form-control">
+                                <wj-input-date #calChecklistDate
+                                    [(text)]="checklist.checklistDate"
+                                    [isDisabled]="checklist.isLocked"
+                                    format="M/d/yyyy">
+                                </wj-input-date>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -138,12 +134,13 @@
                     </div>
                 </div> 
 
+                <!-- detail line(s) -->
                 <div class="row">
                     <div class="col-md-12" style="padding-bottom: 5px">
                         <table border="0" style="width: 100%;">
                             <tr>
                                 <td style="width: 100%;" align="right">
-                                    <button type="button" class="btn btn-primary" (click)="btnAddChecklistRequirementsClick()">
+                                    <button [disabled]="checklist.isLocked" type="button" class="btn btn-primary" (click)="btnAddChecklistRequirementsClick()">
                                         <i class="fa fa-plus"></i> Add
                                     </button>
                                 </td>
@@ -193,20 +190,21 @@
                         </button>
                     </div>
                 </div>
-            </div>  
+                
+            </div>  <!-- <div class="card-body"> -->
 
-        </div>
+        </div> <!-- <div class="card"> -->
 
-    </div>
+    </div> <!-- <div class="container-fluid"> -->
 
     <app-footer [data]="checklist"></app-footer>
 
-</div>
+</div> <!-- <div class="content-wrapper"> -->
 
 
 
 
-<!-- delete user right -->
+<!-- delete checklist requirement prompt modal -->
 <div id="mdlChecklistRequirementDelete" 
      class="modal fade" 
      role="dialog"
@@ -234,9 +232,7 @@
 
 
 
-
-
-<!-- Edit checklist requirement  -->
+<!-- edit checklist requirement modal  -->
 <div id="mdlChecklistRequirementEdit" 
      class="modal fade" role="dialog" 
      [ngStyle]="{'display': mdlChecklistRequirementEditShow ? 'block' : 'none', 'opacity': 1}">

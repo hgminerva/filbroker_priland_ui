@@ -4,9 +4,10 @@
 <br>
 
 <div class="content-wrapper">
+
     <div class="container-fluid">
         
-        <!-- Breadcrumbs -->
+        <!-- crumbs -->
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a routerLink="/menu">Menu</a>
@@ -14,10 +15,10 @@
             <li class="breadcrumb-item active">{{title}}</li>
         </ol>
 
-        <!-- List -->
+        <!-- list -->
         <div class="card">
 
-            <!-- Page Title / Add -->
+            <!-- title and add button -->
             <div class="card-header">
                 <table border="0" style="width: 100%;">
                     <tr>
@@ -37,7 +38,7 @@
                 </table>
             </div>
 
-            <!-- Filter -->
+            <!-- filters -->
             <div class="card-header">
                 <div class="form-horizontal">
                     <div class="input-group">
@@ -61,7 +62,7 @@
                 </div>
             </div>
 
-            <!-- Flexgrid List -->
+            <!-- checklist grid -->
             <div class="card-body">
 
                 <wj-flex-grid #fgdChecklist [itemsSource]="fgdChecklistCollection" [selectionMode]="3" [frozenColumns]="2">
@@ -105,17 +106,20 @@
                     </button>
                 </div>
 
-            </div>
+            </div> <!-- <div class="card-body"> -->
 
-        </div>
+        </div> <!-- <div class="card"> -->
 
-    </div>
+    </div> <!-- <div class="container-fluid"> -->
     
     <app-footer [data]="fgdChecklistCollection"></app-footer>
 
-</div>
+</div> <!-- <div class="content-wrapper"> -->
 
-<!-- delete checklist -->
+
+
+
+<!-- delete checklist prompt modal -->
 <div id="mdlChecklistDelete" 
      class="modal fade" 
      role="dialog"

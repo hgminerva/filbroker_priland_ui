@@ -1,17 +1,17 @@
-// Angular
+// angular
 import { Component, ViewContainerRef, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-// Services
-import { ChecklistService } from './checklist.service';
-
-// WijMo
+// wijmo
 import {ObservableArray, CollectionView} from 'wijmo/wijmo';
 
-// Message Box
+// message box
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
-// Model
+// service(s)
+import { ChecklistService } from './checklist.service';
+
+// model(s)
 import { MstChecklist } from '../model/model.mst.checklist';
 import { MstChecklistRequirement } from '../model/model.mst.checklist.requirement';
 import { forEach } from '@angular/router/src/utils/collection';
@@ -21,25 +21,36 @@ import { forEach } from '@angular/router/src/utils/collection';
 })
 export class ChecklistDetail {
   
+  // ==================
   // private properties
+  // ==================
+
   private currentDate = new Date();
   private currentDateString = [this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, this.currentDate.getDate()].join('-');
 
+  // detail
   private checklistSub: any;
 
+  // detail operations
   private checklistSavedSub: any;
   private checklistLockedSub: any;
   private checklistUnlockedSub: any;
 
+  // combo boxes
   private checklistStatusSub: any;
 
+  // detail line1 (requirement) operations
   private checklistRequirementsSub: any;
   private checklistRequirementSavedSub: any;
   private checklistRequirementDeletedSub: any;
 
+  // =================
   // public properties
-  public title = 'Checklist Detail';
+  // =================
 
+  public title: string = 'Checklist Detail';
+
+  // model(s)
   public checklist : MstChecklist = {
     id: 0,
     checklistCode: "",
@@ -70,13 +81,17 @@ export class ChecklistDetail {
   public cmbChecklistStatusData : ObservableArray;
   public cmbChecklistRequirementTypeData : ObservableArray;
 
-  // detail item1 grid data source
+  // detail line1 (requirement) data sources
   public fgdChecklistRequirementsData : ObservableArray;
   public fgdChecklistRequirementsCollection : CollectionView;
 
-  // modal
+  // modal(s)
   public mdlChecklistRequirementDeleteShow : boolean = false;
   public mdlChecklistRequirementEditShow : boolean = false;
+
+  // =======
+  // angular
+  // =======
 
   // constructor
   constructor(
@@ -109,7 +124,10 @@ export class ChecklistDetail {
     if(this.checklistRequirementDeletedSub!=null)this.checklistRequirementDeletedSub.unsubscribe();
   }
 
+  // ===============
   // private methods
+  // ===============
+
   private getIdParameter() : number {
     let id = 0;
     this.activatedRoute.params.subscribe(params=>{
@@ -118,7 +136,11 @@ export class ChecklistDetail {
     return id;
   }
 
+  // ==============
   // public methods
+  // ==============
+
+  // detail
   public getChecklist(){
     this.checklistService.getChecklist(this.getIdParameter());
 
@@ -144,6 +166,8 @@ export class ChecklistDetail {
       }
     );
   }
+
+  // detail combo boxes
   public getChecklistStatus(detail : any) : void {
     this.checklistService.getDropDowns();
 
@@ -170,6 +194,8 @@ export class ChecklistDetail {
       }
     );     
   }
+
+  // detail line1 (requirements) 
   public getChecklistRequirements() {
     this.checklistService.getChecklistRequirementsPerChecklist(this.checklist.id);
 
@@ -182,6 +208,8 @@ export class ChecklistDetail {
       }
     );
   } 
+
+  // detail line1 (requirements) combo boxes
   public getRequirementType(defaultValue : string) : void {
     this.checklistService.getDropDowns();
 
@@ -208,9 +236,12 @@ export class ChecklistDetail {
       }
     );  
   }
-  // events
 
-  // detail events
+  // ======
+  // events
+  // ======
+
+  // detail operations
   public btnSaveChecklistClick() : void {
     let btnSaveChecklist:Element = document.getElementById("btnSaveChecklist");
 
@@ -277,7 +308,7 @@ export class ChecklistDetail {
     );
   }
 
-  // requirements events
+  // detail line1 (requirements) list operations
   public btnAddChecklistRequirementsClick() : void {
     let requirementNo : number = 0;
 
@@ -316,7 +347,7 @@ export class ChecklistDetail {
     this.mdlChecklistRequirementDeleteShow = true;
   }
 
-  // requirement delete modal events
+  // detail line1 (requirements) delete modal operations
   public btnOkChecklistRequirementDeleteModalClick() : void {
     let btnOkChecklistRequirementDeleteModal: Element = document.getElementById("btnOkChecklistRequirementDeleteModal");
     let btnCloseChecklistRequirementDeleteModal: Element = document.getElementById("btnCloseChecklistRequirementDeleteModal");
@@ -351,7 +382,7 @@ export class ChecklistDetail {
     this.mdlChecklistRequirementDeleteShow = false;
   }
 
-  // requirement edit modal events
+  // detail line1 (requirements) edit modal operations
   public btnSaveChecklistRequirementEditClick() : void {
     let btnSaveChecklistRequirementEdit:Element = document.getElementById("btnSaveChecklistRequirementEdit");
     let btnCloseChecklistRequirementEdit:Element = document.getElementById("btnCloseChecklistRequirementEdit");

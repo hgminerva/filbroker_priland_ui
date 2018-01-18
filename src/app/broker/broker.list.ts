@@ -1,17 +1,17 @@
-// Angular
+// angular
 import { Component, ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
 
-// Services
+// services
 import { BrokerService } from './broker.service';
 
-// WijMo
+// wijmo
 import { ObservableArray, CollectionView } from 'wijmo/wijmo';
 
-// Beautification
+// message box
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
-// Model
+// model(s)
 import { MstBroker } from '../model/model.mst.broker';
 
 @Component({
@@ -19,60 +19,74 @@ import { MstBroker } from '../model/model.mst.broker';
 })
 export class BrokerList {
 
+  // ==================
   // private properties
+  // ==================
+
   private currentDate = new Date();
   private currentDateString = [this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, this.currentDate.getDate()].join('-');
 
+  // list
   private brokersSub: any;
+
+  // list operations
   private brokerDeletedSub: any;
 
+  // =================
   // public properties
-  public title = 'Broker List';
+  // =================
+
+  public title: string = 'Broker List';
   public filterBroker: string;
 
+  // model(s)
   public broker: MstBroker = {
     id: 0,
-    brokerCode: "NA",
-    lastName: "NA",
-    firstName: "NA",
-    middleName: "NA",
+    brokerCode: "",
+    lastName: "",
+    firstName: "",
+    middleName: "",
     fullName: "",
-    licenseNumber: "NA",
+    licenseNumber: "",
     birthDate: this.currentDateString,
-    civilStatus: "NA",
-    gender: "NA",
-    address: "NA",
-    telephoneNumber: "NA",
-    mobileNumber: "NA",
-    religion: "NA",
-    emailAddress: "NA",
-    facebook: "NA",
-    tin: "NA",
-    realtyFirm: "NA",
-    realtyFirmAddress: "NA",
-    realtyFirmTelephoneNumber: "NA",
-    realtyFirmMobileNumber: "NA",
-    realtyFirmFaxNumber: "NA",
-    realtyFirmEmailAddress: "NA",
-    realtyFirmWebsite: "NA",
-    realtyFirmTIN: "NA",
-    organization: "NA",
-    remarks: "NA",
-    picture: "NA",
-    status: "NA",
+    civilStatus: "SINGLE",
+    gender: "",
+    address: "",
+    telephoneNumber: "",
+    mobileNumber: "",
+    religion: "",
+    emailAddress: "",
+    facebook: "",
+    tin: "",
+    realtyFirm: "",
+    realtyFirmAddress: "",
+    realtyFirmTelephoneNumber: "",
+    realtyFirmMobileNumber: "",
+    realtyFirmFaxNumber: "",
+    realtyFirmEmailAddress: "",
+    realtyFirmWebsite: "",
+    realtyFirmTIN: "",
+    organization: "",
+    remarks: "",
+    picture: "",
+    status: "ACTIVE",
     isLocked: false,
-    createdBy: 1,
+    createdBy: 0,
     createdDateTime: this.currentDateString,
-    updatedBy: 1,
+    updatedBy: 0,
     updatedDateTime: this.currentDateString,
   };
 
-  // fgdBroker recordsource
+  // list data sources
   public fgdBrokerData: ObservableArray;
   public fgdBrokerCollection: CollectionView;
 
-  // modal show flags
+  // modals
   public mdlBrokerDeleteShow : boolean = false;
+
+  // =======
+  // angular
+  // =======
 
   // constructor
   constructor(
@@ -96,7 +110,11 @@ export class BrokerList {
     if( this.brokerDeletedSub != null) this.brokerDeletedSub.unsubscribe();
   }
 
-  // fill the grid with broker data
+  // ==============
+  // public methods
+  // ==============
+
+  // list
   public getBrokers(): void {
     this.brokerService.getBrokers();
 
@@ -110,7 +128,11 @@ export class BrokerList {
     );
   }
 
+  // ======
   // events
+  // ======
+
+  // list operations
   public btnAddBrokerClick(): void {
     let btnAddBroker: Element = document.getElementById("btnAddBroker");
 
@@ -126,6 +148,8 @@ export class BrokerList {
   public btnDeleteBrokerClick(): void {
     this.mdlBrokerDeleteShow = true;
   }
+
+  // delete broker modal operations
   public btnOkBrokerDeleteModalClick():  void {
     let btnOkBrokerDeleteModal: Element = document.getElementById("btnOkBrokerDeleteModal");
     let btnCloseBrokerDeleteModal: Element = document.getElementById("btnCloseBrokerDeleteModal");

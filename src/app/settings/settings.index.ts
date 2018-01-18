@@ -1,206 +1,315 @@
-// Angular
-import { Component, ViewContainerRef } from '@angular/core';
+// angular
+import { Component,ViewContainerRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-// Services
-import { SettingsService } from './settings.service';
+// wijmo
+import {ObservableArray, CollectionView} from 'wijmo/wijmo';
 
-// WijMo
-import { ObservableArray, CollectionView } from 'wijmo/wijmo';
-
-// Beautification
+// message box
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
-// Model
+// service(s)
+import { SettingsService } from './settings.service';
+
+// model(s)
 import { SysSettings } from '../model/model.sys.settings';
 import { SysDropDown } from '../model/model.sys.dropDown';
+
 @Component({
-    templateUrl: './settings.index.html'
+  templateUrl: './settings.index.html'
 })
-
 export class SettingsIndex {
-    public title = 'Settings';
 
-    public projectStatusData: ObservableArray;
+  // ==================
+  // private properties
+  // ==================
 
-    private projectSub: any;
-    private projectSavedSub: any;
-    private projectLockedSub: any;
-    private projectUnlockedSub: any;
-    private projectStatusSub: any;
+  // detail
+  private settingsSub : any;
 
-    public settings: SysSettings = {
-        id: 1,
-        company: "",
-        softwareVersion: "",
-        softwareDeveloper: "",
-        soldUnitCheckedBy: 1,
-        soldUnitCheckedByUser: "",
-        soldUnitApprovedBy: 1,
-        soldUnitApprovedByUser: "",
-        commissionRequestCheckedBy: 1,
-        commissionRequestCheckedByUser: "",
-        commissionRequestApprovedBy: 1,
-        commissionRequestApprovedByUser: "",
-        proposalFootNote: "",
-        brokerFootNote: "",
-    };
+  // detail operations
+  private settingsSavedSub : any;
 
+  // detail combo boxes
+  private usersSub : any;
 
-    public values: SysDropDown = {
-        id: 1,
-        category: "",
-        description: "",
-        value: "",
+  // detail line1 (drop downs)
+  private dropDownsSub : any;
 
+  // detail line1 (drop downs) operations
+  private dropDownsDeletedSub : any;
+  private dropDownsSavedSub : any;
 
-    };
+  // =================
+  // public properties
+  // =================
 
-    constructor(
-        private setService: SettingsService,
-        private dropdown: SettingsService,
-        private router: Router,
-        private toastr: ToastsManager,
-        private viewContainer: ViewContainerRef,
-        private activatedRoute: ActivatedRoute,
-    ) {
-        this.toastr.setRootViewContainerRef(viewContainer);
-    }
+  public title: string = 'Settings';
 
+  // combo boxes data
+  public cmbUsersData : ObservableArray;
+  public cmbDropDownTypeData: ObservableArray;
 
-    public ngOnInit() {
-        //this.getDropDowns();
-        this.getProject();
-    }
+  // model(s)
+  public settings : SysSettings = {
+	id: 0,
+	company: "",
+	softwareVersion: "",
+	softwareDeveloper: "",
+	soldUnitCheckedBy: 0,
+	soldUnitCheckedByUser: "",
+	soldUnitApprovedBy: 0,
+	soldUnitApprovedByUser: "",
+	commissionRequestCheckedBy: 0,
+	commissionRequestCheckedByUser: "",
+	commissionRequestApprovedBy: 0,
+	commissionRequestApprovedByUser: "",
+	proposalFootNote: "",
+	brokerFootNote: ""
+  };
+  public dropDown: SysDropDown = {
+    id: 0,
+    category: "",
+    description: "",
+    value: ""
+  };
 
-    public ngOnDestroy() {
-        if (this.projectSub != null) this.projectSub.unsubscribe();
-        if (this.projectSavedSub != null) this.projectSavedSub.unsubscribe();
-        if (this.projectStatusSub != null) this.projectStatusSub.unsubscribe();
-        if (this.projectLockedSub != null) this.projectLockedSub.unsubscribe();
-        if (this.projectUnlockedSub != null) this.projectUnlockedSub.unsubscribe();
-    }
+  // detail line1 (drop downs) list
+  public fgdDropDownsData : ObservableArray;
+  public fgdDropDownsCollection : CollectionView;
 
-    public getIdParameter() {
-        let id = 0;
-        this.activatedRoute.params.subscribe(params => {
-            id = params['id'];
-        });
-        return id;
-    }
+  // modal(s)
+  public mdlDropDownDeleteShow : boolean = false;
+  public mdlDropDownEditShow : boolean = false;
 
+  // =======
+  // angular
+  // =======
 
+  // constructor
+  constructor(
+    private settingsService: SettingsService,
+    private router: Router,
+    private toastr: ToastsManager,
+    private viewContainer: ViewContainerRef,
+    private activatedRoute: ActivatedRoute,
+  ) {
+    this.toastr.setRootViewContainerRef(viewContainer);
+  }
 
-    public getProject() {
-        this.setService.getProject(this.getIdParameter(), this.toastr);
+  // ng
+  ngOnInit() {
+    this.fgdDropDownsData = new ObservableArray();
+    this.fgdDropDownsCollection = new CollectionView(this.fgdDropDownsData);
 
-        this.projectSub = this.setService.projectObservable
-            .subscribe(
-            data => {
-                this.settings.id = data.id;
-                this.settings.company = data.company;
-                this.settings.softwareVersion = data.softwareVersion;
-                this.settings.softwareDeveloper = data.softwareDeveloper;
-                this.settings.soldUnitCheckedBy = data.soldUnitCheckedBy;
-                this.settings.soldUnitCheckedByUser = data.soldUnitCheckedByUser;
-                this.settings.commissionRequestCheckedBy = data.commissionRequestCheckedBy;
-                this.settings.commissionRequestCheckedByUser = data.commissionRequestCheckedByUser;
-                this.settings.commissionRequestApprovedBy = data.commissionRequestApprovedBy;
-                this.settings.commissionRequestApprovedByUser = data.commissionRequestApprovedByUser;
-                this.settings.proposalFootNote = data.proposalFootNote;
-                this.settings.brokerFootNote = data.brokerFootNote;
-            }
-            );
-    }
+    this.getSettings();
+  }
+  ngOnDestroy() {
+    if( this.settingsSub != null) this.settingsSub.unsubscribe();
+    if( this.settingsSavedSub != null) this.settingsSavedSub.unsubscribe();
+    if( this.usersSub != null) this.usersSub.unsubscribe();
+    if( this.dropDownsSub != null) this.dropDownsSub.unsubscribe();
+    if( this.dropDownsDeletedSub != null) this.dropDownsDeletedSub.unsubscribe();
+    if( this.dropDownsSavedSub != null) this.dropDownsSavedSub.unsubscribe();
+  }
 
-    // public btnSaveProjectClick() : void {
-    //     (<HTMLButtonElement>document.getElementById("btnSaveProject")).disabled = true;
-    //     (<HTMLButtonElement>document.getElementById("btnSaveProject")).innerHTML = "<i class='fa fa-plus fa-fw'></i> Saving...";
+  // ===============
+  // private methods
+  // ===============
 
-    //     this.setService.saveProject(this.settings);
+  private getIdParameter() : number {
+    let id = 0;
+    this.activatedRoute.params.subscribe(params => {
+      id = params['id'];
+    });
+    return id;
+  }
 
-    //     this.projectSavedSub =  this.setService.projectSavedObservable.subscribe(
-    //       data => {
-    //           if(data == 1) {
-    //               this.toastr.success("Saving successful.");
-    //               (<HTMLButtonElement>document.getElementById("btnSaveProject")).disabled = false;
-    //               (<HTMLButtonElement>document.getElementById("btnSaveProject")).innerHTML = "<i class='fa fa-plus fa-fw'></i> Save";
-    //           } else if(data == 0) {
-    //               this.toastr.error("Saving failed.");   
-    //               (<HTMLButtonElement>document.getElementById("btnSaveProject")).disabled = true;
-    //               (<HTMLButtonElement>document.getElementById("btnSaveProject")).innerHTML = "<i class='fa fa-plus fa-fw'></i> Save";
-    //           }
-    //       }
-    //     );
-    //   }
+  // ==============
+  // public methods
+  // ==============
 
-    public btnSaveClick(): void {
-        (<HTMLButtonElement>document.getElementById("btnSave")).disabled = true;
-        (<HTMLButtonElement>document.getElementById("btnSave")).innerHTML = "<i class='fa fa-plus fa-fw'></i> Saving...";
+  // detail
+  public getSettings() {
+    this.settingsService.getSettings();
+    this.settingsSub = this.settingsService.settingsObservable
+      .subscribe(
+          data => {
+            this.settings.id = data.id;
+            this.settings.company = data.company;
+            this.settings.softwareVersion = data.softwareVersion;
+            this.settings.softwareDeveloper = data.softwareDeveloper;
+            this.settings.soldUnitCheckedBy = data.soldUnitCheckedBy;
+            this.settings.soldUnitApprovedBy = data.soldUnitApprovedBy;
+            this.settings.commissionRequestCheckedBy = data.commissionRequestCheckedBy;
+            this.settings.commissionRequestApprovedBy = data.commissionRequestApprovedBy;
+            this.settings.proposalFootNote = data.proposalFootNote;
+            this.settings.brokerFootNote = data.brokerFootNote;
 
-        this.setService.saveProject(this.settings);
+            this.getUsers(data);
+            this.getDropDowns();
+          }
+      );
+  }
+  
+  // detail comboxes
+  public getUsers(defaultValue : any) : void {
+    this.settingsService.getUsers();
+    this.usersSub = this.settingsService.usersObservable.subscribe(
+      data => {
+        let users = new ObservableArray();
+        if (data.length > 0) {
+          for (var i = 0; i <= data.length - 1; i++) {
+            users.push({
+              id: data[i].id,
+              username: data[i].username,
+              fullName: data[i].fullName,
+              password: data[i].password,
+              status: data[i].status,
+              aspNet: data[i].aspNetId
+            });
+          }
+        }
+        this.cmbUsersData = users;
 
-        this.projectSavedSub = this.setService.projectSavedObservable.subscribe(
-            data => {
-                if (data == 1) {
-                    this.toastr.success("Saving successful.");
-                    (<HTMLButtonElement>document.getElementById("btnSaveProject")).disabled = false;
-                    (<HTMLButtonElement>document.getElementById("btnSaveProject")).innerHTML = "<i class='fa fa-plus fa-fw'></i> Save";
-                } else if (data == 0) {
-                    this.toastr.error("Saving failed.");
-                    (<HTMLButtonElement>document.getElementById("btnSaveProject")).disabled = true;
-                    (<HTMLButtonElement>document.getElementById("btnSaveProject")).innerHTML = "<i class='fa fa-plus fa-fw'></i> Save";
-                }
-            }
-        );
-    }
+        setTimeout(() => { this.settings.soldUnitCheckedBy = defaultValue.soldUnitCheckedBy; }, 100);
+        setTimeout(() => { this.settings.soldUnitApprovedBy = defaultValue.soldUnitApprovedBy; }, 100);
+        setTimeout(() => { this.settings.commissionRequestCheckedBy = defaultValue.commissionRequestCheckedBy; }, 100);
+        setTimeout(() => { this.settings.commissionRequestApprovedBy = defaultValue.commissionRequestApprovedBy; }, 100);
+      }
+    );
+  }
 
-    public btnSaveProjectClick(): void {
-        (<HTMLButtonElement>document.getElementById("btnSaveProject")).disabled = true;
-        (<HTMLButtonElement>document.getElementById("btnSaveProject")).innerHTML = "<i class='fa fa-plus fa-fw'></i> Saving...";
+  // detail line1 (drop downs)
+  public getDropDowns() : void {
+    this.settingsService.getDropDowns();
 
-        // this.setService.saveProject(this.values);
-
-        this.projectSavedSub = this.setService.projectSavedObservable.subscribe(
-            data => {
-                if (data == 1) {
-                    this.toastr.success("Saving successful.");
-                    (<HTMLButtonElement>document.getElementById("btnSaveProject")).disabled = false;
-                    (<HTMLButtonElement>document.getElementById("btnSaveProject")).innerHTML = "<i class='fa fa-plus fa-fw'></i> Save";
-                } else if (data == 0) {
-                    this.toastr.error("Saving failed.");
-                    (<HTMLButtonElement>document.getElementById("btnSaveProject")).disabled = true;
-                    (<HTMLButtonElement>document.getElementById("btnSaveProject")).innerHTML = "<i class='fa fa-plus fa-fw'></i> Save";
-                }
-            }
-        );
-    }
-
-
-    // public getDropDowns() : void {
-    //     this.setService.getDropDowns(this.toastr);
-
-    //     this.projectStatusSub = this.setService.dropDownsObservable.subscribe(
-    //       data => {
-    //         let projectStatuses = new ObservableArray();
-
-    //         if (data.length > 0) {
-    //           for (var i = 0; i <= data.length - 1; i++) {
-    //             if (data[i].category == "CATEGORY") {
-    //               projectStatuses.push({
-    //                 id: data[i].id,
-    //                 category: data[i].category,
-    //                 description: data[i].description,
-    //                 value: data[i].value
-    //               });
-    //             }
-    //           }
-    //         }
-
-    //         this.projectStatusData = projectStatuses;
-    //       }
-    //     );
-    //   }
+    this.dropDownsSub = this.settingsService.dropDownsObservable.subscribe(
+      data => {
+        this.fgdDropDownsData = data;
+        this.fgdDropDownsCollection = new CollectionView(this.fgdDropDownsData);
+        this.fgdDropDownsCollection.pageSize = 15;
+        this.fgdDropDownsCollection.trackChanges = true;  
+      }
+    );
+  }
 
 
+  // ======
+  // events
+  // ======
+
+  // detail operations
+  public btnSaveSettingsClick() : void {
+    let btnSaveSettings:Element = document.getElementById("btnSaveSettings");
+
+    btnSaveSettings.setAttribute("disabled","disabled");
+    btnSaveSettings.innerHTML = "<i class='fa fa-plus fa-fw'></i> Saving...";
+    
+    this.settingsService.saveSettings(this.settings);
+    this.settingsSub =  this.settingsService.settingsSavedObservable.subscribe(
+      data => {
+          if(data == 1) {
+              this.toastr.success("Saving successful.");
+              btnSaveSettings.removeAttribute("disabled");
+              btnSaveSettings.innerHTML = "<i class='fa fa-plus fa-fw'></i> Save";
+          } else if(data == 0) {
+              this.toastr.error("Saving failed.");   
+              btnSaveSettings.removeAttribute("disabled");
+              btnSaveSettings.innerHTML = "<i class='fa fa-plus fa-fw'></i> Save";
+          }
+      }
+    );
+  }
+
+  // detail line1 (drop downs) list operations
+  public btnAddDropDownClick() : void {
+    this.dropDown.id = 0;
+    this.dropDown.category = "";
+    this.dropDown.description = "";
+    this.dropDown.value = "";
+
+    this.mdlDropDownEditShow = true
+  }
+  public btnEditDropDownClick() : void {
+    let selectedDropDown = this.fgdDropDownsCollection.currentItem;
+
+    this.dropDown.id = selectedDropDown.id;
+    this.dropDown.category = selectedDropDown.category;
+    this.dropDown.description = selectedDropDown.description;
+    this.dropDown.value = selectedDropDown.value;
+
+    this.mdlDropDownEditShow = true
+  }
+  public btnDeleteDropDownClick() : void {
+    this.mdlDropDownDeleteShow = true;
+  }
+
+  // detail line1 (drop down) delete modal operations
+  public btnOkDropDownDeleteModalClick() : void {
+    let btnOkDropDownDeleteModal: Element = document.getElementById("btnOkDropDownDeleteModal");
+    let btnCloseDropDownDeleteModal: Element = document.getElementById("btnCloseDropDownDeleteModal");
+
+    btnOkDropDownDeleteModal.setAttribute("disabled","disabled");
+    btnCloseDropDownDeleteModal.setAttribute("disabled","disabled");
+
+    let selectedDropDown = this.fgdDropDownsCollection.currentItem;
+
+    this.settingsService.deleteDropDowns(selectedDropDown.id);
+
+    this.dropDownsDeletedSub = this.settingsService.dropDownsDeletedObservable.subscribe(
+      data => {
+        if (data == 1) {
+          this.toastr.success("Delete successful.");
+          this.fgdDropDownsCollection.remove​(selectedDropDown);
+          
+          btnOkDropDownDeleteModal.removeAttribute("disabled");
+          btnCloseDropDownDeleteModal.removeAttribute("disabled");
+
+          this.mdlDropDownDeleteShow = false; 
+        } else if (data == 0) {
+          this.toastr.error("Delete failed.");
+
+          btnOkDropDownDeleteModal.removeAttribute("disabled");
+          btnCloseDropDownDeleteModal.removeAttribute("disabled");
+        }
+      }
+    );
+  }
+  public btnCloseDropDownDeleteModalClick() : void {
+    this.mdlDropDownDeleteShow = false;
+  }
+
+  // detail line1 (user rights) edit modal operations
+  public btnSaveDropDownEditModalClick() : void {
+    let btnSaveDropDownEditModal:Element = document.getElementById("btnSaveDropDownEditModal");
+    let btnCloseDropDownEditModal:Element = document.getElementById("btnCloseDrownDownEditModal");
+
+    btnSaveDropDownEditModal.setAttribute("disabled","disabled");
+    btnSaveDropDownEditModal.innerHTML = "<i class='fa fa-plus fa-fw'></i> Saving...";
+    btnCloseDropDownEditModal.setAttribute("disabled","disabled");
+
+    this.settingsService.saveDropDowns(this.dropDown);
+    this.dropDownsSavedSub =  this.settingsService.dropDownsSavedObservable.subscribe(
+      data => {
+          if(data == 1) {
+              this.toastr.success("Saving successful.");
+              btnSaveDropDownEditModal.removeAttribute("disabled");
+              btnSaveDropDownEditModal.innerHTML = "<i class='fa fa-plus fa-fw'></i> Save";
+              btnCloseDropDownEditModal.removeAttribute("disabled");
+
+              this.mdlDropDownEditShow = false;
+              this.getDropDowns();
+          } else if(data == 0) {
+              this.toastr.error("Saving failed.");   
+              btnSaveDropDownEditModal.removeAttribute("disabled");
+              btnSaveDropDownEditModal.innerHTML = "<i class='fa fa-plus fa-fw'></i> Save";
+              btnCloseDropDownEditModal.removeAttribute("disabled");
+          }
+      }
+    );
+  }
+  public btnCloseDrownDownEditModalClick() : void {
+    this.mdlDropDownEditShow = false;
+  }
 }

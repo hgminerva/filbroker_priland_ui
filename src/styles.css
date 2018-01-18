@@ -367,3 +367,6 @@ footer.sticky-footer {
       overflow:hidden;
   }
   
+.nav-pills > li > a.active {
+    background-color: #7c7c7c !important;
+}

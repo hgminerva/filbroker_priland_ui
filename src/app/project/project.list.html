@@ -4,20 +4,20 @@
 <br>
 
 <div class="content-wrapper">
+
     <div class="container-fluid">
         
-        <!-- Breadcrumbs -->
+        <!-- crumbs -->
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="/menu">Menu</a>
+                <a routerLink="/menu">Menu</a>
             </li>
             <li class="breadcrumb-item active">{{title}}</li>
         </ol>
 
-        <!-- List -->
         <div class="card">
 
-            <!-- Page Title -->
+            <!-- title/add button -->
             <div class="card-header">
                 <table border="0" style="width: 100%;">
                     <tr>
@@ -37,7 +37,7 @@
                 </table>
             </div>
 
-            <!-- Filter/Add -->
+            <!-- filters -->
             <div class="card-header">
                 <div class="input-group">
                     <span class="input-group-addon">
@@ -47,7 +47,7 @@
                 </div>
             </div>
 
-            <!-- Flexgrid List -->
+            <!-- project list -->
             <div class="card-body">
                 <wj-flex-grid #fgdProjects [itemsSource]="fgdProjectsCollection" [selectionMode]="3" [frozenColumns]="2">
                     <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
@@ -91,15 +91,18 @@
                 </div>
             </div>
 
-        </div>
+        </div> <!-- <div class="card"> -->
 
-    </div>
+    </div> <!-- <div class="container-fluid"> -->
 
     <app-footer [data]="fgdProjectsCollection"></app-footer>
     
-</div>
+</div> <div class="content-wrapper">
 
-<!-- delete project -->
+
+
+
+<!-- delete project modal -->
 <div id="mdlProjectDelete" 
      class="modal fade" 
      role="dialog"

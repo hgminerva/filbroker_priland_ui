@@ -9,14 +9,14 @@
             <div class="col-lg-6">
                 <div class="row">
                     <div class="col-lg-4">
-                        <b>Created By: </b> {{ data.currentItem ? data.currentItem.createdBy : data ? data.createdBy : createdBy }}
+                        <b>Created By: </b> {{ getCreatedBy() }}
                         <br />
-                        <b>Created Date: </b> {{ data.currentItem ? data.currentItem.createdDateTime : data ? data.createdDateTime : createdDateTime }}
+                        <b>Created Date: </b> {{ getCreatedDateTime() }}
                     </div>
                     <div class="col-lg-8">
-                        <b>Updated By: </b> {{ data.currentItem ? data.currentItem.updatedBy : data ? data.updatedBy : updatedBy }}
+                        <b>Updated By: </b> {{ getUpdatedBy() }}
                         <br />
-                        <b>Updated Date: </b> {{ data.currentItem ? data.currentItem.updatedDateTime :  data ? data.updatedDateTime :  updatedDateTime }}
+                        <b>Updated Date: </b> {{ getUpdatedDateTime() }}
                     </div>
                 </div>
             </div>

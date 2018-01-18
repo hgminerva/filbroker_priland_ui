@@ -1,78 +1,100 @@
-// Angular
+// angular
 import { Component,ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
 
-// Services
-import { CustomerService } from './customer.service';
-
-// WijMo
+// wijmo
 import {ObservableArray, CollectionView} from 'wijmo/wijmo';
 
-// Beautification
+// message box
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
-// Model
+// service(s)
+import { CustomerService } from './customer.service';
+
+// model(s)
 import { MstCustomer } from '../model/model.mst.customer';
 
 @Component({
   templateUrl: './customer.list.html'
 })
-
 export class CustomerList {
-    public title = 'Customer List';
-    public filterCustomer : string;
+    
+    // ==================
+    // private properties
+    // ==================
 
     private currentDate = new Date();
     private currentDateString = [this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, this.currentDate.getDate()].join('-');
 
-    private customerDeletedSub : any;
+    // list
+    private customersSub : any;
 
+    // list operations
+    private customersDeletedSub : any;
+
+    // =================
+    // public properties
+    // =================
+
+    public title: string = 'Customer List';
+    public filterCustomer: string;
+
+    // model(s)
     public customer : MstCustomer = {
         id: 0,
-        customerCode: "NA",
-        lastName: "NA",
-        firstName: "NA",
-        middleName: "NA",
+        customerCode: "",
+        lastName: "",
+        firstName: "",
+        middleName: "",
         fullName: "",
-        civilStatus: "NA",
-        gender: "NA",
-        birthDate: "NA",
-        tin: "NA",
-        idType: "NA",
-        idNumber: "NA",
-        address: "NA",
-        city: "NA",
-        province: "NA",
-        country: "NA",
-        zipCode: "NA",
-        emailAddress: "NA",
-        telephoneNumber: "NA",
-        mobileNumber: "NA",
-        employer: "NA",
-        employerIndustry: "NA",
-        noOfYearsEmployed: "NA",
-        position: "NA",
-        employmentStatus: "OPEN",
-        employerAddress: "NA",
-        employerCity: "NA",
-        employerProvince: "NA",
-        employerCountry: "NA",
-        employerZipCode: "NA",
-        employerTelephoneNumber: "NA",
-        employerMobileNumber: "NA",
-        remarks: "NA",
-        status: "OPEN",
-        picture: "NA",
-        isLocked: "false",
-        createdBy: "1",
+        civilStatus: "SINGLE",
+        gender: "MALE",
+        birthDate: this.currentDateString,
+        tin: "",
+        idType: "DRIVERS LICENSE",
+        idNumber: "",
+        address: "",
+        city: "",
+        province: "",
+        country: "",
+        zipCode: "",
+        emailAddress: "",
+        telephoneNumber: "",
+        mobileNumber: "",
+        employer: "",
+        employerIndustry: "",
+        noOfYearsEmployed: 0,
+        position: "",
+        employmentStatus: "PERMANENT",
+        employerAddress: "",
+        employerCity: "",
+        employerProvince: "",
+        employerCountry: "",
+        employerZipCode: "",
+        employerTelephoneNumber: "",
+        employerMobileNumber: "",
+        remarks: "",
+        status: "ACTIVE",
+        picture: "",
+        isLocked: false,
+        createdBy: 0,
         createdDateTime: this.currentDateString,
-        updatedBy: "1",
+        updatedBy: 0,
         updatedDateTime: this.currentDateString
     };
 
-    public customerData : ObservableArray;
-    public customerCollection : CollectionView;
+    // list data source
+    public fgdCustomersData : ObservableArray;
+    public fgdCustomersCollection : CollectionView;
 
+    // modals
+    public mdlCustomerDeleteShow : boolean = false;
+
+    // =======
+    // angular
+    // =======
+
+    //constructor
     constructor(
         private customerService : CustomerService,
         private toastr : ToastsManager,
@@ -82,54 +104,92 @@ export class CustomerList {
         this.toastr.setRootViewContainerRef(viewContainer);
     }
 
-    public ngOnInit() {
+    // ng
+    ngOnInit() {
+        this.fgdCustomersData = new ObservableArray();
+        this.fgdCustomersCollection = new CollectionView(this.fgdCustomersData);
+
         this.getCustomers();
     }
+    ngOnDestroy() {
+        if( this.customersSub != null) this.customersSub.unsubscribe();
+        if( this.customersDeletedSub != null) this.customersDeletedSub.unsubscribe();
+    }
 
+    // ==============
+    // public methods
+    // ==============
+
+    // customer list
     public getCustomers() : void {
-        this.customerData = this.customerService.getCustomers();
-        this.customerCollection = new CollectionView(this.customerData);
-        this.customerCollection.pageSize = 15;
-        this.customerCollection.trackChanges = true;
+        let customers = new ObservableArray();
+
+        this.customerService.getCustomers();
+
+        this.customersSub = this.customerService.customersObservable.subscribe(
+          data => {
+            if (data.length > 0) {
+              this.fgdCustomersData = data;
+              this.fgdCustomersCollection = new CollectionView(this.fgdCustomersData);
+              this.fgdCustomersCollection.pageSize = 15;
+              this.fgdCustomersCollection.trackChanges = true;  
+            }
+          }
+        );
     }
 
+    // ======
+    // events
+    // ======
+
+    // customer list operations
     public btnAddCustomerClick() : void {
-        (<HTMLButtonElement>document.getElementById("btnAddCustomer")).disabled = true;
-        (<HTMLButtonElement>document.getElementById("btnAddCustomer")).innerHTML = "<i class='fa fa-plus fa-fw'></i> Adding...";
-        
-        this.customerService.addCustomer(this.customer, this.toastr);
-    }
+        let btnAddCustomer:Element = document.getElementById("btnAddCustomer");
 
+        btnAddCustomer.setAttribute("disabled","true");
+        btnAddCustomer.innerHTML = "<i class='fa fa-plus fa-fw'></i> Adding...";
+
+        this.customerService.addCustomer(this.customer, btnAddCustomer);
+    }
     public btnEditCustomerClick() : void {
-        let selectedCustomer = this.customerCollection.currentItem;
-        this.router.navigate(['/project', selectedCustomer.id]);
+        let selectedCustomer = this.fgdCustomersCollection.currentItem;
+        this.router.navigate(['/customer', selectedCustomer.id]);
     }
-    
     public btnDeleteCustomerClick() : void {
-        (<HTMLButtonElement>document.getElementById("btnDeleteCustomer")).disabled = true;
-        (<HTMLButtonElement>document.getElementById("btnDeleteCloseCustomer")).disabled = true;
+        this.mdlCustomerDeleteShow = true;
+    }
 
-        let selectedCustomer = this.customerCollection.currentItem;
-        this.customerService.deleteCustomer(selectedCustomer.id);
-
-        this.customerDeletedSub = this.customerService.CustomerDeletedObservable.subscribe(
+    // customer delete modal operations
+    public btnOkCustomerDeleteModalClick() : void {
+        let btnOkCustomerDeleteModal:Element = document.getElementById("btnOkCustomerDeleteModal");
+        let btnCloseCustomerDeleteModal:Element = document.getElementById("btnCloseCustomerDeleteModal");
+    
+        let selectedCustomer = this.fgdCustomersCollection.currentItem;
+    
+        btnOkCustomerDeleteModal.setAttribute("disabled","disabled");
+        btnCloseCustomerDeleteModal.setAttribute("disabled","disabled");
+    
+        this.customerService.deleteCustomer(selectedCustomer.id,);
+        this.customersDeletedSub = this.customerService.customerDeletedObservable.subscribe(
             data => {
                 if(data == 1) {
-                    this.toastr.success("Customer Delete successful.");
-                    this.customerCollection.remove​(selectedCustomer);
-                    (<HTMLButtonElement>document.getElementById("btnCustomerProject")).disabled = false;
-                    (<HTMLButtonElement>document.getElementById("btnCustomerCloseProject")).disabled = false;
-                    document.getElementById("btnDeleteCloseCustomer").click();
+                    this.toastr.success("Delete successful.");
+                    this.fgdCustomersCollection.remove​(selectedCustomer);
+    
+                    btnOkCustomerDeleteModal.removeAttribute("disabled");
+                    btnCloseCustomerDeleteModal.removeAttribute("disabled");
+    
+                    this.mdlCustomerDeleteShow = false
                 } else if(data == 0) {
-                    this.toastr.error("Customer Delete failed.");   
-                    (<HTMLButtonElement>document.getElementById("btnDeleteCustomer")).disabled = false;
-                    (<HTMLButtonElement>document.getElementById("btnDeleteCloseCustomer")).disabled = false;
+                    this.toastr.error("Delete failed.");   
+    
+                    btnOkCustomerDeleteModal.removeAttribute("disabled");
+                    btnCloseCustomerDeleteModal.removeAttribute("disabled");
                 }
             }
         );
     }
-
-    ngOnDestroy() {
-        if( this.customerDeletedSub != null) this.customerDeletedSub.unsubscribe();
+    public btnCloseCustomerDeleteModalClick() : void {
+        this.mdlCustomerDeleteShow = false;
     }
 }

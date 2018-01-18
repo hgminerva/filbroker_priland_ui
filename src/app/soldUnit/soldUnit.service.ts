@@ -1,19 +1,19 @@
-// Angular
+// angular
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions } from '@angular/http';
 import { Router } from '@angular/router';
 
-// Message
+// message box
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
-// Wijmo
+// wijmo
 import { ObservableArray } from 'wijmo/wijmo';
 
-// Async
+// async
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 
-// Models
+// model(s)
 import { TrnSoldUnit } from '../model/model.trn.soldUnit';
 import { TrnSoldUnitRequirement } from '../model/model.trn.soldUnit.requirement';
 import { TrnSoldUnitRequirementActivity } from '../model/model.trn.soldUnit.requirement.activity';
@@ -32,7 +32,6 @@ export class SoldUnitService {
     // private properties
     // ==================
 
-    // api url
     private headers = new Headers({
         'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
         'Content-Type': 'application/json'
@@ -43,14 +42,29 @@ export class SoldUnitService {
     // public properties
     // =================
 
-    // async observables for list and detail model
+    // list (sold units)
     public soldUnitsSource = new Subject<ObservableArray>();
     public soldUnitsObservable = this.soldUnitsSource.asObservable();
 
+    // list operations, e.g., delete
+    public soldUnitDeletedSource = new Subject<number>();
+    public soldUnitDeletedObservable = this.soldUnitDeletedSource.asObservable();  
+
+    // detail (sold unit)
     public soldUnitSource = new Subject<TrnSoldUnit>();
     public soldUnitObservable = this.soldUnitSource.asObservable();
 
-    // async observables for comboboxes, list and other controls
+    // detail operations, e.g., saving, locking, unlocking
+    public soldUnitSavedSource = new Subject<number>();
+    public soldUnitSavedObservable = this.soldUnitSavedSource.asObservable();   
+
+    public soldUnitLockedSource = new Subject<number>();
+    public soldUnitLockedObservable = this.soldUnitLockedSource.asObservable();  
+
+    public soldUnitUnlockedSource = new Subject<number>();
+    public soldUnitUnlockedObservable = this.soldUnitUnlockedSource.asObservable();  
+
+    // detail combo boxes
     public projectsSource = new Subject<ObservableArray>();
     public projectsObservable = this.projectsSource.asObservable();
 
@@ -72,29 +86,19 @@ export class SoldUnitService {
     public dropDownsSource = new Subject<ObservableArray>();
     public dropDownsObservable = this.dropDownsSource.asObservable(); 
     
-    // async observables for detail items
+    // detail line1 (checklist requirements) list
     public soldUnitRequirementsSource = new Subject<ObservableArray>();
     public soldUnitRequirementsObservable = this.soldUnitRequirementsSource.asObservable();
 
+    // detail line1 line1 (checklist requirements activities) list
     public soldUnitRequirementActivitiesSource = new Subject<ObservableArray>();
     public soldUnitRequirementActivitiesObservable = this.soldUnitRequirementActivitiesSource.asObservable();
 
-    // async observables for events, e.g., saving, locking, unlocking
-    // sold units
-    public soldUnitSavedSource = new Subject<number>();
-    public soldUnitSavedObservable = this.soldUnitSavedSource.asObservable();   
-
-    public soldUnitLockedSource = new Subject<number>();
-    public soldUnitLockedObservable = this.soldUnitLockedSource.asObservable();  
-
-    public soldUnitUnlockedSource = new Subject<number>();
-    public soldUnitUnlockedObservable = this.soldUnitUnlockedSource.asObservable();  
-
-    // sold unit requirements
+    // detail line1 (checklist requirements) detail operations, e.g., saved, etc.
     public soldUnitRequirementSavedSource = new Subject<number>();
     public soldUnitRequirementSavedObservable = this.soldUnitRequirementSavedSource.asObservable();  
 
-    // sold unit requirement activities
+    // detail line1 line1 (checklist requirement activities) detail operations
     public soldUnitRequirementAcvititySavedSource = new Subject<number>();
     public soldUnitRequirementActivitySavedObservable = this.soldUnitRequirementAcvititySavedSource.asObservable();  
 
@@ -104,11 +108,11 @@ export class SoldUnitService {
     public soldUnitRequirementAcvitityDeleteSource = new Subject<number>();
     public soldUnitRequirementActivityDeleteObservable = this.soldUnitRequirementAcvitityDeleteSource.asObservable();  
 
-    // ===========
-    // constructor
-    // ===========
+    // =======
+    // angular
+    // =======
 
-    // there is only one constructor
+    // constructor
     constructor(
         private router: Router,
         private http: Http,
@@ -119,7 +123,7 @@ export class SoldUnitService {
     // public methods
     // ==============
 
-    // get sold units per date range
+    // list
     public getSoldUnitsPerDates(dateStart: string, dateEnd: string): void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/TrnSoldUnit/ListPerDates/" + dateStart + "/" + dateEnd;
         let soldUnits = new ObservableArray();
@@ -170,7 +174,7 @@ export class SoldUnitService {
         );
     }
 
-    // get sold unit detail
+    // detail
     public getSoldUnit(id : number) : void {
         let soldUnit: TrnSoldUnit;
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/TrnSoldUnit/Detail/" + id;
@@ -222,7 +226,7 @@ export class SoldUnitService {
         );    
     }
 
-    // get new sold unit requirements (delete existing and create new requirements)
+    // detail line1 (checklist requirements) - new list and existing list
     public getNewSoldUnitRequirements(soldUnitId : number, checklistId : number) : void { 
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/TrnSoldUnitRequirement/ListNewTrnSoldUnitRequirements/" + soldUnitId + "/" + checklistId;
         let soldUnitRequirements = new ObservableArray();
@@ -259,8 +263,6 @@ export class SoldUnitService {
             }
         );
     }
-
-    // get existing sold unit requirements
     public getSoldUnitRequirements(soldUnitId : number) : void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/TrnSoldUnitRequirement/ListPerUnitSold/" + soldUnitId;
         let soldUnitRequirements = new ObservableArray();
@@ -298,7 +300,7 @@ export class SoldUnitService {
         );
     }
 
-    // get sold unit requirement activities
+    // detail line1 line1 (checklist requirement activities)
     public getSoldUnitRequirementActivities(soldUnitRequirementId : number) : void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/TrnSoldUnitRequirementActivity/ListPerSoldUnitRequirement/" + soldUnitRequirementId;
         let soldUnitRequirementActivities = new ObservableArray();
@@ -327,7 +329,7 @@ export class SoldUnitService {
         );
     }
 
-    // get all projects
+    // detail combo boxes
     public getProjects(): void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstProject/List";
         let projects = new ObservableArray();
@@ -356,8 +358,6 @@ export class SoldUnitService {
             }
         );
     }
-
-    // get sys drop down data to be use for status
     public getDropDowns() : void {
         let dropDowns  = new ObservableArray();
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/SysDropDown/List";
@@ -382,8 +382,6 @@ export class SoldUnitService {
             }
         );
     }
-
-    // get units per project
     public getUnitsPerProject(projectId: number): void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUnit/ListPerProjectId/" + projectId;
         let units = new ObservableArray();
@@ -420,8 +418,6 @@ export class SoldUnitService {
             }
         );
     }
-    
-    // get checklist per project
     public getChecklistsPerProject(projectId: number): void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstChecklist/ListPerProjectId/" + projectId;
         let checklists = new ObservableArray();
@@ -453,8 +449,6 @@ export class SoldUnitService {
             }
         );
     }
-
-    // get all customers
     public getCustomers() : void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstCustomer/List";
         let customers = new ObservableArray();
@@ -475,8 +469,6 @@ export class SoldUnitService {
             }
         );
     }
-
-    // get all brokers
     public getBrokers() : void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/List";
         let brokers = new ObservableArray();
@@ -497,8 +489,6 @@ export class SoldUnitService {
             }
         );
     }
-
-    // get all users
     public getUsers() : void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUser/List";
         let users = new ObservableArray();
@@ -520,7 +510,43 @@ export class SoldUnitService {
         );
     }
 
-    // sold unit operations
+    // list operations
+    public addSoldUnit(soldUnit: TrnSoldUnit, btnAddSoldUnit: Element) : void {
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/TrnSoldUnit/Add";
+        this.http.post(url, JSON.stringify(soldUnit), this.options).subscribe(
+            response => {
+                var id = response.json();
+                if (id > 0) {
+                    this.toastr.success("Add successful.");
+                    setTimeout(() => {
+                        this.router.navigate(['/soldUnit', id]);
+                    }, 1000);
+                } else {
+                    this.toastr.error("Add failed.");
+                    btnAddSoldUnit.removeAttribute("disabled");
+                    btnAddSoldUnit.innerHTML = "<i class='fa fa-plus fa-fw'></i> Add";
+                }
+            },
+            error => {
+                this.toastr.error("Server error.");
+                btnAddSoldUnit.removeAttribute("disabled");
+                btnAddSoldUnit.innerHTML = "<i class='fa fa-plus fa-fw'></i> Add";
+            }
+        )
+    }
+    public deleteSoldUnit(id: number) : void {
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/TrnSoldUnit/Delete/" + id;
+        this.http.delete(url, this.options).subscribe(
+            response => {
+                this.soldUnitDeletedSource.next(1);
+            },
+            error => {
+                this.soldUnitDeletedSource.next(0);
+            }
+        )
+    }
+
+    // detail operations
     public saveSoldUnit(soldUnit: TrnSoldUnit): void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/TrnSoldUnit/Save";
         this.http.put(url, JSON.stringify(soldUnit), this.options).subscribe(
@@ -555,7 +581,7 @@ export class SoldUnitService {
         )
     }
 
-    // sold unit requirement operations
+    // detail line1 (checklist requirements) operations
     public saveSoldUnitRequirement(soldUnitRequirement: TrnSoldUnitRequirement): void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/TrnSoldUnitRequirement/Save";
         this.http.put(url, JSON.stringify(soldUnitRequirement), this.options).subscribe(
@@ -568,7 +594,7 @@ export class SoldUnitService {
         )
     }
 
-    // sold unit requirement activity operations
+    // detail line1 line (checklist requirement activities) operations
     public saveSoldUnitRequirementActivity(soldUnitRequirementActivity: TrnSoldUnitRequirementActivity): void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/TrnSoldUnitRequirementActivity/Save";
         this.http.put(url, JSON.stringify(soldUnitRequirementActivity), this.options).subscribe(

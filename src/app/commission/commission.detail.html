@@ -1,31 +1,225 @@
 <menu-root></menu-root>
 
 <br>
-
 <br>
 
 <div class="content-wrapper">
+
     <div class="container-fluid">
-        
+
+        <!-- crumbs -->
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="/menu">Menu</a>
+                <a routerLink="/menu">Menu</a>
             </li>
             <li class="breadcrumb-item">
-                <a href="/commission">Commission List</a>
+                <a routerLink="/unit">Commission Request List</a>
             </li>
             <li class="breadcrumb-item active">{{title}}</li>
         </ol>
 
-        <div class="row">
-            <div class="col-12">
-                <h4>{{title}}</h4>
-                <p></p>
-            </div>
-        </div>
 
-    </div>
+        <div class="card">
 
-    <app-footer [data]=""></app-footer>
+            <!-- detail operations, e.g., print, lock, unlock, etc. -->
+            <div class="card-header">
+                <table border="0" style="width: 100%;">
+                    <tr>
+                        <td style="width: 59%;">
+                            <h4>{{title}}</h4>
+                        </td>
+                        <td style="width: 1%;"></td>
+                        <td style="width: 40%;" align="right">
+                            <button 
+                                id="btnPrintCommission"
+                                [disabled]="!commission.isLocked" 
+                                class="btn btn-primary" 
+                                (click)="btnPrintCommissionClick()">
+                                <i class="fa fa-print fa-fw"></i> Print
+                            </button>
+                            <button 
+                                id="btnLockCommission"
+                                [disabled]="commission.isLocked" 
+                                class="btn btn-primary" 
+                                (click)="btnLockCommissionClick()">
+                                <i class="fa fa-lock fa-fw"></i> Lock
+                            </button>
+                            <button 
+                                id="btnUnlockCommission"
+                                [disabled]="!commission.isLocked" 
+                                class="btn btn-primary" 
+                                (click)="btnUnlockCommissionClick()">
+                                <i class="fa fa-unlock fa-fw"></i> Unlock
+                            </button>
+                            <button 
+                                id="btnSaveCommission"
+                                [disabled]="commission.isLocked" 
+                                class="btn btn-primary" 
+                                (click)="btnSaveCommissionClick()">
+                                <i class="fa fa-save fa-fw"></i> Save
+                            </button>
+                            <button 
+                                id="btnCloseCommission"
+                                class="btn btn-danger" 
+                                routerLink="/commission">
+                                <i class="fa fa-close fa-fw"></i> Close
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div> <!-- <div class="card-header"> -->
+            
+            <!-- detail fields -->
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Commission Request No.</label>
+                            <div class="col-sm-9">
+                                <input 
+                                    [(ngModel)]="commission.commissionRequestNumber" 
+                                    disabled 
+                                    type="text" 
+                                    class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Date</label>
+                            <div class="col-sm-9">
+                                <wj-input-date #calCommissionRequestDate
+                                    [(text)]="commission.commissionRequestDate"
+                                    [isDisabled]="commission.isLocked"
+                                    format="M/d/yyyy">
+                                </wj-input-date>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Broker</label>
+                            <div class="col-sm-9">
+                                <wj-combo-box #cmbBroker
+                                    [itemsSource]="cmbBrokerData" 
+                                    [isDisabled]="commission.isLocked" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'fullName'" 
+                                    [selectedValuePath]="'id'" 
+                                    [(ngModel)]="commission.brokerId">
+                                </wj-combo-box>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Sold Unit No.</label>
+                            <div class="col-sm-9">
+                                <wj-combo-box #cmbSoldUnit
+                                    [itemsSource]="cmbSoldUnitData" 
+                                    [isDisabled]="commission.isLocked" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'soldUnitNumber'" 
+                                    [selectedValuePath]="'id'" 
+                                    [(ngModel)]="commission.soldUnitId">
+                                </wj-combo-box>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Commission No.</label>
+                            <div class="col-sm-9">
+                                <wj-combo-box #cmbCommissionNumber
+                                    [itemsSource]="cmbCommissionNumberData" 
+                                    [isDisabled]="commission.isLocked" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'value'" 
+                                    [selectedValuePath]="'value'" 
+                                    [(ngModel)]="commission.commissionNumber">
+                                </wj-combo-box>
+                            </div>
+                        </div>
+                       <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Amount</label>
+                            <div class="col-sm-9">
+                                <wj-input-number 
+                                    [(value)]="commission.amount"
+                                    [isDisabled]="commission.isLocked">
+                                </wj-input-number>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Status</label>
+                            <div class="col-sm-9">
+                                <wj-combo-box #cmbStatus
+                                    [itemsSource]="cmbStatusData" 
+                                    [isDisabled]="commission.isLocked" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'value'" 
+                                    [selectedValuePath]="'value'" 
+                                    [(ngModel)]="commission.status">
+                                </wj-combo-box>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Remarks</label>
+                            <div class="col-sm-9">
+                                <textarea 
+                                    [disabled]="commission.isLocked" 
+                                    [(ngModel)]="commission.remarks" 
+                                    rows="3" 
+                                    class="form-control">
+                                </textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Prepared By</label>
+                            <div class="col-sm-9">
+                                <wj-combo-box #cmbPreparedBy
+                                    [itemsSource]="cmbUserData"
+                                    [isDisabled]="commission.isLocked" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'fullName'" 
+                                    [selectedValuePath]="'id'"
+                                    [(ngModel)]="commission.preparedBy">
+                                </wj-combo-box>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Checked By</label>
+                            <div class="col-sm-9">
+                                <wj-combo-box #cmbCheckedBy
+                                    [itemsSource]="cmbUserData"
+                                    [isDisabled]="commission.isLocked" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'fullName'" 
+                                    [selectedValuePath]="'id'"
+                                    [(ngModel)]="commission.checkedBy">
+                                </wj-combo-box>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Approved By</label>
+                            <div class="col-sm-9">
+                                <wj-combo-box #cmbApprovedBy
+                                    [itemsSource]="cmbUserData"
+                                    [isDisabled]="commission.isLocked" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'fullName'" 
+                                    [selectedValuePath]="'id'"
+                                    [(ngModel)]="commission.approvedBy">
+                                </wj-combo-box>
+                            </div>
+                        </div>
+                    </div> <!-- <div class="col-md-6"> -->
+                </div> <!-- <div class="row"> -->
+            </div> <!-- <div class="card-body"> -->
+        </div> <!-- <div class="card"> -->
+
+    </div> <!-- <div class="container-fluid"> -->
     
-</div>
+    <app-footer [data]="commission"></app-footer>
+    
+</div> <!-- <div class="content-wrapper"> -->

@@ -1,12 +1,13 @@
 <menu-root></menu-root>
 
 <br>
-
 <br>
 
 <div class="content-wrapper">
+
     <div class="container-fluid">
 
+        <!-- crumbs -->
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a href="/menu">Menu</a>
@@ -20,7 +21,7 @@
 
         <div class="card">
 
-            <!-- Buttons -->
+            <!-- detail operations, e.g., locked, unclocked, save, etc. -->
             <div class="card-header">
                 <table border="0" style="width: 100%;">
                     <tr>
@@ -46,7 +47,7 @@
                 </table>
             </div>
 
-            <!-- Detail -->
+            <!-- detail fields -->
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
@@ -141,19 +142,20 @@
                         </button>
                     </div>
                 </div>
-            </div>
+            </div> <!-- <div class="card-body"> -->
 
-        </div>
+        </div> <!-- <div class="card"> -->
 
-    </div>
+    </div> <!-- <div class="container-fluid"> -->
 
     <app-footer [data]="project"></app-footer>
     
-</div>
+</div> <!-- <div class="content-wrapper"> -->
 
 
 
-<!-- delete house model -->
+
+<!-- delete house model prompt modal-->
 <div id="mdlHouseModelDelete" 
      class="modal fade" 
      role="dialog"
@@ -181,7 +183,7 @@
 
 
 
-<!-- Edit house model  -->
+<!-- edit house model modal-->
 <div id="mdlHouseModelEdit" 
      class="modal fade" role="dialog" 
      [ngStyle]="{'display': mdlHouseModelEditShow ? 'block' : 'none', 'opacity': 1}">

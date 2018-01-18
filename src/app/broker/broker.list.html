@@ -7,7 +7,7 @@
 
     <div class="container-fluid">
         
-        <!-- Breadcrumbs -->
+        <!-- crumbs -->
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a routerLink="/menu">Menu</a>
@@ -37,7 +37,7 @@
                 </table>
             </div>
 
-            <!-- Flexgrid operations: filter, etc. -->
+            <!-- filters -->
             <div class="card-header">
                 <div class="input-group">
                     <span class="input-group-addon">
@@ -47,7 +47,7 @@
                 </div>
             </div>
 
-            <!-- Flexgrid List: fgdBroker -->
+            <!-- broker list -->
             <div class="card-body">
                 <wj-flex-grid #fgdBroker [itemsSource]="fgdBrokerCollection" [selectionMode]="3" [frozenColumns]="2">
                     <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
@@ -72,41 +72,39 @@
                     <wj-flex-grid-column [header]="'Mobile No.'"    [binding]="'mobileNumber'"      [isReadOnly]="true" [width]="150"></wj-flex-grid-column>
                     <wj-flex-grid-column [header]="'L'"             [binding]="'isLocked'"          [isReadOnly]="true" [width]="50"></wj-flex-grid-column>
                 </wj-flex-grid>
-            </div>
-            <div class="card-footer">
-                <div class="row">
-                    <div class="col-sm-12 btn-group" id="">
-                        <button type="button" class="btn btn-info" (click)="fgdBrokerCollection.moveToFirstPage()">
-                            <i class="fa fa-fast-backward"></i> First
-                        </button>
-                        <button type="button" class="btn btn-info" (click)="fgdBrokerCollection.moveToPreviousPage()">
-                            <i class="fa fa-step-backward"></i> Previous
-                        </button>
-                        <button type="button" class="btn btn-info" disabled style="width:100px">
-                            {{ fgdBrokerCollection.pageIndex + 1 }} / {{ fgdBrokerCollection.pageCount }}
-                        </button>
-                        <button type="button" class="btn btn-info" (click)="fgdBrokerCollection.moveToNextPage()">
-                            Next
-                            <i class="fa fa-step-forward"></i>
-                        </button>
-                        <button type="button" class="btn btn-info" (click)="fgdBrokerCollection.moveToLastPage()">
-                            Last
-                            <i class="fa fa-fast-forward"></i>
-                        </button>
-                    </div>
+                <div class="col-sm-12 btn-group" style="padding: 5px 0px 5px 0px;">
+                    <button type="button" class="btn btn-info" (click)="fgdBrokerCollection.moveToFirstPage()">
+                        <i class="fa fa-fast-backward"></i> First
+                    </button>
+                    <button type="button" class="btn btn-info" (click)="fgdBrokerCollection.moveToPreviousPage()">
+                        <i class="fa fa-step-backward"></i> Previous
+                    </button>
+                    <button type="button" class="btn btn-info" disabled style="width:100px">
+                        {{ fgdBrokerCollection.pageIndex + 1 }} / {{ fgdBrokerCollection.pageCount }}
+                    </button>
+                    <button type="button" class="btn btn-info" (click)="fgdBrokerCollection.moveToNextPage()">
+                        Next
+                        <i class="fa fa-step-forward"></i>
+                    </button>
+                    <button type="button" class="btn btn-info" (click)="fgdBrokerCollection.moveToLastPage()">
+                        Last
+                        <i class="fa fa-fast-forward"></i>
+                    </button>
                 </div>
             </div>
-            <!-- EOL: Flexgrid List: fgdBroker -->
 
-        </div>
+        </div> <!-- <div class="card"> -->
 
-    </div>
+    </div> <!-- <div class="container-fluid"> -->
 
-    <app-footer [data]=""></app-footer>
+    <app-footer [data]="fgdBrokerCollection"></app-footer>
 
-</div>
+</div> <!-- <div class="content-wrapper"> -->
 
-<!-- delete broker -->
+
+
+
+<!-- delete broker prompt modal -->
 <div id="mdlBrokerDelete" 
      class="modal fade" 
      role="dialog"

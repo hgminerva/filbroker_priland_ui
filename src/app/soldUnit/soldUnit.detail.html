@@ -1,19 +1,19 @@
 <menu-root></menu-root>
 
 <br>
-
 <br>
 
 <div class="content-wrapper">
 
     <div class="container-fluid">
 
+        <!-- crumbs -->
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a routerLink="/menu">Menu</a>
             </li>
             <li class="breadcrumb-item">
-                <a routerLink="/unit">Sold Unit List</a>
+                <a routerLink="/soldUnit">Sold Unit List</a>
             </li>
             <li class="breadcrumb-item active">{{title}}</li>
         </ol>
@@ -21,7 +21,7 @@
 
         <div class="card">
 
-            <!-- Buttons -->
+            <!-- detail operations, e.g., save, lock, unlock, etc. -->
             <div class="card-header">
                 <table border="0" style="width: 100%;">
                     <tr>
@@ -67,12 +67,11 @@
                         </td>
                     </tr>
                 </table>
-            </div>
+            </div> <!-- <div class="card-header"> -->
 
-            <!-- Detail -->
+            <!-- detail fields -->
             <div class="card-body">
                 <div class="row">
-
                     <div class="col-md-6">
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label text-right">Sold Unit No.</label>
@@ -82,6 +81,16 @@
                                     disabled 
                                     type="text" 
                                     class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Date</label>
+                            <div class="col-sm-9">
+                                <wj-input-date #calSoldUnitDate
+                                    [(text)]="soldUnit.soldUnitDate"
+                                    [isDisabled]="soldUnit.isLocked"
+                                    format="M/d/yyyy">
+                                </wj-input-date>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -95,7 +104,7 @@
                                     [displayMemberPath]="'project'" 
                                     [selectedValuePath]="'id'" 
                                     (selectedIndexChanged)="cmbProjectsChange()"
-                                    [(text)]="soldUnit.project"
+                                    [(ngModel)]="soldUnit.projectId"
                                     style="width: 100%;">
                                 </wj-combo-box>
                             </div>
@@ -109,9 +118,8 @@
                                     [isEditable]="false" 
                                     [isRequired]="true"
                                     [displayMemberPath]="'unitCode'" 
-                                    [selectedValuePath]="'id'" 
-                                    (selectedIndexChanged)="cmbUnitsChange()"
-                                    [(text)]="soldUnit.unit"
+                                    [selectedValuePath]="'id'"
+                                    [(ngModel)]="soldUnit.unitId"
                                     style="width: 100%;">
                                 </wj-combo-box>
                             </div>
@@ -126,8 +134,7 @@
                                     [isRequired]="true"
                                     [displayMemberPath]="'fullName'" 
                                     [selectedValuePath]="'id'" 
-                                    (selectedIndexChanged)="cmbCustomersChange()"
-                                    [(text)]="soldUnit.customer"
+                                    [(ngModel)]="soldUnit.customerId"
                                     style="width: 100%;">
                                 </wj-combo-box>
                             </div>
@@ -142,8 +149,7 @@
                                     [isRequired]="true"
                                     [displayMemberPath]="'fullName'" 
                                     [selectedValuePath]="'id'" 
-                                    (selectedIndexChanged)="cmbBrokersChange()"
-                                    [(text)]="soldUnit.broker"
+                                    [(ngModel)]="soldUnit.brokerId"
                                     style="width: 100%;">
                                 </wj-combo-box>
                             </div>
@@ -158,8 +164,7 @@
                                     [isRequired]="true"
                                     [displayMemberPath]="'checklist'" 
                                     [selectedValuePath]="'id'" 
-                                    (selectedIndexChanged)="cmbChecklistsChange()"
-                                    [(text)]="soldUnit.checklist"
+                                    [(ngModel)]="soldUnit.checklistId"
                                     style="width: 100%;">
                                 </wj-combo-box>
                             </div>
@@ -204,8 +209,7 @@
                                     [isRequired]="true"
                                     [displayMemberPath]="'fullName'" 
                                     [selectedValuePath]="'id'" 
-                                    (selectedIndexChanged)="cmbPreparedByChange()"
-                                    [(text)]="soldUnit.preparedByUser">
+                                    [(ngModel)]="soldUnit.preparedByr">
                                 </wj-combo-box>
                             </div>
                         </div>
@@ -219,8 +223,7 @@
                                     [isRequired]="true"
                                     [displayMemberPath]="'fullName'" 
                                     [selectedValuePath]="'id'" 
-                                    (selectedIndexChanged)="cmbCheckedByChange()"
-                                    [(text)]="soldUnit.checkedByUser">
+                                    [(ngModel)]="soldUnit.checkedBy">
                                 </wj-combo-box>
                             </div>
                         </div>
@@ -234,8 +237,21 @@
                                     [isRequired]="true"
                                     [displayMemberPath]="'fullName'" 
                                     [selectedValuePath]="'id'" 
-                                    (selectedIndexChanged)="cmbApprovedByChange()"
-                                    [(text)]="soldUnit.approvedByUser">
+                                    [(ngModel)]="soldUnit.approvedBy">
+                                </wj-combo-box>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Status</label>
+                            <div class="col-sm-9">
+                                <wj-combo-box #cmbStatus
+                                    [itemsSource]="cmbStatusData"
+                                    [isDisabled]="soldUnit.isLocked" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'value'" 
+                                    [selectedValuePath]="'value'" 
+                                    [(ngModel)]="soldUnit.status">
                                 </wj-combo-box>
                             </div>
                         </div>
@@ -243,12 +259,13 @@
                     
                 </div> 
 
-            </div>
+            </div> <!--  <div class="card-body"> -->
 
-            <!-- Detail Items -->
+            <!-- tabbed detail items -->
             <div class="card-body">
-                <div class="row">
-                    <ul class="nav nav-tabs" role="tablist" style="width:100%">
+
+                <div class="col-md-12">
+                    <ul class="nav nav-pills" role="tablist" style="width:100%">
                         <li class="nav-item">
                             <a [ngClass]="{'active': tabDetail1[0], 'nav-link': true }" (click)="tabDetail1Click(0)" data-toggle="tab" role="tab">Checklist Requirements</a>
                         </li>
@@ -264,10 +281,11 @@
                     </ul>
                 </div>
                 <br>
-                <div class="row">
+                <div class="col-md-12">
+
                     <div class="tab-content" style="width:100%">
 
-                        <!-- Checklist -->
+                        <!-- tab1 detail item (checklist requirements) -->
                         <div [ngClass]="{'active': tabDetail1[0], 'tab-pane': true }" role="tabpanel">
 
                             <wj-flex-grid #fgdSoldUnitRequirements [itemsSource]="fgdSoldUnitRequirementsCollection" [selectionMode]="3" [frozenColumns]="1">
@@ -293,8 +311,7 @@
                                 <wj-flex-grid-column [header]="'Status'"        [binding]="'status'"                [isReadOnly]="true" [width]="200"></wj-flex-grid-column>
                                 <wj-flex-grid-column [header]="'Date'"          [binding]="'statusDate'"            [isReadOnly]="true" [width]="150"></wj-flex-grid-column>
                             </wj-flex-grid>
-
-                            <div class="col-sm-12 btn-group" id="">
+                            <div class="col-sm-12 btn-group" style="padding: 5px 0px 5px 0px;">
                                 <button type="button" class="btn btn-info" (click)="fgdSoldUnitRequirementsCollection.moveToFirstPage()">
                                     <i class="fa fa-fast-backward"></i> First
                                 </button>
@@ -316,7 +333,7 @@
 
                         </div>
                         
-                        <!-- totalInvestment -->
+                        <!-- tab2 detail item (total investments) -->
                         <div [ngClass]="{'active': tabDetail1[1], 'tab-pane': true }" role="tabpanel">
                             <div class="form-group row">
                                 <div class="col-md-12">
@@ -330,7 +347,7 @@
                             </div>
                         </div>
 
-                        <!-- paymentOptions -->
+                        <!-- tab3 detail item (payment options) -->
                         <div [ngClass]="{'active': tabDetail1[2], 'tab-pane': true }" role="tabpanel">
                             <div class="form-group row">
                                 <div class="col-md-12">
@@ -344,7 +361,7 @@
                             </div>
                         </div>
 
-                        <!-- financing -->
+                       <!-- tab4 detail item (financing) -->
                         <div [ngClass]="{'active': tabDetail1[3], 'tab-pane': true }" role="tabpanel">
                             <div class="form-group row">
                                 <div class="col-md-12">
@@ -359,23 +376,23 @@
                         </div>
 
                     </div>
+
                 </div>
+
             </div>
 
-        </div>
+        </div> <!-- <div class="card"> -->
 
-    </div>
+    </div> <!-- <div class="container-fluid"> -->
 
     <app-footer [data]="soldUnit"></app-footer>
     
-</div>
+</div> <!-- <div class="content-wrapper"> -->
 
 
 
 
-
-
-<!-- New Checklist Requirements  -->
+<!-- new checklist requirements prompt modal -->
 <div id="mdlSoldUnitRequirementsModal" 
      class="modal fade" role="dialog"
      [ngStyle]="{'display': mdlSoldUnitRequirementsModalShow ? 'block' : 'none', 'opacity': 1}">
@@ -400,8 +417,7 @@
 
 
 
-
-<!-- Edit Checklist Requirement -->
+<!-- edit checklist requirement modal -->
 <div id="mdlEditSoldUnitRequirementModal" 
      class="modal fade" role="dialog" 
      [ngStyle]="{'display': mdlEditSoldUnitRequirementModalShow ? 'block' : 'none', 'opacity': 1}">
@@ -411,7 +427,7 @@
                 <h4 class="modal-title">Edit Checklist Requirement</h4>
             </div>
             <div class="modal-body">
-                <ul class="nav nav-tabs" role="tablist" style="width:100%">
+                <ul class="nav nav-pills" role="tablist" style="width:100%">
                     <li class="nav-item">
                         <a [ngClass]="{'active': tabDetail1Modal1[0], 'nav-link': true }" (click)="tabDetail1Modal1Click(0)" data-toggle="tab" role="tab">Requirement</a>
                     </li>
@@ -679,10 +695,6 @@
         </div>
     </div>
 </div>
-
-
-
-
 
 
 

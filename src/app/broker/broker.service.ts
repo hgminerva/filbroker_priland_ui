@@ -1,46 +1,52 @@
-// Angular
+// angular
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions } from '@angular/http';
 import { Router } from '@angular/router';
 
-// Message
+// message box
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
-// Wijmo
+// wijmo
 import { ObservableArray } from 'wijmo/wijmo';
 
-// Async
+// async
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 
-// Models
+// model(s)
 import { MstBroker } from '../model/model.mst.broker';
 import { SysDropDown } from '../model/model.sys.dropDown';
 
 @Injectable()
 export class BrokerService {
     
+    // ==================
     // private properties
+    // ==================
+
     private headers = new Headers({
         'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
         'Content-Type': 'application/json'
     });
     private options = new RequestOptions({ headers: this.headers });
 
+    // =================
     // public properties
+    // =================
 
     // broker list
     public brokersSource = new Subject<ObservableArray>();
     public brokersObservable = this.brokersSource.asObservable();
 
+    // broker list operations
+    public brokerDeletedSource = new Subject<number>();
+    public brokerDeletedObservable = this.brokerDeletedSource.asObservable();
+
     // broker detail
     public brokerSource = new Subject<MstBroker>();
     public brokerObservable = this.brokerSource.asObservable();
 
-    // broker operations
-    public brokerDeletedSource = new Subject<number>();
-    public brokerDeletedObservable = this.brokerDeletedSource.asObservable();
-
+    // broker detail operations
     public brokerSavedSource = new Subject<number>();
     public brokerSavedObservable = this.brokerSavedSource.asObservable();
 
@@ -50,10 +56,14 @@ export class BrokerService {
     public brokerUnlockedSource = new Subject<number>();
     public brokerUnlockedObservable = this.brokerUnlockedSource.asObservable();
 
-    // drop downs comboboxes
+    // combo boxes
     public dropDownsSource = new Subject<ObservableArray>();
     public dropDownsObservable = this.dropDownsSource.asObservable();
     
+    // =======
+    // angular
+    // =======
+
     // constructor
     constructor(
         private router: Router,
@@ -61,7 +71,11 @@ export class BrokerService {
         private toastr: ToastsManager
     ) { }
 
-    // get brokers
+    // ==============
+    // public methods
+    // ==============
+
+    // list
     public getBrokers(): void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/List";
         let brokers = new ObservableArray();
@@ -116,7 +130,7 @@ export class BrokerService {
         );
     }
 
-    // get broker detail
+    // detail
     public getBroker(id: number): void {
         let broker: MstBroker;
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Detail/" + id;
@@ -172,7 +186,7 @@ export class BrokerService {
         );
     }
 
-    // get drop downs for combo boxes
+    // detail combo boxes
     public getDropDowns() {
         let dropDowns = new ObservableArray();
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/SysDropDown/List";
@@ -198,7 +212,7 @@ export class BrokerService {
         );
     }
 
-    // broker operations 
+    // list operations 
     public addBroker(broker: MstBroker): void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Add";
         this.http.post(url, JSON.stringify(broker), this.options).subscribe(
@@ -219,6 +233,19 @@ export class BrokerService {
             }
         )
     }
+    public deleteBroker(id: number) {
+        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Delete/" + id;
+        this.http.delete(url, this.options).subscribe(
+            response => {
+                this.brokerDeletedSource.next(1);
+            },
+            error => {
+                this.brokerDeletedSource.next(0);
+            }
+        )
+    }
+
+    // detail operations
     public saveBroker(broker: MstBroker): void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Save";
         this.http.put(url, JSON.stringify(broker), this.options).subscribe(
@@ -252,16 +279,5 @@ export class BrokerService {
             }
         )
     }
-    public deleteBroker(id: number) {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Delete/" + id;
-        this.http.delete(url, this.options).subscribe(
-            response => {
-                this.brokerDeletedSource.next(1);
-            },
-            error => {
-                this.brokerDeletedSource.next(0);
-            }
-        )
-    }
-
+    
 }

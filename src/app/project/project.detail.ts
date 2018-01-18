@@ -1,17 +1,17 @@
-// Angular
+// angular
 import { Component,ViewContainerRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-// Services
+// service(s)
 import { ProjectService } from './project.service';
 
-// WijMo
+// wijmo
 import {ObservableArray, CollectionView} from 'wijmo/wijmo';
 
-// Beautification
+// message box
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
-// Model
+// model(s)
 import { MstProject } from '../model/model.mst.project';
 import { MstHouseModel} from '../model/model.mst.houseModel';
 
@@ -20,23 +20,33 @@ import { MstHouseModel} from '../model/model.mst.houseModel';
 })
 export class ProjectDetail {
 
+  // ==================
   // private properties
+  // ==================
+
+  // detail
   private projectSub : any;
 
-  // detail operation
+  // detail operations
   private projectSavedSub : any;
   private projectLockedSub : any;
   private projectUnlockedSub : any;
 
+  // combo boxes
   private projectStatusSub : any;
 
+  // detail line1 (house model) operations
   private houseModelsSub : any;
   private houseModelSavedSub : any;
   private houseModelDeletedSub : any;
 
+  // =================
   // public properties
+  // =================
+
   public title = 'Project Detail';
 
+  // model(s)
   public project : MstProject = {
     id: 0,
     projectCode: "",
@@ -67,12 +77,17 @@ export class ProjectDetail {
   // combo boxes
   public cmbProjectStatusData : ObservableArray;
 
-  // detail lines1 (house model) grid data source
+  // detail line1 (house model) data source
   public fgdHouseModelsData : ObservableArray;
   public fgdHouseModelsCollection : CollectionView;
 
+  // detail line1 (house model) modals
   public mdlHouseModelDeleteShow : boolean = false;
   public mdlHouseModelEditShow : boolean = false;
+
+  // =======
+  // angular
+  // =======
 
   // constructor
   constructor(
@@ -106,7 +121,10 @@ export class ProjectDetail {
     if( this.houseModelDeletedSub != null) this.houseModelDeletedSub.unsubscribe();
   }
 
+  // ===============
   // private methods
+  // ===============
+
   private getIdParameter() : number {
     let id = 0;
     this.activatedRoute.params.subscribe(params => {
@@ -115,9 +133,11 @@ export class ProjectDetail {
     return id;
   }
 
+  // ==============
   // public methods
+  // ==============
 
-  // detail
+  // detail and detail line1 (house models)
   public getProject() {
     this.projectService.getProject(this.getIdParameter());
 
@@ -181,7 +201,9 @@ export class ProjectDetail {
 
   }
 
+  // ======
   // events
+  // ======
 
   // detail operation
   public btnSaveProjectClick() : void {
@@ -250,7 +272,7 @@ export class ProjectDetail {
     );
   }
 
-  // detail lines1 (house models) operation
+  // detail line1 (house models) operation
   public btnAddHouseModelsClick() : void {
     this.houseModel.id = 0;
     this.houseModel.houseModelCode = "";
@@ -289,7 +311,7 @@ export class ProjectDetail {
     this.mdlHouseModelDeleteShow = true;
   }
 
-  // detail lines1 (house models) delete modal operation
+  // detail line1 (house models) delete modal operation
   public btnOkHouseModelDeleteModalClick() : void {
     let btnOkHouseModelDeleteModal: Element = document.getElementById("btnOkHouseModelDeleteModal");
     let btnCloseHouseModelDeleteModal: Element = document.getElementById("btnCloseHouseModelDeleteModal");
@@ -324,7 +346,7 @@ export class ProjectDetail {
     this.mdlHouseModelDeleteShow = false;
   }
 
-  // detail lines (house models) edit modal operation
+  // detail line1 (house models) edit modal operation
   public btnSaveHouseModelEditModalClick() : void {
     let btnSaveHouseModelEditModal:Element = document.getElementById("btnSaveHouseModelEditModal");
     let btnCloseHouseModelEditModal:Element = document.getElementById("btnCloseHouseModelEditModal");

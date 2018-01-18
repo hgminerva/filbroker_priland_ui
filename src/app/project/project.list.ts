@@ -1,18 +1,18 @@
-// Angular
+// angular
 import { Component,ViewContainerRef,ViewChild,ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 
-// Services
+// service(s)
 import { ProjectService } from './project.service';
 
-// WijMo
+// wijmo
 import { ObservableArray, CollectionView } from 'wijmo/wijmo';
 import { WjFlexGrid } from 'wijmo/wijmo.angular2.grid';
 
-// Beautification
+// message box
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
-// Model
+// model(s)
 import { MstProject } from '../model/model.mst.project';
 
 @Component({
@@ -20,14 +20,20 @@ import { MstProject } from '../model/model.mst.project';
 })
 export class ProjectList {
 
+    // ==================
     // private properties
+    // ==================
+
     private currentDate = new Date();
     private currentDateString = [this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, this.currentDate.getDate()].join('-');
 
     private projectsSub : any;
     private projectDeletedSub : any;
 
+    // =================
     // public properties
+    // =================
+
     public title = 'Project List';
     public filterProject : string;
 
@@ -48,6 +54,10 @@ export class ProjectList {
     public fgdProjectsCollection : CollectionView;
 
     public mdlProjectDeleteShow : boolean = false;
+
+    // =============
+    // angular class
+    // =============
 
     // constructor
     constructor(
@@ -71,7 +81,9 @@ export class ProjectList {
         if( this.projectsSub != null) this.projectsSub.unsubscribe();
     }
 
+    // ==============
     // public methods
+    // ==============
 
     // project list
     public getProjects() : void {
@@ -91,9 +103,11 @@ export class ProjectList {
         );
     }
 
+    // ======
     // events
+    // ======
 
-    // project list operation
+    // project list operations
     public btnAddProjectClick() : void {
         let btnAddProject:Element = document.getElementById("btnAddProject");
 
@@ -110,7 +124,7 @@ export class ProjectList {
         this.mdlProjectDeleteShow = true;
     }
 
-    // project delete modal operation
+    // project delete modal operations
     public btnOkProjectDeleteModalClick() : void {
         let btnOkProjectDeleteModal:Element = document.getElementById("btnOkProjectDeleteModal");
         let btnCloseProjectDeleteModal:Element = document.getElementById("btnCloseProjectDeleteModal");

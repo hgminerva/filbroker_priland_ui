@@ -1,36 +1,39 @@
-// Angular
+// angular
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions } from '@angular/http';
 import { Router } from '@angular/router';
 
-// Message
+// message box
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
-// Wijmo
+// wijmo
 import { ObservableArray } from 'wijmo/wijmo';
 
-// Async
+// async
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 
-// Model
+// model(s)
 import { SysDropDown } from '../model/model.sys.dropDown';
 import { MstUser } from '../model/model.mst.user';
 import { MstUserRight } from '../model/model.mst.user.right';
 
-
 @Injectable()
 export class UserService {
 
+    // ==================
     // private properties
+    // ==================
+
     private headers = new Headers({
         'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
         'Content-Type': 'application/json'
     });
-
     private options = new RequestOptions({ headers: this.headers });
 
+    // =================
     // public properties
+    // =================
 
     // user list
     public usersSource = new Subject<ObservableArray>();
@@ -40,32 +43,36 @@ export class UserService {
     public userSource = new Subject<MstUser>();
     public userObservable = this.userSource.asObservable();
 
-    // user operations
+    // user detail operations
     public userSavedSource = new Subject<number>();
     public userSavedObservable = this.userSavedSource.asObservable();
 
-    // user rights lists
+    // detail line1 (user rights) list
     public userRightsSource = new Subject<ObservableArray>();
     public userRightsObservable = this.userRightsSource.asObservable();
 
-    // user rights detail
+    // detail line1 (user rights) 
     public userRightSource = new Subject<MstUserRight>();
     public userRightObservable = this.userRightSource.asObservable();
 
-    // user rights operation
+    // detail line1 (user rights) operations
     public userRightDeletedSource = new Subject<number>();
     public userRightDeletedObservable = this.userRightDeletedSource.asObservable();
 
     public userRightSavedSource = new Subject<number>();
     public userRightSavedObservable = this.userRightSavedSource.asObservable();
 
-    // drop down list
+    // detail combo boxes
     public dropDownsSource = new Subject<ObservableArray>();
     public dropDownsObservable = this.dropDownsSource.asObservable();
 
-    // pages list
+    // detail line1 combo boxes
     public pagesSource = new Subject<ObservableArray>();
     public pagesObservable = this.pagesSource.asObservable();
+
+    // =======
+    // angular
+    // =======
 
     // constructor
     constructor(
@@ -74,7 +81,11 @@ export class UserService {
         private toastr: ToastsManager
     ) { }
 
-    // get users
+    // =================
+    // public properties
+    // =================
+
+    // list
     public getUsers(): void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUser/List";
         let users = new ObservableArray();
@@ -89,8 +100,7 @@ export class UserService {
                             fullname: results[i].FullName,
                             password: results[i].Password,
                             status: results[i].Status,
-                            aspNet: results[i].AspNetId,
-
+                            aspNet: results[i].AspNetId
                         });
                     }
                     this.usersSource.next(users);
@@ -101,7 +111,7 @@ export class UserService {
         );
     }
 
-    // get user detail
+    // detail
     public getUser(id: number) {
         let user: MstUser;
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUser/Detail/" + id;
@@ -128,7 +138,7 @@ export class UserService {
         );
     }
 
-    // user operations
+    // detail operation(s)
     public saveUser(user: MstUser): void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUser/Save";
         this.http.put(url, JSON.stringify(user), this.options).subscribe(
@@ -141,7 +151,7 @@ export class UserService {
         )
     }
 
-    // get drop down list
+    // detail combo boxes
     public getDropDowns() {
         let dropDowns = new ObservableArray();
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/SysDropDown/List";
@@ -166,7 +176,7 @@ export class UserService {
 
     }
 
-    // get user rights per user
+    // detail line1 (user rights) list
     public getUserRightsPerUser(id: number): void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUserRight/ListPerUser/" + id;
         let userRights = new ObservableArray();
@@ -196,7 +206,7 @@ export class UserService {
         );
     }
 
-    // user rights operation
+    // detail line1 (user rights) operations
     public saveUserRight(userRight: MstUserRight): void {
         if(userRight.id == 0) {
             let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUserRight/Add";
@@ -232,7 +242,7 @@ export class UserService {
         )
     }
 
-    // get page list
+    // detail line1 combo boxes
     public getPages() {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/SysPage/List";
         let pages = new ObservableArray();

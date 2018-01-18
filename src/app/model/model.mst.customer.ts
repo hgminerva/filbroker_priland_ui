@@ -21,7 +21,7 @@ export class MstCustomer {
 	mobileNumber: string;
 	employer: string;
 	employerIndustry: string;
-	noOfYearsEmployed: string;
+	noOfYearsEmployed: number;
 	position: string;
 	employmentStatus: string;
 	employerAddress: string;
@@ -34,9 +34,9 @@ export class MstCustomer {
 	remarks: string;
 	status: string;
 	picture: string;
-	isLocked: string;
-	createdBy: string;
+	isLocked: boolean;
+	createdBy: number;
 	createdDateTime: string;
-	updatedBy: string;
+	updatedBy: number;
 	updatedDateTime: string;
 }

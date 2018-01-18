@@ -1,24 +1,23 @@
-// Angular
+// angular
 import { Component, ViewContainerRef, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-// Services
-import { SoldUnitService } from './soldUnit.service';
-
-// WijMo
+// wijmo
 import {ObservableArray, CollectionView} from 'wijmo/wijmo';
 
-// Message Box
+// message box
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
-// Model
+// service(s)
+import { SoldUnitService } from './soldUnit.service';
+
+// model(s)
 import { TrnSoldUnit } from '../model/model.trn.soldUnit';
 import { TrnSoldUnitRequirement } from '../model/model.trn.soldUnit.requirement';
 import { TrnSoldUnitRequirementActivity } from '../model/model.trn.soldUnit.requirement.activity';
 
 @Component({
-  templateUrl: './soldUnit.detail.html',
-  styleUrls: ['./soldUnit.style.css'],
+  templateUrl: './soldUnit.detail.html'
 })
 export class SoldUnitDetail {
 
@@ -29,28 +28,38 @@ export class SoldUnitDetail {
   private currentDate = new Date();
   private currentDateString = [this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, this.currentDate.getDate()].join('-');
 
-  // detail and event async subscriptions (must be unsubscribe upon destruction)
+  // detail
   private soldUnitSub : any;
+
+  // detail operations
   private soldUnitSavedSub : any;
   private soldUnitLockedSub : any;
   private soldUnitUnlockedSub : any;
 
+  // detail line1 (checklist requirements)
   private soldUnitRequirementsSub : any;
+
+  // detail line1 line1 (checklist requirement activities)
   private soldUnitRequirementActivitiesSub : any;
 
+  // detail line1 (checklist requirements) operations
   private soldUnitRequirementSavedSub : any
-  private soldUnitRequirementActivitySavedSub : any;
 
-  // combobox async subscriptions (must be unsubscribe upon destruction)
+  // detail line1 line1 (checklist requirement activities) operations
+  private soldUnitRequirementActivitySavedSub : any;
+  private soldUnitRequirementActivityDeleteSub : any;
+
+  // detail combo boxes
   private cmbProjectsSub : any;
   private cmbUnitsSub : any;
   private cmbChecklistsSub : any;
   private cmbCustomersSub : any;
   private cmbBrokersSub : any;
   private cmbUsersSub : any;
+  private cmbStatusesSub : any;
 
+  // detail line1 (checklist requirements) combo boxes
   private cmbUnitSoldRequirementStatusSub : any;
-  private soldUnitRequirementActivityDeleteSub : any;
   
   // =================
   // public properties
@@ -84,7 +93,7 @@ export class SoldUnitDetail {
     checkedByUser: "",
     approvedBy: 0,
     approvedByUser: "",
-    status: "NEW",
+    status: "SOLD",
     isLocked: false,
     createdBy: 1,
     createdDateTime: this.currentDateString,
@@ -92,7 +101,7 @@ export class SoldUnitDetail {
     updatedDateTime: this.currentDateString,
   };
 
-  // detail item 1 model
+  // detail line1 model
   public soldUnitRequirement : TrnSoldUnitRequirement = {
     id: 0,
     soldUnitId: 0,
@@ -112,7 +121,7 @@ export class SoldUnitDetail {
     statusDate: this.currentDateString
   };
 
-   // detail item 1 sub item 1 model
+   // detail line1 line1 model
   public soldUnitRequirementActivity : TrnSoldUnitRequirementActivity = {
     id: 0,
     soldUnitRequirementId: 0,
@@ -123,47 +132,43 @@ export class SoldUnitDetail {
     user: ""
   };
 
-  // Combobox data
+  // detail combo boxes data
   public cmbProjectsData : ObservableArray;
   public cmbUnitsData : ObservableArray;
   public cmbChecklistsData : ObservableArray;
   public cmbCustomersData : ObservableArray;
   public cmbBrokersData : ObservableArray;
-  public cmbUsersData : ObservableArray; //shared by cmbPreparedBy, cmbCheckedBy, cmbApprovedBy
+  public cmbStatusData : ObservableArray;
+  public cmbUsersData : ObservableArray; // (cmbPreparedBy, cmbCheckedBy, cmbApprovedBy)
+
+  // detail line1 combo boxes data
   public cmbUnitSoldRequirementStatusData : ObservableArray;
 
-  @ViewChild("cmbProjects")   public cmbProjects : ElementRef;
-  @ViewChild("cmbUnits")      public cmbUnits : ElementRef;
-  @ViewChild("cmbChecklists") public cmbChecklists : ElementRef;
-  @ViewChild("cmbCustomers")  public cmbCustomers : ElementRef;
-  @ViewChild("cmbBrokers")    public cmbBrokers : ElementRef;
-  @ViewChild("cmbPreparedBy") public cmbPreparedBy : ElementRef;
-  @ViewChild("cmbCheckedBy")  public cmbCheckedBy : ElementRef;
-  @ViewChild("cmbApprovedBy") public cmbApprovedBy : ElementRef;
-
-  @ViewChild("cmbUnitSoldRequirementStatus") public cmbUnitSoldRequirementStatus : ElementRef;
-
-  // detail item grid
+  // detail line1 (checklist requirements) list
   public fgdSoldUnitRequirementsData : ObservableArray;
   public fgdSoldUnitRequirementsCollection : CollectionView;
 
+  // detail line1 line1 (checklist requirement activities) list
   public fgdSoldUnitRequirementActivitiesData : ObservableArray;
   public fgdSoldUnitRequirementActivitiesCollection : CollectionView;
 
-  // tab index
+  // tabs
   public tabDetail1 = new Array(true, false, false, false);
   public tabDetail1Modal1 = new Array(true, false, false);
 
-  // modal show flags
+  // modals
   public mdlSoldUnitRequirementsModalShow : boolean = false;
   public mdlEditSoldUnitRequirementModalShow : boolean = false;
   public mdlSoldUnitRequirementActivityModalShow : boolean = false;
 
-  // ===========
-  // constructor
-  // ===========
+  // element(s)
+  @ViewChild("cmbProjects")
+  public cmbProjects: ElementRef;
 
-  // there is only one constructor
+  // =======
+  // angular
+  // =======
+
   constructor(
     private soldUnitService: SoldUnitService,
     private router: Router,
@@ -174,11 +179,7 @@ export class SoldUnitDetail {
     this.toastr.setRootViewContainerRef(viewContainer);
   }
 
-  // =============================
-  // ng - angular component events
-  // =============================
-
-  // upon init
+  // ng
   ngOnInit() {
     this.fgdSoldUnitRequirementsData = new ObservableArray();
     this.fgdSoldUnitRequirementsCollection = new CollectionView(this.fgdSoldUnitRequirementsData);
@@ -188,8 +189,6 @@ export class SoldUnitDetail {
 
     this.getSoldUnit(); 
   }
-
-  // upon destruction (closing)
   ngOnDestroy() {
     if( this.soldUnitSub != null) this.soldUnitSub.unsubscribe();
 
@@ -205,13 +204,13 @@ export class SoldUnitDetail {
     if( this.cmbChecklistsSub != null) this.cmbChecklistsSub.unsubscribe();
     if( this.cmbCustomersSub != null) this.cmbCustomersSub.unsubscribe();
     if( this.cmbBrokersSub != null) this.cmbBrokersSub.unsubscribe();
+    if( this.cmbStatusesSub != null) this.cmbStatusesSub.unsubscribe();
   }
 
   // ===============
   // private methods
   // ===============
 
-  // get url id parameter
   private getIdParameter() {
     let id = 0;
     this.activatedRoute.params.subscribe(params => {
@@ -224,7 +223,7 @@ export class SoldUnitDetail {
   // public methods
   // ==============
 
-  // get detail record
+  // detail
   public getSoldUnit() {
     this.soldUnitService.getSoldUnit(this.getIdParameter());
 
@@ -262,83 +261,112 @@ export class SoldUnitDetail {
           this.soldUnit.updatedBy = data.updatedBy;
           this.soldUnit.updatedDateTime = data.updatedDateTime;
 
-          this.getCmbProjects();
-          this.getCmbCustomers();
-          this.getCmbBrokers();
-          this.getCmbUsers();
+          this.getCmbProjects(data);
+          this.getCmbCustomers(data);
+          this.getCmbBrokers(data);
+          this.getCmbUsers(data);
+          this.getCmbStatus(data);
 
           this.getSoldUnitRequirements();
         }
       );
   }
 
-  // fill cmbProjects with data
-  public getCmbProjects() : void {
+  // detail combo boxes
+  public getCmbProjects(defaultValue: any) : void {
     this.soldUnitService.getProjects();
 
     this.cmbProjectsSub = this.soldUnitService.projectsObservable.subscribe(
       data => {
         this.cmbProjectsData = data;
+
+        setTimeout(() => { this.soldUnit.projectId = defaultValue.projectId; }, 100);
       }
     );
   }
-
-  // fill cmbUnits with data
-  public getUnitsPerProjectId(projectId) : void {
-    this.soldUnitService.getUnitsPerProject(this.soldUnit.projectId);
-
-    this.cmbUnitsSub = this.soldUnitService.unitsObservable.subscribe(
-      data => {
-        this.cmbUnitsData = data;
-      }
-    );
-  }
-
-  // fill cmbChecklist with data
-  public getChecklistsPerProjectId(projectId) : void {
-    this.soldUnitService.getChecklistsPerProject(this.soldUnit.projectId);
-
-    this.cmbChecklistsSub = this.soldUnitService.checklistsObservable.subscribe(
-      data => {
-        this.cmbChecklistsData = data;
-      }
-    );
-  }
-
-  // fill cmbCustomers with data
-  public getCmbCustomers() : void {
+  public getCmbCustomers(defaultValue: any) : void {
     this.soldUnitService.getCustomers();
 
     this.cmbCustomersSub = this.soldUnitService.customersObservable.subscribe(
       data => {
         this.cmbCustomersData = data;
+
+        setTimeout(() => { this.soldUnit.customerId = defaultValue.customerId; }, 100);
       }
     );
   }
-
-  // fill cmbBrokers with data
-  public getCmbBrokers() : void {
+  public getCmbBrokers(defaultValue: any) : void {
     this.soldUnitService.getBrokers();
 
     this.cmbBrokersSub = this.soldUnitService.brokersObservable.subscribe(
       data => {
         this.cmbBrokersData = data;
+
+        setTimeout(() => { this.soldUnit.brokerId = defaultValue.brokerId; }, 100);
       }
     );
   }
-
-  // fill cmbPreparedBy, cmbCheckedBy, cmbApprovedBy with data
-  public getCmbUsers() : void {
+  public getCmbUsers(defaultValue: any) : void {
     this.soldUnitService.getUsers();
 
     this.cmbUsersSub = this.soldUnitService.usersObservable.subscribe(
       data => {
         this.cmbUsersData = data;
+
+        setTimeout(() => { this.soldUnit.preparedBy = defaultValue.preparedBy; }, 100);
+        setTimeout(() => { this.soldUnit.checkedBy = defaultValue.checkedBy; }, 100);
+        setTimeout(() => { this.soldUnit.approvedByUser = defaultValue.approvedByUser; }, 100);
+      }
+    );
+  }
+  public getCmbStatus(defaultValue: any) : void {
+    this.soldUnitService.getDropDowns();
+    let statuses = new ObservableArray();
+
+    this.cmbStatusesSub = this.soldUnitService.dropDownsObservable.subscribe(
+      data => {
+        if (data.length > 0) {
+          for (var i = 0; i <= data.length - 1; i++) {
+            if (data[i].category == "SOLD UNIT STATUS") {
+              statuses.push({
+                description: data[i].description,
+                value: data[i].value
+              });
+            }
+          }
+        }
+        this.cmbStatusData = statuses;
+
+        setTimeout(() => { this.soldUnit.status = defaultValue.status; }, 100);
       }
     );
   }
 
-  // fill the detail checklist with new requirements (this will remove the existing requirements)
+  // detail combo boxes when project is changed
+  public getUnitsPerProjectId(defaultValue: any) : void {
+    this.soldUnitService.getUnitsPerProject(this.soldUnit.projectId);
+
+    this.cmbUnitsSub = this.soldUnitService.unitsObservable.subscribe(
+      data => {
+        this.cmbUnitsData = data;
+
+        setTimeout(() => { this.soldUnit.unitId = defaultValue.unitId; }, 100);
+      }
+    );
+  }
+  public getChecklistsPerProjectId(defaultValue: any) : void {
+    this.soldUnitService.getChecklistsPerProject(this.soldUnit.projectId);
+
+    this.cmbChecklistsSub = this.soldUnitService.checklistsObservable.subscribe(
+      data => {
+        this.cmbChecklistsData = data;
+
+        setTimeout(() => { this.soldUnit.checklistId = defaultValue.checklistId; }, 100);
+      }
+    );
+  }
+
+  // create new detail line1 (checklist requirements) list - IMPORTANT! this will remove the existing checklist requirements
   public getNewSoldUnitRequirements() : void {
     this.soldUnitService.getNewSoldUnitRequirements(this.soldUnit.id,this.soldUnit.checklistId);
 
@@ -354,7 +382,7 @@ export class SoldUnitDetail {
     );
   }
 
-  // fill the detail checklist requirements
+  // detail line1 (checklist requirements) list
   public getSoldUnitRequirements() : void {
     this.soldUnitService.getSoldUnitRequirements(this.soldUnit.id);
 
@@ -370,7 +398,7 @@ export class SoldUnitDetail {
     );
   }
 
-  // fill cmbUnitSoldRequirementStatus with data
+  // detail line1 (checklist requirements) combo boxes
   public getCmbUnitSoldRequirementStatus() : void {
     this.soldUnitService.getDropDowns();
 
@@ -401,7 +429,7 @@ export class SoldUnitDetail {
     );     
   }
 
-  // fill fgdSoldUnitRequirementActivities grid with data
+  // detail line1 line1 (checklist requirement activities) list
   public getSoldUnitRequirementActivities() : void {
     this.soldUnitService.getSoldUnitRequirementActivities(this.soldUnitRequirement.id);
 
@@ -419,76 +447,13 @@ export class SoldUnitDetail {
   // events
   // ======
 
-  // detail combo box changes
+  // project combo box change
   public cmbProjectsChange() : void {
-    let index = this.cmbProjects["selectedIndex"];
-    let projectId = this.cmbProjectsData[index]["id"];
-    let project = this.cmbProjectsData[index]["project"];
-
-    this.soldUnit.projectId = projectId;
-    this.soldUnit.project = project;
-
-    this.getUnitsPerProjectId(projectId);
-    this.getChecklistsPerProjectId(projectId);
-  }
-  public cmbUnitsChange() : void {
-    let index = this.cmbUnits["selectedIndex"];
-    let unitId = this.cmbUnitsData[index]["id"];
-    let unit = this.cmbUnitsData[index]["unit"];
-
-    this.soldUnit.unitId = unitId;
-    this.soldUnit.unit = unit;
-  }
-  public cmbChecklistsChange() : void {
-    let index = this.cmbChecklists["selectedIndex"];
-    let checklistId = this.cmbChecklistsData[index]["id"];
-    let checklist = this.cmbChecklistsData[index]["checklist"];
-
-    this.soldUnit.checklistId = checklistId;
-    this.soldUnit.checklist = checklist;
-  }
-  public cmbCustomersChange() : void {
-    let index = this.cmbCustomers["selectedIndex"];
-    let customerId = this.cmbCustomersData[index]["id"];
-    let customer = this.cmbCustomersData[index]["fullName"];
-
-    this.soldUnit.customerId = customerId;
-    this.soldUnit.customer = customer;
-  }
-  public cmbBrokersChange() : void {
-    let index = this.cmbBrokers["selectedIndex"];
-    let brokerId = this.cmbBrokersData[index]["id"];
-    let broker = this.cmbBrokersData[index]["fullName"];
-
-    this.soldUnit.brokerId = brokerId;
-    this.soldUnit.broker = broker;
-  }
-  public cmbPreparedByChange() : void {
-    let index = this.cmbPreparedBy["selectedIndex"];
-    let userId = this.cmbUsersData[index]["id"];
-    let user = this.cmbUsersData[index]["fullName"];
-
-    this.soldUnit.brokerId = userId;
-    this.soldUnit.broker = user;
-  }
-  public cmbCheckedByChange() : void {
-    let index = this.cmbCheckedBy["selectedIndex"];
-    let userId = this.cmbUsersData[index]["id"];
-    let user = this.cmbUsersData[index]["fullName"];
-
-    this.soldUnit.brokerId = userId;
-    this.soldUnit.broker = user;
-  }
-  public cmbApprovedByChange() : void {
-    let index = this.cmbApprovedBy["selectedIndex"];
-    let userId = this.cmbUsersData[index]["id"];
-    let user = this.cmbUsersData[index]["fullName"];
-
-    this.soldUnit.approvedBy = userId;
-    this.soldUnit.approvedByUser = user;
+    this.getUnitsPerProjectId(this.soldUnit);
+    this.getChecklistsPerProjectId(this.soldUnit);
   }
 
-  // detail events
+  // detail operations
   public btnSaveSoldUnitClick() : void {
     let btnSaveSoldUnit:Element = document.getElementById("btnSaveSoldUnit");
 
@@ -554,17 +519,8 @@ export class SoldUnitDetail {
       }
     );
   }
-  public btnOpenSoldUnitRequirementsModalClick() : void {
-    this.mdlSoldUnitRequirementsModalShow = true;
-  }
 
-  // item (sub detail) events
-  public tabDetail1Click(index: number) {
-    for (var i = 0; i <= this.tabDetail1.length - 1; i++) {
-      if(index==i) this.tabDetail1[i] = true;
-      else this.tabDetail1[i] = false;
-    }
-  }
+  // detail line1 (checklist requirements) list operations
   public btnEditSoldUnitRequirementClick() {
     let selectedSoldUnitRequirement = this.fgdSoldUnitRequirementsCollection.currentItem;
 
@@ -591,7 +547,12 @@ export class SoldUnitDetail {
     this.mdlEditSoldUnitRequirementModalShow = true;
   }
 
-  // new sold unit requirements modal events
+  // download checklist requirements modal open
+  public btnOpenSoldUnitRequirementsModalClick() : void {
+    this.mdlSoldUnitRequirementsModalShow = true;
+  }
+
+  // download checklist requirements modal operations
   public btnOkSoldUnitRequirementsModalClick() : void {
     this.getNewSoldUnitRequirements();
     this.mdlSoldUnitRequirementsModalShow = false;
@@ -600,15 +561,7 @@ export class SoldUnitDetail {
     this.mdlSoldUnitRequirementsModalShow = false;
   }
   
-  // edit sold unit requirement modal events
-  public tabDetail1Modal1Click(index: number) {
-    for (var i = 0; i <= this.tabDetail1Modal1.length - 1; i++) {
-      if(index==i) this.tabDetail1Modal1[i] = true;
-      else this.tabDetail1Modal1[i] = false;
-
-      if(index==2) this.getSoldUnitRequirementActivities();
-    }
-  }
+  // edit sold unit requirement modal operations
   public btnSaveEditSoldUnitRequirementModalClick() {
     let btnSaveEditSoldUnitRequirementModal:Element = document.getElementById("btnSaveEditSoldUnitRequirementModal");
     let btnCloseEditSoldUnitRequirementModal:Element = document.getElementById("btnCloseEditSoldUnitRequirementModal");
@@ -645,6 +598,11 @@ export class SoldUnitDetail {
 
     this.mdlEditSoldUnitRequirementModalShow = false;
   }
+  public btnCloseEditSoldUnitRequirementModalClick() {
+    this.mdlEditSoldUnitRequirementModalShow = false;
+  }
+
+  // detail line1 line (checklist requirement activities) list operations
   public btnAddSoldUnitRequirementActivitiesClick() {
     let selectedSoldUnitRequirementActivity = this.fgdSoldUnitRequirementActivitiesCollection.currentItem;
 
@@ -657,9 +615,6 @@ export class SoldUnitDetail {
     this.soldUnitRequirementActivity.user = "";  
 
     this.mdlSoldUnitRequirementActivityModalShow = true;
-  }
-  public btnCloseEditSoldUnitRequirementModalClick() {
-    this.mdlEditSoldUnitRequirementModalShow = false;
   }
   public btnEditSoldUnitRequirementActivitiesClick() {
     let selectedSoldUnitRequirementActivity = this.fgdSoldUnitRequirementActivitiesCollection.currentItem;
@@ -690,7 +645,7 @@ export class SoldUnitDetail {
     );
   }
 
-  // edit sold unit requirement activity modal events
+  // edit sold unit checklist requirement activity modal operations
   public btnSaveSoldUnitRequirementActivityModalClick() {
     let btnSaveSoldUnitRequirementActivityModal:Element = document.getElementById("btnSaveSoldUnitRequirementActivityModal");
     let btnCloseSoldUnitRequirementActivityModal:Element = document.getElementById("btnCloseSoldUnitRequirementActivityModal");
@@ -756,4 +711,21 @@ export class SoldUnitDetail {
   public btnCloseSoldUnitRequirementActivityModalClick() {
     this.mdlSoldUnitRequirementActivityModalShow = false;    
   }
+
+  // tabs
+  public tabDetail1Click(index: number) {
+    for (var i = 0; i <= this.tabDetail1.length - 1; i++) {
+      if(index==i) this.tabDetail1[i] = true;
+      else this.tabDetail1[i] = false;
+    }
+  }
+  public tabDetail1Modal1Click(index: number) {
+    for (var i = 0; i <= this.tabDetail1Modal1.length - 1; i++) {
+      if(index==i) this.tabDetail1Modal1[i] = true;
+      else this.tabDetail1Modal1[i] = false;
+
+      if(index==2) this.getSoldUnitRequirementActivities();
+    }
+  }
+
 }

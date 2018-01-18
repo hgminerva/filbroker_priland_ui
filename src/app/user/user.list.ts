@@ -1,17 +1,17 @@
-// Angular
+// angular
 import { Component,ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
 
-// Services
-import { UserService } from './user.service';
-
-// WijMo
+// wijmo
 import {ObservableArray, CollectionView} from 'wijmo/wijmo';
 
-// Message box
+// message box
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
-// Model
+// service(s)
+import { UserService } from './user.service';
+
+// model(s)
 import { MstUser } from '../model/model.mst.user';
 
 @Component({
@@ -19,16 +19,24 @@ import { MstUser } from '../model/model.mst.user';
 })
 export class UserList {
 
+    // ==================
     // private properties
+    // ==================
+
     private currentDate = new Date();
     private currentDateString = [this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, this.currentDate.getDate()].join('-');
 
+    // list
     private usersSub : any;
 
+    // =================
     // public properties
-    public title = 'User List';
+    // =================
+
+    public title: string = 'User List';
     public filterUser : string;
 
+    // model(s)
     public user : MstUser = {
         id: 0,
         username: "",
@@ -38,8 +46,13 @@ export class UserList {
         aspNetId:""
     };
 
+    // list data source
     public fgdUsersData : ObservableArray;
     public fgdUsersCollection : CollectionView;
+
+    // =======
+    // angular
+    // =======
 
     // constructor
     constructor(
@@ -62,7 +75,11 @@ export class UserList {
         if( this.usersSub != null) this.usersSub.unsubscribe();
     }
 
+    // ==============
     // public methods
+    // ==============
+
+    // list
     public getUsers() : void {
         this.userService.getUsers();
 
@@ -76,7 +93,11 @@ export class UserList {
         );
     }
 
+    // ======
     // events
+    // ======
+
+    // list opertaions
     public btnEditUserClick() : void {
         let selectedUser = this.fgdUsersCollection.currentItem;
         this.router.navigate(['/user', selectedUser.id]);

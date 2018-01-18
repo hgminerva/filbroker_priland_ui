@@ -1,37 +1,46 @@
-// Angular
+// angular
 import { Component, ViewContainerRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-// Services
-import { BrokerService } from './broker.service';
-
-// WijMo
+// wijmo
 import { ObservableArray, CollectionView } from 'wijmo/wijmo';
 
-// Message Box
+// message box
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
-// Model
-import { MstBroker } from '../model/model.mst.broker';
+// service(s)
+import { BrokerService } from './broker.service';
 
+// model(s)
+import { MstBroker } from '../model/model.mst.broker';
 
 @Component({
   templateUrl: './broker.detail.html'
 })
 export class BrokerDetail {
   
+  // ==================
   // private properties
+  // ==================
+
+  // list operation
   private brokerSub: any;
 
+  // detail operation
   private brokerSavedSub: any;
   private brokerLockedSub: any;
   private brokerUnlockedSub: any;
 
+  // combo boxes
   private dropDownsSub: any;
 
+  // =================
   // public properties
-  public title = 'Broker Detail';
+  // =================
 
+  public title: string = 'Broker Detail';
+
+  // model(s)
   public broker: MstBroker = {
     id: 0,
     brokerCode: "",
@@ -41,7 +50,7 @@ export class BrokerDetail {
     fullName: "",
     licenseNumber: "",
     birthDate: "",
-    civilStatus: "",
+    civilStatus: "SINGLE",
     gender: "",
     address: "",
     telephoneNumber: "",
@@ -61,7 +70,7 @@ export class BrokerDetail {
     organization: "",
     remarks: "",
     picture: "",
-    status: "",
+    status: "ACTIVE",
     isLocked: false,
     createdBy: 1,
     createdDateTime: "",
@@ -70,12 +79,16 @@ export class BrokerDetail {
   };
 
   // combo box data sources
-  public cmbBrokerStatusData: ObservableArray;
+  public cmbStatusData: ObservableArray;
   public cmbCivilStatusData: ObservableArray;
   public cmbGenderData: ObservableArray;
 
-  // tab index
-  public tabDetail1 = new Array(true, false, false);
+  // detail tab index (if large number of fields)
+  public tabDetail1 = new Array(true, false);
+
+  // =======
+  // angular
+  // =======
 
   //constructor
   constructor(
@@ -102,7 +115,10 @@ export class BrokerDetail {
     if (this.dropDownsSub != null) this.dropDownsSub.unsubscribe();
   }
 
+  // ===============
   // private methods
+  // ===============
+
   private getIdParameter(): number {
     let id = 0;
     this.activatedRoute.params.subscribe(params => {
@@ -111,7 +127,11 @@ export class BrokerDetail {
     return id;
   }
 
-  // get broker data
+  // ==============
+  // public methods
+  // ==============
+
+  // detail
   public getBroker() {
     this.brokerService.getBroker(this.getIdParameter());
 
@@ -152,50 +172,58 @@ export class BrokerDetail {
           this.broker.updatedBy = data.updatedBy;
           this.broker.updatedDateTime = data.updatedDateTime;
 
-          this.getDropdownData();
+          this.getDropdowns(data);
         }
       );
   }
 
-  // get combo box data sources
-  public getDropdownData() {
+  // combo boxes
+  public getDropdowns(defaultValues: any) {
     this.brokerService.getDropDowns();
     this.dropDownsSub = this.brokerService.dropDownsObservable.subscribe(
       data => {
-        let brokerStatus = new ObservableArray();
-        let civilStatus = new ObservableArray();
-        let gender = new ObservableArray();
+        let statuses = new ObservableArray();
+        let civilStatuses = new ObservableArray();
+        let genders = new ObservableArray();
 
         if (data.length > 0) {
           for (var i = 0; i <= data.length - 1; i++) {
             if (data[i].category == "BROKER STATUS") {
-              brokerStatus.push({
+              statuses.push({
                 description: data[i].description,
                 value: data[i].value
               });
             }
             if (data[i].category == "GENDER") {
-              gender.push({
+              genders.push({
                 description: data[i].description,
                 value: data[i].value
               });
             }
             if (data[i].category == "CIVIL STATUS") {
-              civilStatus.push({
+              civilStatuses.push({
                 description: data[i].description,
                 value: data[i].value
               });
             }
           }
         }
-        this.cmbBrokerStatusData = brokerStatus;
-        this.cmbGenderData = gender;
-        this.cmbCivilStatusData = civilStatus;
+        this.cmbStatusData = statuses;
+        this.cmbGenderData = genders;
+        this.cmbCivilStatusData = civilStatuses;
+
+        setTimeout(() => { this.broker.status = defaultValues.status; }, 100);
+        setTimeout(() => { this.broker.gender = defaultValues.gender; }, 100);
+        setTimeout(() => { this.broker.civilStatus = defaultValues.civilStatus; }, 100);
       }
     );
   }
 
+  // ======
   // events
+  // ======
+
+  // detail operations
   public btnSaveBrokerClick(): void {
     let btnSaveBroker: Element = document.getElementById("btnSaveBroker");
 
@@ -262,7 +290,7 @@ export class BrokerDetail {
     );
   }
 
-  // tab index click
+  // detail tab index click
   public tabDetail1Click(index: number) {
     for (var i = 0; i <= this.tabDetail1.length - 1; i++) {
       if(index==i) this.tabDetail1[i] = true;

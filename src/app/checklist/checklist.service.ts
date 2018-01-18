@@ -1,19 +1,19 @@
-// Angular
+// angular
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions } from '@angular/http';
 import { Router } from '@angular/router';
 
-// Message
+// message box
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
-// Wijmo
+// wijmo
 import { ObservableArray } from 'wijmo/wijmo';
 
-// Async
+// async
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 
-// Model
+// model(s)
 import { MstProject } from '../model/model.mst.project';
 import { MstChecklist } from '../model/model.mst.checklist';
 import { SysDropDown } from '../model/model.sys.dropDown';
@@ -22,15 +22,21 @@ import { MstChecklistRequirement } from '../model/model.mst.checklist.requiremen
 @Injectable()
 export class ChecklistService {
 
+    // ==================
     // private properties
+    // ==================
+
     private headers = new Headers({
         'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
         'Content-Type': 'application/json'
     });
-
     private options = new RequestOptions({ headers: this.headers });
 
+    // =================
     // public properties
+    // =================
+
+    // filters
     public projectsSource = new Subject<ObservableArray>();
     public projectsObservable = this.projectsSource.asObservable();
 
@@ -42,10 +48,11 @@ export class ChecklistService {
     public checklistSource = new Subject<MstChecklist>();
     public checklistObservable = this.checklistSource.asObservable();
 
-    // detail operations
+    // list operations
     public checklistDeletedSource = new Subject<number>();
     public checklistDeletedObservable = this.checklistDeletedSource.asObservable();
 
+    // detail operations
     public checklistSavedSource = new Subject<number>();
     public checklistSavedObservable = this.checklistSavedSource.asObservable();
 
@@ -59,16 +66,20 @@ export class ChecklistService {
     public dropDownsSource = new Subject<ObservableArray>();
     public dropDownsObservable = this.dropDownsSource.asObservable();
 
-    // requirements
+    // detail line1 (requirements)
     public checklistRequirementsSource = new Subject<ObservableArray>();
     public checklistRequirementsObservable = this.checklistRequirementsSource.asObservable();
 
-    // requirements operation
+    // detail line1 (requirements) operations
     public checklistRequirementsDeletedSource = new Subject<number>();
     public checklistRequirementsDeletedObservable = this.checklistRequirementsDeletedSource.asObservable();
 
     public checklistRequirementsSavedSource = new Subject<number>();
     public checklistRequirementsSavedObservable = this.checklistRequirementsSavedSource.asObservable();
+
+    // =======
+    // angular
+    // =======
 
     // constructor
     constructor(
@@ -77,9 +88,11 @@ export class ChecklistService {
         private toastr:ToastsManager
     ){}
 
+    // ==============
     // public methods
+    // ==============
 
-    // checklist listing
+    // filters
     public getProjects() : void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstProject/List";
         let projects = new ObservableArray();
@@ -108,6 +121,8 @@ export class ChecklistService {
             }
         );
     }
+
+    // list
     public getChecklistPerProjectId(projectId : number) : void {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstChecklist/ListPerProjectId/" + projectId;
         let checklist = new ObservableArray();
@@ -139,6 +154,8 @@ export class ChecklistService {
             }
         );
     }
+
+    // list operations
     public addChecklist(checklist : MstChecklist, btnAddChecklist: Element) : void {
         let url="http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Add";
         this.http.post(url,JSON.stringify(checklist),this.options).subscribe(
@@ -159,6 +176,18 @@ export class ChecklistService {
                 this.toastr.error("Server error.");
                 btnAddChecklist.removeAttribute("disabled");
                 btnAddChecklist.innerHTML = "<i class='fa fa-plus fa-fw'></i> Add";
+            }
+        )
+    }
+    public deleteChecklist(id : number) : void {
+        let url="http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Delete/" + id;
+
+        this.http.delete(url, this.options).subscribe(
+            response=>{
+                this.checklistDeletedSource.next(1);
+            },
+            error=>{
+                this.checklistDeletedSource.next(0);
             }
         )
     }
@@ -196,19 +225,7 @@ export class ChecklistService {
         );
     }
 
-    // checklist detail operation
-    public deleteChecklist(id : number) : void {
-        let url="http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Delete/" + id;
-
-        this.http.delete(url, this.options).subscribe(
-            response=>{
-                this.checklistDeletedSource.next(1);
-            },
-            error=>{
-                this.checklistDeletedSource.next(0);
-            }
-        )
-    }
+    // detail operations
     public saveChecklist(checklist : MstChecklist) : void {
         let url="http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Save";
         this.http.put(url,JSON.stringify(checklist),this.options).subscribe(
@@ -243,7 +260,7 @@ export class ChecklistService {
         )
     }
 
-    // dropdowns
+    // detail combo boxes
     public getDropDowns(){
         let dropDowns  = new ObservableArray();
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/SysDropDown/List";
@@ -269,7 +286,7 @@ export class ChecklistService {
         );
     }
 
-    // get requirements
+    // detail item1 (requirements) list
     public getChecklistRequirementsPerChecklist(id : number) {
         let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckListRequirement/ListPerChecklist/" + id;
         let checklistRequirements = new ObservableArray();
@@ -298,7 +315,7 @@ export class ChecklistService {
         );
     }
 
-    // requirements operation
+    // detail item1 (requirements) list operations
     public saveChecklistRequirement(checklistRequirement: MstChecklistRequirement): void {
         if(checklistRequirement.id == 0) {
             let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckListRequirement/Add";

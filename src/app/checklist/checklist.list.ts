@@ -1,35 +1,48 @@
-// Angular
+// angular
 import { Component,ViewContainerRef,ViewChild,ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 
-// Services
-import { ChecklistService } from './checklist.service';
-
-// WijMo
+// wijmo
 import {ObservableArray, CollectionView} from 'wijmo/wijmo';
 import { WjComboBox } from 'wijmo/wijmo.angular2.input';
 
-// Messagebox 
+// message box 
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
-// Model
+// service(s)
+import { ChecklistService } from './checklist.service';
+
+// model(s)
 import { MstChecklist } from '../model/model.mst.checklist';
 
 @Component({
   templateUrl: './checklist.list.html'
 })
 export class ChecklistList {
+
+  // ==================
   // private properties
+  // ==================
   private currentDate = new Date();
   private currentDateString = [this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, this.currentDate.getDate()].join('-');
 
-  private checklistsSub : any;
+  // filters
   private projectsSub : any;
+
+  // list
+  private checklistsSub : any;
+  
+  // list operations
   private checklistDeletedSub : any;
 
-  //public properties
-  public title = 'Checklist List';
+  // =================
+  // public properties
+  // =================
 
+  public title : string = 'Checklist List';
+  public filterChecklist : string;
+
+  // model(s)
   public checklist : MstChecklist = {
     id: 0,
     checklistCode: "",
@@ -46,15 +59,23 @@ export class ChecklistList {
     updatedDateTime: this.currentDateString
   };
 
+  // list data source
   public fgdChecklistData : ObservableArray;
   public fgdChecklistCollection : CollectionView;
   
+  // filter combo boxes
   public cmbProjectsData : ObservableArray;
 
+  // filter combo boxes element (if there are events associated)
   @ViewChild("cmbProjects")
   public cmbProjects:ElementRef;
 
+  // modals
   public mdlChecklistDeleteShow : boolean = false;
+
+  // =======
+  // angular
+  // =======
 
   //constructor
   constructor(
@@ -66,21 +87,24 @@ export class ChecklistList {
     this.toastr.setRootViewContainerRef(viewContainer);
   }
   
-  //ng
+  // ng
   ngOnInit() {
     this.fgdChecklistData = new ObservableArray();
     this.fgdChecklistCollection = new CollectionView(this.fgdChecklistData);
 
     this.getProjects();
   }
-
   ngOnDestroy(){
     if(this.checklistsSub!=null) this.checklistsSub.unsubscribe();
     if(this.projectsSub!=null) this.projectsSub.unsubscribe();
     if(this.checklistDeletedSub!=null) this.checklistDeletedSub.unsubscribe();
   }
   
+  // ==============
   // public methods
+  // ==============
+
+  // filters
   public getProjects() : void {
     this.checklistService.getProjects();
 
@@ -92,6 +116,8 @@ export class ChecklistList {
       }
     );
   }
+
+  // list
   public getChecklistPerProjectId(projectId: number) : void {
     let checklist = new ObservableArray();
 
@@ -107,9 +133,11 @@ export class ChecklistList {
     );
   }
 
-  //events
+  // ======
+  // events
+  // ======
 
-  // project combo box change
+  // filter events
   public cmbProjectsChange() : void {
     let index = this.cmbProjects["selectedIndex"];
     let projectId = this.cmbProjectsData[index]["id"];
@@ -138,7 +166,7 @@ export class ChecklistList {
     this.router.navigate(['/checklist', selectedChecklist.id]);
   }
 
-  // delete modal events
+  // delete checklist modal events
   public btnOkChecklistDeleteModalClick() : void {
     let btnOkChecklistDeleteModal:Element = document.getElementById("btnOkChecklistDeleteModal");
     let btnCloseChecklistDeleteModal:Element = document.getElementById("btnCloseChecklistDeleteModal");
@@ -171,4 +199,5 @@ export class ChecklistList {
   public btnCloseChecklistDeleteModalClick() : void {
     this.mdlChecklistDeleteShow = false
   }
+  
 }

@@ -1,34 +1,39 @@
-// Angular
+// angular
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions } from '@angular/http';
 import { Router } from '@angular/router';
 
-// Message
+// message box
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
-// Wijmo
+// wijmo
 import { ObservableArray } from 'wijmo/wijmo';
 
-// Async
+// async
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 
-// Model
+// model(s)
 import { MstProject } from '../model/model.mst.project';
 import { SysDropDown } from '../model/model.sys.dropDown';
 import { MstHouseModel } from '../model/model.mst.houseModel';
 
 @Injectable()
 export class ProjectService {
-
+    
+    // ==================
     // private properties
+    // ==================
+
     private headers = new Headers({
         'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
         'Content-Type': 'application/json'
     });
     private options = new RequestOptions({ headers: this.headers });
 
+    // =================
     // public properties
+    // =================
 
     // list
     public projectsSource = new Subject<ObservableArray>();
@@ -66,6 +71,10 @@ export class ProjectService {
     public houseModelSavedSource = new Subject<number>();
     public houseModelSavedObservable = this.houseModelSavedSource.asObservable();   
 
+    // =============
+    // angular class
+    // =============
+
     // constructor
     constructor(
         private router: Router,
@@ -73,7 +82,9 @@ export class ProjectService {
         private toastr: ToastsManager
     ) { }
 
+    // ==============
     // public methods
+    // ==============
 
     // project listing
     public getProjects(): void {

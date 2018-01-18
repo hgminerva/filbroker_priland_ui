@@ -1,17 +1,17 @@
-// Angular
+// angular
 import { Component,ViewContainerRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-// Services
-import { UserService } from './user.service';
-
-// WijMo
+// wijmo
 import {ObservableArray, CollectionView} from 'wijmo/wijmo';
 
-// Message Box
+// message box
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
-// Model
+// service(s)
+import { UserService } from './user.service';
+
+// model(s)
 import { MstUser } from '../model/model.mst.user';
 import { MstUserRight } from '../model/model.mst.user.right';
 
@@ -20,22 +20,37 @@ import { MstUserRight } from '../model/model.mst.user.right';
 })
 export class UserDetail {
 
+  // ==================
   // private properties
+  // ==================
+
+  // detail
   private userSub : any;
+
+  // detail operations
   private userSavedSub : any;
+
+  // detail combo boxes
   private userStatusesSub : any;
+
+  // detail line1 (user rights)
   private userRightsSub : any;
+
+  // detail line1 (user rights) operations
   private userRightDeletedSub : any;
   private userRightPagesSub : any;
 
+  // =================
   // public properties
-  public title = 'User Detail';
+  // =================
 
-  // combo boxes
+  public title: string = 'User Detail';
+
+  // combo boxes data
   public cmbUserStatusData : ObservableArray;
   public cmbUserRightPagesData: ObservableArray;
 
-  // models
+  // model(s)
   public user : MstUser = {
     id: 0,
     username: "",
@@ -44,7 +59,6 @@ export class UserDetail {
     status: "",
     aspNetId: ""
   };
-
   public userRight: MstUserRight = {
     id:  0, 
     userId:  0,
@@ -59,16 +73,21 @@ export class UserDetail {
     canDelete: false
   };
 
-  // detail item1 grid data source
+  // detail line1 (user rights) list
   public fgdUserRightsData : ObservableArray;
   public fgdUserRightsCollection : CollectionView;
 
+  // modal(s)
   public mdlUserRightDeleteShow : boolean = false;
   public mdlUserRightEditShow : boolean = false;
   public mdlUserRightCopyShow : boolean = false;
 
   // variable use to copy user rights
   public copyUserRights : string;
+
+  // =======
+  // angular
+  // =======
 
   // constructor
   constructor(
@@ -97,7 +116,10 @@ export class UserDetail {
     if( this.userRightPagesSub != null) this.userRightPagesSub.unsubscribe();
   }
 
+  // ===============
   // private methods
+  // ===============
+
   private getIdParameter() : number {
     let id = 0;
     this.activatedRoute.params.subscribe(params => {
@@ -106,7 +128,11 @@ export class UserDetail {
     return id;
   }
 
+  // ==============
   // public methods
+  // ==============
+
+  // detail
   public getUser() {
     this.userService.getUser(this.getIdParameter());
     this.userSub = this.userService.userObservable
@@ -124,6 +150,8 @@ export class UserDetail {
           }
       );
   }
+  
+  // detail comboxes
   public getUserStatuses(detail : any) : void {
     this.userService.getDropDowns();
     this.userStatusesSub = this.userService.dropDownsObservable.subscribe(
@@ -148,6 +176,8 @@ export class UserDetail {
       }
     );
   }
+
+  // detail line1 (user rights)
   public getUserRights() : void {
     this.userService.getUserRightsPerUser(this.user.id);
 
@@ -160,6 +190,8 @@ export class UserDetail {
       }
     );
   }
+
+  // detail line1 (user rights) combo boxes
   public getUserRightPages() : void {
     this.userService.getPages();
     this.userRightPagesSub = this.userService.pagesObservable.subscribe(
@@ -183,9 +215,11 @@ export class UserDetail {
     );    
   }
 
+  // ======
   // events
+  // ======
 
-  // detail events
+  // detail operations
   public btnSaveUserClick() : void {
     let btnSaveUser:Element = document.getElementById("btnSaveUser");
 
@@ -208,7 +242,7 @@ export class UserDetail {
     );
   }
 
-  // user rights events
+  // detail line1 (user rights) list operations
   public btnAddUserRightsClick() : void {
     this.userRight.id = 0; 
     this.userRight.userId = this.user.id;
@@ -252,7 +286,7 @@ export class UserDetail {
     this.mdlUserRightDeleteShow = true;
   }
 
-  // user rights delete modal events
+  // detail line1 (user rights) delete modal operations
   public btnOkUserRightDeleteModalClick() : void {
     let btnOkUserRightDeleteModal: Element = document.getElementById("btnOkUserRightDeleteModal");
     let btnCloseUserRightDeleteModal: Element = document.getElementById("btnCloseUserRightDeleteModal");
@@ -287,15 +321,16 @@ export class UserDetail {
     this.mdlUserRightDeleteShow = false;
   }
 
-  // user rights copy modal events
+  // detail line1 (user rights) copy modal operations
   public btnOkUserRightCopyModalClick() : void {
+    // TO BE IMPLEMENTED!!!!!!!!
     this.mdlUserRightCopyShow = false;    
   }
   public btnCloseUserRightCopyModalClick() : void {
     this.mdlUserRightCopyShow = false;
   }
 
-  // user rights edit modal events
+  // detail line1 (user rights) edit modal operations
   public btnSaveUserRightEditClick() : void {
     let btnSaveUserRightEdit:Element = document.getElementById("btnSaveUserRightEdit");
     let btnCloseUserRightEdit:Element = document.getElementById("btnCloseUserRightEdit");

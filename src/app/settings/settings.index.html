@@ -1,37 +1,35 @@
 <menu-root></menu-root>
 
 <br>
-
 <br>
 
 <div class="content-wrapper">
+
     <div class="container-fluid">
 
+        <!-- crumbs -->
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="/menu">Menu</a>
+                <a routerLink="/menu">Menu</a>
             </li>
-            <li class="breadcrumb-item">
-                <a href="/project">Settings</a>
-            </li>
-
+            <li class="breadcrumb-item active">{{title}}</li>
         </ol>
 
+
         <div class="card">
-            <!-- Buttons -->
+
+            <!-- detail operations, e.g., save, close -->
             <div class="card-header">
                 <table border="0" style="width: 100%;">
                     <tr>
                         <td style="width: 59%;">
                             <h4>{{title}}</h4>
                         </td>
-                        <td style="width: 40%;" align="right">
-                            <button class="btn btn-primary" (click)="btnSaveClick()" id="btnSave">
-                                <i class="fa fa-save fa-fw"></i> Save
-                            </button>
-                        </td>
                         <td style="width: 1%;"></td>
                         <td style="width: 40%;" align="right">
+                            <button class="btn btn-primary" (click)="btnSaveSettingsClick()" id="btnSaveSettings">
+                                <i class="fa fa-save fa-fw"></i> Save
+                            </button>
                             <button class="btn btn-danger" routerLink="/menu">
                                 <i class="fa fa-close fa-fw"></i> Close
                             </button>
@@ -39,132 +37,232 @@
                     </tr>
                 </table>
             </div>
-            <!-- Detail -->
+
+            <!-- detail fields  -->
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-7">
+                    <div class="col-md-8">
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right" style="padding:5px">Company Name</label>
-                            <div class="col-sm-9">
-                                <input style="width: 50%;" [(ngModel)]="settings.company" type="text" class="form-control" placeholder="Company Name..."
-                                    id="company">
+                            <label class="col-sm-4 col-form-label text-right">Company</label>
+                            <div class="col-sm-8">
+                                <input [(ngModel)]="settings.company" type="text" class="form-control">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right" style="padding:5px">Software Version</label>
-                            <div class="col-sm-9">
-                                <input style="width: 50%;" [(ngModel)]="settings.softwareVersion" type="text" class="form-control" placeholder="Software Version..."
-                                    id="softwareVersion">
+                            <label class="col-sm-4 col-form-label text-right">Software Version</label>
+                            <div class="col-sm-8">
+                                <input [disabled]="true" [(ngModel)]="settings.softwareVersion" type="text" class="form-control">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">Developer</label>
-                            <div class="col-sm-9">
-                                <input style="width: 50%;" [disabled]="" [(ngModel)]="settings.softwareDeveloper" type="text" class="form-control" placeholder="Developer..."
-                                    id="softwareDeveloper">
+                            <label class="col-sm-4 col-form-label text-right">Software Developer</label>
+                            <div class="col-sm-8">
+                                <input [disabled]="true" [(ngModel)]="settings.softwareDeveloper" type="text" class="form-control">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right" style="padding:5px">Proposal Notes</label>
-                            <div class="col-sm-9">
-                                <textarea [disabled]="" [(ngModel)]="settings.proposalFootNote" rows="5" class="form-control" placeholder="Proposal Notes..."
-                                    id="proposalFootNote"></textarea>
+                            <label class="col-sm-4 col-form-label text-right">Sold Unit Checked By</label>
+                            <div class="col-sm-8">
+                                <wj-combo-box #cmbSoldUnitCheckedBy
+                                    [itemsSource]="cmbUsersData" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'fullName'" 
+                                    [selectedValuePath]="'id'" 
+                                    [(ngModel)]="settings.soldUnitCheckedBy">
+                                </wj-combo-box>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">Approved By</label>
-                            <div class="col-sm-9">
-                                <input style="width: 50%;" [disabled]="" [(ngModel)]="settings.soldUnitApprovedByUser" type="text" class="form-control" placeholder="Approved By..."
-                                    id="soldUnitApprovedByUser ">
+                            <label class="col-sm-4 col-form-label text-right">Sold Unit Approved By</label>
+                            <div class="col-sm-8">
+                                <wj-combo-box #cmbSoldUnitApprovedBy
+                                    [itemsSource]="cmbUsersData" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'fullName'" 
+                                    [selectedValuePath]="'id'" 
+                                    [(ngModel)]="settings.soldUnitApprovedBy">
+                                </wj-combo-box>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right" style="padding:2px">Broker Requirements</label>
-                            <div class="col-sm-9">
-                                <textarea [disabled]="" [(ngModel)]="settings.brokerFootNote" rows="5" class="form-control" placeholder="Broker Requirements..."
-                                    id="brokerFootNote"></textarea>
+                            <label class="col-sm-4 col-form-label text-right">Commission Request Checked By</label>
+                            <div class="col-sm-8">
+                                <wj-combo-box #cmbCommissionRequestCheckedBy
+                                    [itemsSource]="cmbUsersData" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'fullName'" 
+                                    [selectedValuePath]="'id'" 
+                                    [(ngModel)]="settings.commissionRequestCheckedBy">
+                                </wj-combo-box>
                             </div>
                         </div>
-                    </div>
-                    <table border="0" style="width: 100%;">
-                        <tr>
-                            <td style="width: 40%;" align="right">
-                                <button class="btn btn-info" data-toggle="modal" data-target="#modal" type="button" [routerLink]="['/settings.details.html']">
-                                    <i class='fa fa-plus fa-fw'></i> Add
-                                </button>
-                            </td>
-                        </tr>
-                    </table>
-                    <div id="modal" class="modal fade" role="dialog">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="">Dropdown List Values</h4>
-                                </div>
-                                <br/>
-                                <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">Category</label>
-                                    <div class="col-sm-9">
-                                        <input style="width: 50%;" [(ngModel)]="values.category" type="text" class="form-control" placeholder="Category..." id="category">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">Description</label>
-                                    <div class="col-sm-9">
-                                        <input style="width: 50%;" [(ngModel)]="values.description" type="text" class="form-control" placeholder="Description..."
-                                            id="description">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">Value</label>
-                                    <div class="col-sm-9">
-                                        <input style="width: 50%;" [(ngModel)]="values.value" type="text" class="form-control" placeholder="Value..." id="value">
-                                    </div>
-                                </div>
-                                <table border="0" style="width: 100%;">
-                                    <tr>
-                                        <td style="width: 40%;" align="right">
-                                            <button class="btn btn-primary" data-toggle="modal" data-target="#modal" type="button" routerLink="/add" (click)="btnSaveProjectClick()"
-                                                id="btnSaveProject">
-                                                <i></i> Ok
-                                            </button>
-                                            <button class="btn btn-danger" data-toggle="modal" data-target="#modal" type="button" routerLink="/add" id="add">
-                                                <i></i>Cancel
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </table>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label text-right">Commission Request Approved By</label>
+                            <div class="col-sm-8">
+                                <wj-combo-box #cmbCommissionRequestApprovedBy
+                                    [itemsSource]="cmbUsersData" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'fullName'" 
+                                    [selectedValuePath]="'id'" 
+                                    [(ngModel)]="settings.commissionRequestApprovedBy">
+                                </wj-combo-box>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Proposal Foot Note</label>
+                            <div class="col-sm-9">
+                                <textarea 
+                                    [(ngModel)]="settings.proposalFootNote" 
+                                    rows="3" 
+                                    class="form-control">
+                                </textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Broker Foot Note</label>
+                            <div class="col-sm-9">
+                                <textarea 
+                                    [(ngModel)]="settings.brokerFootNote" 
+                                    rows="3" 
+                                    class="form-control">
+                                </textarea>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- Flexgrid List -->
-                <div class="card-body">
-                    <wj-flex-grid #projectFlexGrid [itemsSource]="projectCollection" [selectionMode]="3" [frozenColumns]="2">
-                        <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
-                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
-                                <button class="btn btn-primary btn-sm btn-block" (click)="btnEditProjectClick()" data-toggle="modal" data-backdrop="static"
-                                    data-keyboard="false" data-target="#settings-detail-modal">
-                                    <i class="fa fa-edit fa-fw"></i> Edit
+            </div> <!-- <div class="card-body"> -->
+            
+            <!-- detail line1 (user rights) -->
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-sm-12" style="padding: 5px 0px 5px 0px;">
+                            <p class="float-right">
+                                <button type="button" class="btn btn-primary" (click)="btnAddDropDownClick()">
+                                    <i class="fa fa-plus"></i> Add
                                 </button>
-                            </ng-template>
-                        </wj-flex-grid-column>
-                        <wj-flex-grid-column [header]="Delete" [isReadOnly]="true" [width]="90">
-                            <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
-                                <button class="btn btn-danger btn-sm btn-block" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#projectDeleteModal">
-                                    <i class="fa fa-trash fa-fw"></i> Delete
-                                </button>
-                            </ng-template>
-                        </wj-flex-grid-column>
-                        <wj-flex-grid-column [header]="'Category'" [binding]="'category'" [isReadOnly]="true" [width]="'3*'"></wj-flex-grid-column>
-                        <wj-flex-grid-column [header]="'Description'" [binding]="'description'" [isReadOnly]="true" [width]="'3*'"></wj-flex-grid-column>
-                        <wj-flex-grid-column [header]="'Value'" [binding]="'value'" [isReadOnly]="true" [width]="'1.5*'"></wj-flex-grid-column>
-                    </wj-flex-grid>
-                </div>
+                            </p>
+                        </div>
+                        <wj-flex-grid #fgdDropDowns [itemsSource]="fgdDropDownsCollection" [selectionMode]="3">
+                            <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
+                                    <button class="btn btn-primary btn-sm btn-block" (click)="btnEditDropDownClick()">
+                                        <i class="fa fa-edit fa-fw"></i> Edit
+                                    </button>
+                                </ng-template>
+                            </wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="Delete" [isReadOnly]="true" [width]="90">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
+                                    <button class="btn btn-danger btn-sm btn-block" (click)="btnDeleteDropDownClick()">
+                                        <i class="fa fa-trash fa-fw"></i> Delete
+                                    </button>
+                                </ng-template>
+                            </wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'Category'"      [binding]="'category'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'Description'"   [binding]="'description'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'Value'"         [binding]="'value'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                        </wj-flex-grid>
+                        <div class="col-sm-12 btn-group" style="padding: 5px 0px 5px 0px;">
+                            <button type="button" class="btn btn-info" (click)="fgdDropDownsCollection.moveToFirstPage()">
+                                <i class="fa fa-fast-backward"></i> First
+                            </button>
+                            <button type="button" class="btn btn-info"  (click)="fgdDropDownsCollection.moveToPreviousPage()">
+                                <i class="fa fa-step-backward"></i> Previous
+                            </button>
+                            <button type="button" class="btn btn-info" disabled style="width:100px">
+                                {{ fgdDropDownsCollection.pageIndex + 1 }} / {{ fgdDropDownsCollection.pageCount }}
+                            </button>
+                            <button type="button" class="btn btn-info" (click)="fgdDropDownsCollection.moveToNextPage()">
+                                Next
+                                <i class="fa fa-step-forward"></i>
+                            </button>
+                            <button type="button" class="btn btn-info" (click)="fgdDropDownsCollection.moveToLastPage()">
+                                Last
+                                <i class="fa fa-fast-forward"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>  
+            </div> <!-- <div class="card-body"> -->
+
+        </div> <!-- <div class="card"> -->
+
+    </div> <!-- <div class="container-fluid"> -->
+
+    <app-footer [data]="settings"></app-footer>
+
+</div> <!-- <div class="content-wrapper"> -->
+
+
+
+
+<!-- delete drop down modal -->
+<div id="mdlDropDownDelete" 
+     class="modal fade" 
+     role="dialog"
+     [ngStyle]="{'display': mdlDropDownDeleteShow ? 'block' : 'none', 'opacity': 1}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Drop Down</h4>
+            </div>
+            <div class="modal-body">
+                Delete {{fgdDropDownsCollection.currentItem != null ? fgdDropDownsCollection.currentItem.description : ""}}?
+            </div>
+            <div class="modal-footer" align="right">
+                <button id="btnOkDropDownDeleteModal" class="btn btn-danger" (click)="btnOkDropDownDeleteModalClick()">
+                    <i class="fa fa-trash fa-fw"></i> Ok
+                </button>
+                <button id="btnCloseDropDownDeleteModal" class="btn btn-primary" (click)="btnCloseDropDownDeleteModalClick()">
+                    <i class="fa fa-close fa-fw"></i> Close
+                </button>
             </div>
         </div>
     </div>
+</div>
 
-    <app-footer [data]=""></app-footer>
-    
+
+
+
+<!-- edit drop down modal -->
+<div id="mdlDropDownEdit" 
+     class="modal fade" role="dialog" 
+     [ngStyle]="{'display': mdlDropDownEditShow ? 'block' : 'none', 'opacity': 1}">
+     <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit Drop Down</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Category</label>
+                    <div class="col-sm-9">
+                        <input [(ngModel)]="dropDown.category" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Description</label>
+                    <div class="col-sm-9">
+                        <input [(ngModel)]="dropDown.description" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Value</label>
+                    <div class="col-sm-9">
+                        <input [(ngModel)]="dropDown.value" type="text" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" align="right">
+                <button type="button" id="btnSaveDropDownEditModal" class="btn btn-success" (click)="btnSaveDropDownEditModalClick()">
+                    <i class="fa fa-check fa-fw"></i> Save</button>
+                <button type="button" id="btnCloseDrownDownEditModal" class="btn btn-danger" (click)="btnCloseDrownDownEditModalClick()">
+                    <i class="fa fa-times fa-fw"></i> Close </button>
+            </div>
+        </div>
+    </div>
 </div>

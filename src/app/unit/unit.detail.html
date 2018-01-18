@@ -1,13 +1,13 @@
 <menu-root></menu-root>
 
 <br>
-
 <br>
 
 <div class="content-wrapper">
 
     <div class="container-fluid">
 
+        <!-- crumbs -->
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a routerLink="/menu">Menu</a>
@@ -21,7 +21,7 @@
 
         <div class="card">
 
-            <!-- Buttons -->
+            <!-- detail operations, e.g., save, lock, unlock, etc. -->
             <div class="card-header">
                 <table border="0" style="width: 100%;">
                     <tr>
@@ -30,29 +30,25 @@
                         </td>
                         <td style="width: 1%;"></td>
                         <td style="width: 40%;" align="right">
-                            <button 
-                                id="btnLockUnit"
+                            <button  id="btnLockUnit"
                                 [disabled]="unit.isLocked" 
                                 class="btn btn-primary" 
                                 (click)="btnLockUnitClick()">
                                 <i class="fa fa-lock fa-fw"></i> Lock
                             </button>
-                            <button 
-                                id="btnUnlockUnit"
+                            <button id="btnUnlockUnit"
                                 [disabled]="!unit.isLocked" 
                                 class="btn btn-primary" 
                                 (click)="btnUnlockUnitClick()">
                                 <i class="fa fa-unlock fa-fw"></i> Unlock
                             </button>
-                            <button 
-                                id="btnSaveUnit"
+                            <button  id="btnSaveUnit"
                                 [disabled]="unit.isLocked" 
                                 class="btn btn-primary" 
                                 (click)="btnSaveUnitClick()">
                                 <i class="fa fa-save fa-fw"></i> Save
                             </button>
-                            <button 
-                                id="btnCloseUnit"
+                            <button id="btnCloseUnit"
                                 class="btn btn-danger" 
                                 routerLink="/unit">
                                 <i class="fa fa-close fa-fw"></i> Close
@@ -62,7 +58,7 @@
                 </table>
             </div>
 
-            <!-- Detail -->
+            <!-- detail fields -->
             <div class="card-body">
                 <div class="row">
 
@@ -78,21 +74,25 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">Block</label>
+                            <label class="col-sm-3 col-form-label text-right">Block No.</label>
                             <div class="col-sm-9">
                                 <input 
+                                    #txtBlock
                                     [(ngModel)]="unit.block" 
                                     [disabled]="unit.isLocked" 
+                                    (input)="txtBlockKeyup()"
                                     type="text" 
                                     class="form-control">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">Lot</label>
+                            <label class="col-sm-3 col-form-label text-right">Lot No.</label>
                             <div class="col-sm-9">
                                 <input 
+                                    #txtLot
                                     [(ngModel)]="unit.lot" 
                                     [disabled]="unit.isLocked" 
+                                    (input)="txtBlockKeyup()"
                                     type="text" 
                                     class="form-control">
                             </div>
@@ -117,8 +117,7 @@
                                     [isRequired]="true"
                                     [displayMemberPath]="'houseModel'" 
                                     [selectedValuePath]="'id'" 
-                                    (selectedIndexChanged)="cmbHouseModelChange()"
-                                    [(text)]="unit.houseModel">
+                                    [(ngModel)]="unit.houseModelId">
                                 </wj-combo-box>
                             </div>
                         </div>
@@ -171,12 +170,12 @@
                     
                 </div> 
 
-            </div>
+            </div> <!-- <div class="card-body"> -->
 
-        </div>
+        </div> <!-- <div class="card"> -->
 
-    </div>
+    </div> <!-- <div class="container-fluid"> -->
 
-    <app-footer [data]=""></app-footer>
+    <app-footer [data]="unit"></app-footer>
 
-</div>
+</div> <!-- <div class="content-wrapper"> -->
