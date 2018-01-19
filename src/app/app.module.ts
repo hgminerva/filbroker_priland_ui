@@ -52,6 +52,7 @@ import { SettingsService } from './settings/settings.service';
 import { SoldUnitService } from './soldUnit/soldUnit.service';
 import { UnitService } from './unit/unit.service';
 import { UserService } from './user/user.service';
+import { ReportsService } from './reports/reports.service';
 import { FooterService } from './footer/footer.service';
 
 const routes: Routes = [
@@ -121,6 +122,7 @@ const routes: Routes = [
     SoldUnitService,
     UnitService,
     UserService,
+    ReportsService,
     FooterService
   ],
   bootstrap: [AppComponent]

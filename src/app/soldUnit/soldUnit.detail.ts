@@ -723,9 +723,9 @@ export class SoldUnitDetail {
     for (var i = 0; i <= this.tabDetail1Modal1.length - 1; i++) {
       if(index==i) this.tabDetail1Modal1[i] = true;
       else this.tabDetail1Modal1[i] = false;
-
-      if(index==2) this.getSoldUnitRequirementActivities();
     }
+    
+    if(index==2) this.getSoldUnitRequirementActivities();
   }
 
 }
