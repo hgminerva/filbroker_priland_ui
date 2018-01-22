@@ -297,7 +297,7 @@ export class CustomerDetail {
           }
       }
     );
-  }
+  } 
   public btnUnlockCustomerClick() : void {
     let btnUnlockCustomer:Element = document.getElementById("btnUnlockCustomer");
 
@@ -319,6 +319,9 @@ export class CustomerDetail {
           }
       }
     );
+  }
+  public btnPrintCustomerClick() : void {
+    this.router.navigate(['/pdf', 'customer',this.customer.id]);   
   }
 
   // detail tab event (for multiple detail number of fields)

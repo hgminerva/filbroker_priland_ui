@@ -29,7 +29,7 @@
                         </td>
                         <td style="width: 1%;"></td>
                         <td style="width: 49%;" align="right">
-                            <button [disabled]="!customer.isLocked" class="btn btn-primary">
+                            <button [disabled]="!customer.isLocked" class="btn btn-primary" (click)="btnPrintCustomerClick()" id="btnPrintCustomer">
                                 <i class="fa fa-print fa-fw"></i> Print
                             </button>
                             <button [disabled]="customer.isLocked" class="btn btn-primary" (click)="btnLockCustomerClick()" id="btnLockCustomer">

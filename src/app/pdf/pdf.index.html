@@ -1,0 +1,38 @@
+<menu-root></menu-root>
+
+<br>
+<br>
+
+<div class="content-wrapper">
+
+    <div class="container-fluid">
+        
+        <div class="col-lg-12">
+            <table border="0" style="width: 100%;">
+                <tr>
+                    <td style="width: 59%;">
+                        <h4>{{title}}</h4>
+                    </td>
+                    <td style="width: 1%;"></td>
+                    <td style="width: 40%;" align="right">
+                        <button class="btn btn-primary" (click)="btnPrintPDFClick()" id="btnPrintPDF">
+                            <i class="fa fa-print fa-fw"></i> Print
+                        </button>
+                        <button class="btn btn-danger" (click)="btnClosePDFClick()" id="btnClosePDF">
+                            <i class="fa fa-close fa-fw"></i> Close
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="col-lg-12">
+            <pdf-viewer [src]="pdfUrl" [render-text]="true" style="display: block;"></pdf-viewer>
+            <iframe id="printPDF" name="printPDF" style="width:0;height:0;border:0; border:none;"></iframe>
+        </div>
+
+    </div> 
+    
+    <app-footer [data]=""></app-footer>
+
+</div> 

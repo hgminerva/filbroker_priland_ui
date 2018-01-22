@@ -14,6 +14,10 @@ import { AppToastOptions } from './app.toast.options';
 // Wijmo
 import { WjGridModule } from 'wijmo/wijmo.angular2.grid';
 import { WjInputModule } from 'wijmo/wijmo.angular2.input';
+import { WjViewerModule } from 'wijmo/wijmo.angular2.viewer';
+
+// pdf viewer
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 // My Components
 import { AppComponent } from './app.component';
@@ -40,6 +44,7 @@ import { UserList } from './user/user.list';
 import { UserDetail } from './user/user.detail';
 import { SettingsIndex } from './settings/settings.index';
 import { ReportsIndex } from './reports/reports.index';
+import { PDFIndex } from './pdf/pdf.index';
 
 // My Services
 import { AccountService } from './account/account.service';
@@ -54,6 +59,7 @@ import { UnitService } from './unit/unit.service';
 import { UserService } from './user/user.service';
 import { ReportsService } from './reports/reports.service';
 import { FooterService } from './footer/footer.service';
+import { PDFService } from './pdf/pdf.service';
 
 const routes: Routes = [
   { path: '', component: HomeLanding },
@@ -76,7 +82,8 @@ const routes: Routes = [
   { path: 'user', component: UserList },
   { path: 'user/:id', component: UserDetail },
   { path: 'settings', component: SettingsIndex },
-  { path: 'reports', component: ReportsIndex }
+  { path: 'reports', component: ReportsIndex },
+  { path: 'pdf/:report/:id', component: PDFIndex }
 ];
 
 @NgModule({
@@ -95,7 +102,8 @@ const routes: Routes = [
     UnitList, UnitDetail,
     UserList, UserDetail,
     SettingsIndex,
-    ReportsIndex
+    ReportsIndex,
+    PDFIndex
   ],
   imports: [
     RouterModule.forRoot(routes),
@@ -105,7 +113,9 @@ const routes: Routes = [
     BrowserModule,
     BrowserAnimationsModule,
     WjGridModule,
-    WjInputModule
+    WjInputModule,
+    WjViewerModule,
+    PdfViewerModule
   ],
   exports: [
     RouterModule
@@ -123,7 +133,8 @@ const routes: Routes = [
     UnitService,
     UserService,
     ReportsService,
-    FooterService
+    FooterService,
+    PDFService
   ],
   bootstrap: [AppComponent]
 })
