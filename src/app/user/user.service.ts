@@ -87,7 +87,7 @@ export class UserService {
 
     // list
     public getUsers(): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUser/List";
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstUser/List";
         let users = new ObservableArray();
         this.http.get(url, this.options).subscribe(
             response => {
@@ -114,7 +114,7 @@ export class UserService {
     // detail
     public getUser(id: number) {
         let user: MstUser;
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUser/Detail/" + id;
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstUser/Detail/" + id;
         this.http.get(url, this.options).subscribe(
             response => {
                 var results = response.json();
@@ -140,7 +140,7 @@ export class UserService {
 
     // detail operation(s)
     public saveUser(user: MstUser): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUser/Save";
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstUser/Save";
         this.http.put(url, JSON.stringify(user), this.options).subscribe(
             response => {
                 this.userSavedSource.next(1);
@@ -154,7 +154,7 @@ export class UserService {
     // detail combo boxes
     public getDropDowns() {
         let dropDowns = new ObservableArray();
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/SysDropDown/List";
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/SysDropDown/List";
         this.http.get(url, this.options).subscribe(
             response => {
                 var results = new ObservableArray(response.json());
@@ -178,7 +178,7 @@ export class UserService {
 
     // detail line1 (user rights) list
     public getUserRightsPerUser(id: number): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUserRight/ListPerUser/" + id;
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstUserRight/ListPerUser/" + id;
         let userRights = new ObservableArray();
         this.http.get(url, this.options).subscribe(
             response => {
@@ -209,7 +209,7 @@ export class UserService {
     // detail line1 (user rights) operations
     public saveUserRight(userRight: MstUserRight): void {
         if(userRight.id == 0) {
-            let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUserRight/Add";
+            let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstUserRight/Add";
             this.http.post(url, JSON.stringify(userRight), this.options).subscribe(
                 response => {
                     this.userRightSavedSource.next(1);
@@ -219,7 +219,7 @@ export class UserService {
                 }
             )
         } else {
-            let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUserRight/Save";
+            let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstUserRight/Save";
             this.http.put(url, JSON.stringify(userRight), this.options).subscribe(
                 response => {
                     this.userRightSavedSource.next(1);
@@ -231,7 +231,7 @@ export class UserService {
         }
     }
     public deleteUserRight(id: number) {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstUserRight/Delete/" + id;
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstUserRight/Delete/" + id;
         this.http.delete(url, this.options).subscribe(
             response => {
                 this.userRightDeletedSource.next(1);
@@ -244,7 +244,7 @@ export class UserService {
 
     // detail line1 combo boxes
     public getPages() {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/SysPage/List";
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/SysPage/List";
         let pages = new ObservableArray();
         this.http.get(url, this.options).subscribe(
             response => {

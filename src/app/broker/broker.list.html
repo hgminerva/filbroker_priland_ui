@@ -115,7 +115,7 @@
                 <h4 class="modal-title">Delete</h4>
             </div>
             <div class="modal-body">
-                Delete {{fgdBrokerCollection.currentItem.fullName}}?
+                Delete {{fgdBrokerCollection.currentItem != null ? fgdBrokerCollection.currentItem.fullName : ""}}?
             </div>
             <div class="modal-footer" align="right">
                 <button type="button" id="btnOkBrokerDeleteModal" class="btn btn-danger" (click)="btnOkBrokerDeleteModalClick()">

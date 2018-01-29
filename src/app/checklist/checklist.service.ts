@@ -94,7 +94,7 @@ export class ChecklistService {
 
     // filters
     public getProjects() : void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstProject/List";
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstProject/List";
         let projects = new ObservableArray();
         this.http.get(url, this.options).subscribe(
             response => {
@@ -124,7 +124,7 @@ export class ChecklistService {
 
     // list
     public getChecklistPerProjectId(projectId : number) : void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstChecklist/ListPerProjectId/" + projectId;
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstChecklist/ListPerProjectId/" + projectId;
         let checklist = new ObservableArray();
         this.http.get(url, this.options).subscribe(
             response => {
@@ -157,7 +157,7 @@ export class ChecklistService {
 
     // list operations
     public addChecklist(checklist : MstChecklist, btnAddChecklist: Element) : void {
-        let url="http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Add";
+        let url="https://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Add";
         this.http.post(url,JSON.stringify(checklist),this.options).subscribe(
             response=>{
                 var id = response.json();
@@ -180,7 +180,7 @@ export class ChecklistService {
         )
     }
     public deleteChecklist(id : number) : void {
-        let url="http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Delete/" + id;
+        let url="https://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Delete/" + id;
 
         this.http.delete(url, this.options).subscribe(
             response=>{
@@ -193,7 +193,7 @@ export class ChecklistService {
     }
     public getChecklist(id : number) : void {
         let checklist: MstChecklist;
-        let url="http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Detail/" + id;
+        let url="https://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Detail/" + id;
 
         this.http.get(url, this.options).subscribe(
             response=>{
@@ -227,7 +227,7 @@ export class ChecklistService {
 
     // detail operations
     public saveChecklist(checklist : MstChecklist) : void {
-        let url="http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Save";
+        let url="https://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Save";
         this.http.put(url,JSON.stringify(checklist),this.options).subscribe(
             response=>{
                 this.checklistSavedSource.next(1);
@@ -238,7 +238,7 @@ export class ChecklistService {
         )
     }
     public lockChecklist(checklist : MstChecklist) : void{
-        let url="http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Lock";
+        let url="https://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/Lock";
         this.http.put(url,JSON.stringify(checklist),this.options).subscribe(
             response=>{
                 this.checklistLockedSource.next(1);
@@ -249,7 +249,7 @@ export class ChecklistService {
         )
     }
     public unlockChecklist(checklist : MstChecklist) : void{
-        let url="http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/UnLock";
+        let url="https://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckList/UnLock";
         this.http.put(url,JSON.stringify(checklist),this.options).subscribe(
             reponse=>{
                 this.checklistUnlockedSource.next(1);
@@ -263,7 +263,7 @@ export class ChecklistService {
     // detail combo boxes
     public getDropDowns(){
         let dropDowns  = new ObservableArray();
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/SysDropDown/List";
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/SysDropDown/List";
 
         this.http.get(url, this.options).subscribe(
             response => {
@@ -288,7 +288,7 @@ export class ChecklistService {
 
     // detail item1 (requirements) list
     public getChecklistRequirementsPerChecklist(id : number) {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckListRequirement/ListPerChecklist/" + id;
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckListRequirement/ListPerChecklist/" + id;
         let checklistRequirements = new ObservableArray();
         this.http.get(url, this.options).subscribe(
             response => {
@@ -318,7 +318,7 @@ export class ChecklistService {
     // detail item1 (requirements) list operations
     public saveChecklistRequirement(checklistRequirement: MstChecklistRequirement): void {
         if(checklistRequirement.id == 0) {
-            let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckListRequirement/Add";
+            let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckListRequirement/Add";
             this.http.post(url, JSON.stringify(checklistRequirement), this.options).subscribe(
                 response => {
                     this.checklistRequirementsSavedSource.next(1);
@@ -328,7 +328,7 @@ export class ChecklistService {
                 }
             )
         } else {
-            let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckListRequirement/Save";
+            let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckListRequirement/Save";
             this.http.put(url, JSON.stringify(checklistRequirement), this.options).subscribe(
                 response => {
                     this.checklistRequirementsSavedSource.next(1);
@@ -340,7 +340,7 @@ export class ChecklistService {
         }
     }
     public deleteChecklistRequirement(id: number) {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckListRequirement/Delete/" + id;
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstCheckListRequirement/Delete/" + id;
         this.http.delete(url, this.options).subscribe(
             response => {
                 this.checklistRequirementsDeletedSource.next(1);

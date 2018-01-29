@@ -30,7 +30,7 @@
                         </td>
                         <td style="width: 1%;"></td>
                         <td style="width: 49%;" align="right">
-                            <button [disabled]="broker.isLocked" class="btn btn-primary" id="btnPrintBroker">
+                            <button [disabled]="!broker.isLocked" class="btn btn-primary" (click)="btnPrintBrokerClick()" id="btnPrintBroker">
                                 <i class="fa fa-print fa-fw"></i> Print
                             </button>
                             <button [disabled]="broker.isLocked" class="btn btn-primary" (click)="btnLockBrokerClick()" id="btnLockBroker">
@@ -183,18 +183,25 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <div class="row">
-                                        <div class="col-sm-3 text-right">
-                                            <p><b>{{broker.fullName}}</b></p>      
-                                            <button [disabled]="broker.isLocked" class="btn btn-primary" (click)="btnUploadPictureClick()" id="btnUploadPicture">
-                                                <i class="fa fa-camera fa-fw"></i> Upload Pic
-                                            </button>   
-                                        </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Picture</label>   
                                         <div class="col-sm-9">
-                                            <img src="..\..\assets\public\broker\0001.jpg" class="float-left img-responsive" style="width:200px; height:200px">
-                                        </div>
+                                            <div class="col-sm-12">
+                                                <img [src]="this.broker.picture" class="float-left img-responsive" style="width:200px; height:200px; padding: 5px 5px 5px 5px;">                
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <p><b>{{broker.fullName}}</b></p>      
+                                                <label class="btn btn-primary" [hidden]="broker.isLocked">
+                                                    <input type="file" 
+                                                            (change)="btnUploadPictureClick($event)" 
+                                                            name="btnUploadPicture" 
+                                                            accept="image/*" 
+                                                            style="display:none;" >
+                                                    Upload Pic
+                                                </label>
+                                            </div>
+                                        </div>    
                                     </div>
-                                    <br>
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label text-right">Birth Date</label>
                                         <div class="col-sm-9">

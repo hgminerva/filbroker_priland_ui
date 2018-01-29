@@ -196,18 +196,25 @@
                                     </div>
                                 </div><!-- <div customer info column 1> -->
                                 <div class="col-md-6">
-                                    <div class="row">
-                                        <div class="col-sm-3 text-right">
-                                            <p><b>{{customer.fullName}}</b></p>      
-                                            <button [disabled]="customer.isLocked" class="btn btn-primary" (click)="btnUploadPictureClick()" id="btnUploadPicture">
-                                                <i class="fa fa-camera fa-fw"></i> Upload Pic
-                                            </button>   
-                                        </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Picture</label>   
                                         <div class="col-sm-9">
-                                            <img src="..\..\assets\public\broker\0001.jpg" class="float-left img-responsive" style="width:200px; height:200px">
-                                        </div>
+                                            <div class="col-sm-12">
+                                                <img [src]="this.customer.picture" class="float-left img-responsive" style="width:200px; height:200px; padding: 5px 5px 5px 5px;">                
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <p><b>{{customer.fullName}}</b></p>      
+                                                <label class="btn btn-primary" [hidden]="customer.isLocked">
+                                                    <input type="file" 
+                                                            (change)="btnUploadPictureClick($event)" 
+                                                            name="btnUploadPicture" 
+                                                            accept="image/*" 
+                                                            style="display:none;" >
+                                                    Upload Pic
+                                                </label>
+                                            </div>
+                                        </div>    
                                     </div>
-                                    <br>
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label text-right">Email Address</label>
                                         <div class="col-sm-9">

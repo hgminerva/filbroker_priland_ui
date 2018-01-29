@@ -31,6 +31,8 @@ export class BrokerDetail {
   private brokerLockedSub: any;
   private brokerUnlockedSub: any;
 
+  private brokerPictureSub: any;
+
   // combo boxes
   private dropDownsSub: any;
 
@@ -111,6 +113,7 @@ export class BrokerDetail {
     if (this.brokerSavedSub != null) this.brokerSavedSub.unsubscribe();
     if (this.brokerLockedSub != null) this.brokerLockedSub.unsubscribe();
     if (this.brokerUnlockedSub != null) this.brokerUnlockedSub.unsubscribe();
+    if (this.brokerPictureSub != null) this.brokerPictureSub.unsubscribe();
 
     if (this.dropDownsSub != null) this.dropDownsSub.unsubscribe();
   }
@@ -288,6 +291,19 @@ export class BrokerDetail {
         }
       }
     );
+  }
+  public btnPrintBrokerClick(): void {
+    this.router.navigate(['/pdf', 'broker',this.broker.id]); 
+  }
+  public btnUploadPictureClick(e: Event) : void {
+    var target: HTMLInputElement = e.target as HTMLInputElement;
+    if(target.files.length > 0) {
+      this.brokerService.uploadBrokerPicture(target.files[0],"BROKER-" + this.broker.brokerCode + "-" + Date.now());
+      this.brokerPictureSub = this.brokerService.brokerPictureObservable
+          .subscribe( data => {
+            this.broker.picture = data.fileUrl;
+          });
+    }
   }
 
   // detail tab index click

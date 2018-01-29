@@ -31,9 +31,19 @@ export class PDFService {
     // public properties
     // =================
 
-    // customer
     public pdfCustomerSource = new Subject<Blob>();
     public pdfCustomerObservable = this.pdfCustomerSource.asObservable();
+
+    public pdfBrokerSource = new Subject<Blob>();
+    public pdfBrokerObservable = this.pdfBrokerSource.asObservable();
+
+    public pdfChecklistSource = new Subject<Blob>();
+    public pdfChecklistObservable = this.pdfChecklistSource.asObservable();
+
+    public pdfSoldUnitProposalSource = new Subject<Blob>();
+    public pdfSoldUnitProposalObservable = this.pdfSoldUnitProposalSource.asObservable();
+    public pdfSoldUnitContractSource = new Subject<Blob>();
+    public pdfSoldUnitContractObservable = this.pdfSoldUnitContractSource.asObservable();
 
     // =======
     // angular
@@ -51,7 +61,7 @@ export class PDFService {
     // ==============
 
     public getPDFCustomer(id: number): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/PDF/Customer/" + id;
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/PDF/Customer/" + id;
         
         console.log(url);
 
@@ -60,5 +70,45 @@ export class PDFService {
             this.pdfCustomerSource.next(pdf);
         });
     }
+    public getPDFBroker(id: number): void {
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/PDF/Broker/" + id;
+        
+        console.log(url);
 
+        this.http.get(url, { responseType: ResponseContentType.Blob }).subscribe((response) => {
+            let pdf = new Blob([response.blob()], { type: 'application/pdf' });
+            this.pdfBrokerSource.next(pdf);
+        });
+    }
+    public getPDFChecklist(id: number): void {
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/PDF/Checklist/" + id;
+        
+        console.log(url);
+
+        this.http.get(url, { responseType: ResponseContentType.Blob }).subscribe((response) => {
+            let pdf = new Blob([response.blob()], { type: 'application/pdf' });
+            this.pdfChecklistSource.next(pdf);
+        });
+    }
+    public getPDFSoldUnitProposal(id: number): void {
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/PDF/SoldUnitProposal/" + id;
+        
+        console.log(url);
+
+        this.http.get(url, { responseType: ResponseContentType.Blob }).subscribe((response) => {
+            let pdf = new Blob([response.blob()], { type: 'application/pdf' });
+            this.pdfSoldUnitProposalSource.next(pdf);
+        });
+    }
+    public getPDFSoldUnitContract(id: number): void {
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/PDF/SoldUnitContract/" + id;
+        
+        console.log(url);
+
+        this.http.get(url, { responseType: ResponseContentType.Blob }).subscribe((response) => {
+            let pdf = new Blob([response.blob()], { type: 'application/pdf' });
+            this.pdfSoldUnitContractSource.next(pdf);
+        });
+    }
+    
 }

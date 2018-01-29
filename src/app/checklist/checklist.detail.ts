@@ -307,6 +307,9 @@ export class ChecklistDetail {
       }
     );
   }
+  public btnPrintChecklistClick() : void {
+    this.router.navigate(['/pdf', 'checklist',this.checklist.id]); 
+  }
 
   // detail line1 (requirements) list operations
   public btnAddChecklistRequirementsClick() : void {

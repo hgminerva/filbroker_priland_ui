@@ -26,7 +26,7 @@ export class AccountService {
 
     public login(username: string, password: string): void 
     {
-        let url = 'http://filbrokerwebsite-priland.azurewebsites.net/token';
+        let url = 'https://filbrokerwebsite-priland.azurewebsites.net/token';
         let body = "username=" + username + "&password=" + password + "&grant_type=password";
         let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
         let options = new RequestOptions({ headers: headers })

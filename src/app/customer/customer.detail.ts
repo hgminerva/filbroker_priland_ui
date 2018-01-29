@@ -30,6 +30,7 @@ export class CustomerDetail {
   private customerSavedSub: any;
   private customerLockedSub: any;
   private customerUnlockedSub: any;
+  private customerPictureSub: any;
 
   // combo boxes
   private dropDownsSub: any;
@@ -119,6 +120,7 @@ export class CustomerDetail {
     if( this.customerLockedSub != null) this.customerLockedSub.unsubscribe();
     if( this.customerUnlockedSub != null) this.customerUnlockedSub.unsubscribe();
     if( this.dropDownsSub != null) this.dropDownsSub.unsubscribe();
+    if( this.customerPictureSub != null) this.customerPictureSub.unsubscribe();
   }
 
   // ===============
@@ -322,6 +324,16 @@ export class CustomerDetail {
   }
   public btnPrintCustomerClick() : void {
     this.router.navigate(['/pdf', 'customer',this.customer.id]);   
+  }
+  public btnUploadPictureClick(e: Event) : void {
+    var target: HTMLInputElement = e.target as HTMLInputElement;
+    if(target.files.length > 0) {
+      this.customerService.uploadCustomerPicture(target.files[0],"CUSTOMER-" + this.customer.customerCode + "-" + Date.now());
+      this.customerPictureSub = this.customerService.customerPictureObservable
+          .subscribe( data => {
+            this.customer.picture = data.fileUrl;
+          });
+    }
   }
 
   // detail tab event (for multiple detail number of fields)

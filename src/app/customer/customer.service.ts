@@ -16,6 +16,7 @@ import { Observable } from 'rxjs/Observable';
 // model(s)
 import { MstCustomer } from '../model/model.mst.customer';
 import { SysDropDown } from '../model/model.sys.dropDown';
+import { SysBlob } from '../model/model.sys.blob';
 
 @Injectable()
 export class CustomerService {
@@ -56,6 +57,10 @@ export class CustomerService {
     public customerUnlockedSource = new Subject<number>();
     public customerUnlockedObservable = this.customerUnlockedSource.asObservable();  
 
+    // Blob, picture
+    public customerPictureSource = new Subject<SysBlob>();
+    public customerPictureObservable = this.customerPictureSource.asObservable();
+
     // combo boxes
     public dropDownsSource = new Subject<ObservableArray>();
     public dropDownsObservable = this.dropDownsSource.asObservable();
@@ -77,7 +82,7 @@ export class CustomerService {
 
     // customer list
     public getCustomers(): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstCustomer/List";
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstCustomer/List";
         let customers = new ObservableArray();
         this.http.get(url, this.options).subscribe(
             response => {
@@ -138,7 +143,7 @@ export class CustomerService {
 
     // customer list operations
     public addCustomer(customer: MstCustomer, btnAddCustomer: Element): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstCustomer/Add";
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstCustomer/Add";
         this.http.post(url, JSON.stringify(customer), this.options).subscribe(
             response => {
                 var id = response.json();
@@ -161,7 +166,7 @@ export class CustomerService {
         )
     }
     public deleteCustomer(id : number) {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstCustomer/Delete/" + id;
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstCustomer/Delete/" + id;
         this.http.delete(url, this.options).subscribe(
             response => {
                 this.customerDeletedSource.next(1);
@@ -175,7 +180,7 @@ export class CustomerService {
     // customer detail
     public getCustomer(id : number) {
         let customer: MstCustomer;
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstCustomer/Detail/" + id;
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstCustomer/Detail/" + id;
 
         this.http.get(url, this.options).subscribe(
             response => {
@@ -236,7 +241,7 @@ export class CustomerService {
 
     // customer detail operations
     public saveCustomer(project: MstCustomer): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstCustomer/Save";
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstCustomer/Save";
         this.http.put(url, JSON.stringify(project), this.options).subscribe(
             response => {
                 this.customerSavedSource.next(1);
@@ -247,7 +252,7 @@ export class CustomerService {
         )
     }
     public lockCustomer(project: MstCustomer): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstCustomer/Lock";
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstCustomer/Lock";
         this.http.put(url, JSON.stringify(project), this.options).subscribe(
             response => {
                 this.customerLockedSource.next(1);
@@ -258,7 +263,7 @@ export class CustomerService {
         )
     }
     public unlockCustomer(project: MstCustomer): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstCustomer/Unlock";
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstCustomer/Unlock";
         this.http.put(url, JSON.stringify(project), this.options).subscribe(
             response => {
                 this.customerUnlockedSource.next(1);
@@ -268,11 +273,43 @@ export class CustomerService {
             }
         )
     }
+    public uploadCustomerPicture(file: File, fileName: string) : void {
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/Blob/Upload";
+        let blob : SysBlob;
+
+        var formData: FormData = new FormData();
+        formData.append("image", file, fileName);
+
+        this.http
+            .post(url, formData)
+            .subscribe(
+                response => {
+                    var results = new ObservableArray(response.json());
+                    if (results.length > 0) {
+                        blob = {
+                            fileName : results[0].FileName,
+                            fileUrl : results[0].FileUrl,
+                            fileSizeInBytes : results[0].FileSizeInBytes,
+                            fileSizeInKb : results[0].FileSizeInKb,
+                        };
+                        this.customerPictureSource.next(blob);
+                        this.toastr.success("Upload successful.");
+                    } else {
+                        this.customerPictureSource.next(blob);
+                        this.toastr.error("Uploading failed.");  
+                    }
+                },
+                error => {
+                    this.customerPictureSource.next(blob);
+                    this.toastr.error("Server error.");
+                }    
+            );
+    }
 
     // combo boxes
     public getDropDowns()  {
         let dropDowns  = new ObservableArray();
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/SysDropDown/List";
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/SysDropDown/List";
 
         this.http.get(url, this.options).subscribe(
             response => {

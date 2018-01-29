@@ -58,7 +58,7 @@ export class ReportsService {
     ) { }
 
     public getSoldUnitSummary(dateStart: string, dateEnd: string): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/RepSummary/ListSoldUnitPerDates/" + dateStart + "/" + dateEnd;
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/RepSummary/ListSoldUnitPerDates/" + dateStart + "/" + dateEnd;
         let soldUnits = new ObservableArray();
         
         this.http.get(url, this.options).subscribe(
@@ -109,7 +109,7 @@ export class ReportsService {
     }
 
     public getCommissionRequestSummary(dateStart: string, dateEnd: string): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/RepSummary/ListCommissionRequestPerDates/" + dateStart + "/" + dateEnd;
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/RepSummary/ListCommissionRequestPerDates/" + dateStart + "/" + dateEnd;
         let commissionRequests = new ObservableArray();
         
         this.http.get(url, this.options).subscribe(
@@ -152,7 +152,7 @@ export class ReportsService {
     }
 
     public getSoldUnitRequirementActivitySummary(dateStart: string, dateEnd: string) : void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/RepSummary/ListSoldUnitRequirementActivityPerDates/" + dateStart + "/" + dateEnd;
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/RepSummary/ListSoldUnitRequirementActivityPerDates/" + dateStart + "/" + dateEnd;
         let soldUnitRequirementActivities = new ObservableArray();
 
         this.http.get(url, this.options).subscribe(

@@ -16,6 +16,7 @@ import { Observable } from 'rxjs/Observable';
 // model(s)
 import { MstBroker } from '../model/model.mst.broker';
 import { SysDropDown } from '../model/model.sys.dropDown';
+import { SysBlob } from '../model/model.sys.blob';
 
 @Injectable()
 export class BrokerService {
@@ -56,6 +57,10 @@ export class BrokerService {
     public brokerUnlockedSource = new Subject<number>();
     public brokerUnlockedObservable = this.brokerUnlockedSource.asObservable();
 
+    // Blob, picture
+    public brokerPictureSource = new Subject<SysBlob>();
+    public brokerPictureObservable = this.brokerPictureSource.asObservable();
+
     // combo boxes
     public dropDownsSource = new Subject<ObservableArray>();
     public dropDownsObservable = this.dropDownsSource.asObservable();
@@ -77,7 +82,7 @@ export class BrokerService {
 
     // list
     public getBrokers(): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/List";
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/List";
         let brokers = new ObservableArray();
         this.http.get(url, this.options).subscribe(
             response => {
@@ -133,7 +138,7 @@ export class BrokerService {
     // detail
     public getBroker(id: number): void {
         let broker: MstBroker;
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Detail/" + id;
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Detail/" + id;
 
         this.http.get(url, this.options).subscribe(
             response => {
@@ -189,7 +194,7 @@ export class BrokerService {
     // detail combo boxes
     public getDropDowns() {
         let dropDowns = new ObservableArray();
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/SysDropDown/List";
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/SysDropDown/List";
 
         this.http.get(url, this.options).subscribe(
             response => {
@@ -214,7 +219,7 @@ export class BrokerService {
 
     // list operations 
     public addBroker(broker: MstBroker): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Add";
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Add";
         this.http.post(url, JSON.stringify(broker), this.options).subscribe(
             response => {
                 var id = response.json();
@@ -234,7 +239,7 @@ export class BrokerService {
         )
     }
     public deleteBroker(id: number) {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Delete/" + id;
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Delete/" + id;
         this.http.delete(url, this.options).subscribe(
             response => {
                 this.brokerDeletedSource.next(1);
@@ -244,10 +249,42 @@ export class BrokerService {
             }
         )
     }
+    public uploadBrokerPicture(file: File, fileName: string) : void {
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/Blob/Upload";
+        let blob : SysBlob;
+
+        var formData: FormData = new FormData();
+        formData.append("image", file, fileName);
+
+        this.http
+            .post(url, formData)
+            .subscribe(
+                response => {
+                    var results = new ObservableArray(response.json());
+                    if (results.length > 0) {
+                        blob = {
+                            fileName : results[0].FileName,
+                            fileUrl : results[0].FileUrl,
+                            fileSizeInBytes : results[0].FileSizeInBytes,
+                            fileSizeInKb : results[0].FileSizeInKb,
+                        };
+                        this.brokerPictureSource.next(blob);
+                        this.toastr.success("Upload successful.");
+                    } else {
+                        this.brokerPictureSource.next(blob);
+                        this.toastr.error("Uploading failed.");  
+                    }
+                },
+                error => {
+                    this.brokerPictureSource.next(blob);
+                    this.toastr.error("Server error.");
+                }    
+            );
+    }
 
     // detail operations
     public saveBroker(broker: MstBroker): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Save";
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Save";
         this.http.put(url, JSON.stringify(broker), this.options).subscribe(
             response => {
                 this.brokerSavedSource.next(1);
@@ -258,7 +295,7 @@ export class BrokerService {
         )
     }
     public lockBroker(broker: MstBroker): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Lock";
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Lock";
         this.http.put(url, JSON.stringify(broker), this.options).subscribe(
             response => {
                 this.brokerLockedSource.next(1);
@@ -269,7 +306,7 @@ export class BrokerService {
         )
     }
     public unlockBroker(broker: MstBroker): void {
-        let url = "http://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Unlock";
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstBroker/Unlock";
         this.http.put(url, JSON.stringify(broker), this.options).subscribe(
             response => {
                 this.brokerUnlockedSource.next(1);

@@ -519,6 +519,13 @@ export class SoldUnitDetail {
       }
     );
   }
+  public btnPrintSoldUnitClick() : void {
+    if(this.soldUnit.isLocked==true) {
+      this.router.navigate(['/pdf', 'soldunitcontract',this.soldUnit.id]); 
+    } else {
+      this.router.navigate(['/pdf', 'soldunitproposal',this.soldUnit.id]); 
+    }
+  }
 
   // detail line1 (checklist requirements) list operations
   public btnEditSoldUnitRequirementClick() {
