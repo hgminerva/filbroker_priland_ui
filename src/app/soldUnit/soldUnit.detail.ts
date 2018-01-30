@@ -45,6 +45,9 @@ export class SoldUnitDetail {
   // detail line1 (checklist requirements) operations
   private soldUnitRequirementSavedSub : any
 
+  // detail line1 (checklist requirements) attachment blobs
+  private soldUnitRequirementAttachmentSub : any
+
   // detail line1 line1 (checklist requirement activities) operations
   private soldUnitRequirementActivitySavedSub : any;
   private soldUnitRequirementActivityDeleteSub : any;
@@ -197,6 +200,8 @@ export class SoldUnitDetail {
     if( this.soldUnitUnlockedSub != null) this.soldUnitUnlockedSub.unsubscribe();
 
     if( this.soldUnitRequirementsSub != null) this.soldUnitRequirementsSub.unsubscribe();
+    if( this.soldUnitRequirementAttachmentSub != null) this.soldUnitRequirementAttachmentSub.unsubscribe();
+    
     if( this.soldUnitRequirementActivitiesSub != null) this.soldUnitRequirementActivitiesSub.unsubscribe();
 
     if( this.cmbProjectsSub != null) this.cmbProjectsSub.unsubscribe();
@@ -607,6 +612,59 @@ export class SoldUnitDetail {
   }
   public btnCloseEditSoldUnitRequirementModalClick() {
     this.mdlEditSoldUnitRequirementModalShow = false;
+  }
+
+  // 
+  public btnOpenSoldUnitRequirementAttachment1Click(e: Event) : void {
+    var target: HTMLInputElement = e.target as HTMLInputElement;
+    console.log(target);
+    if(target.files.length > 0) {
+      this.soldUnitService.uploadSoldUnitAttachment(target.files[0],"SOLDUNIT1-" + this.soldUnit.soldUnitNumber + "-" + this.soldUnitRequirement.checklistRequirementNo + "-" + Date.now());
+      this.soldUnitRequirementAttachmentSub = this.soldUnitService.soldUnitRequirementAttachmentObservable
+          .subscribe( data => {
+            this.soldUnitRequirement.attachment1 = data.fileUrl;
+          });
+    }
+  }
+  public btnOpenSoldUnitRequirementAttachment2Click(e: Event) : void {
+    var target: HTMLInputElement = e.target as HTMLInputElement;
+    if(target.files.length > 0) {
+      this.soldUnitService.uploadSoldUnitAttachment(target.files[0],"SOLDUNIT2-" + this.soldUnit.soldUnitNumber + "-" + this.soldUnitRequirement.checklistRequirementNo + "-" + Date.now());
+      this.soldUnitRequirementAttachmentSub = this.soldUnitService.soldUnitRequirementAttachmentObservable
+          .subscribe( data => {
+            this.soldUnitRequirement.attachment2 = data.fileUrl;
+          });
+    }
+  }
+  public btnOpenSoldUnitRequirementAttachment3Click(e: Event) : void {
+    var target: HTMLInputElement = e.target as HTMLInputElement;
+    if(target.files.length > 0) {
+      this.soldUnitService.uploadSoldUnitAttachment(target.files[0],"SOLDUNIT3-" + this.soldUnit.soldUnitNumber + "-" + this.soldUnitRequirement.checklistRequirementNo + "-" + Date.now());
+      this.soldUnitRequirementAttachmentSub = this.soldUnitService.soldUnitRequirementAttachmentObservable
+          .subscribe( data => {
+            this.soldUnitRequirement.attachment3 = data.fileUrl;
+          });
+    }
+  }
+  public btnOpenSoldUnitRequirementAttachment4Click(e: Event) : void {
+    var target: HTMLInputElement = e.target as HTMLInputElement;
+    if(target.files.length > 0) {
+      this.soldUnitService.uploadSoldUnitAttachment(target.files[0],"SOLDUNIT4-" + this.soldUnit.soldUnitNumber + "-" + this.soldUnitRequirement.checklistRequirementNo + "-" + Date.now());
+      this.soldUnitRequirementAttachmentSub = this.soldUnitService.soldUnitRequirementAttachmentObservable
+          .subscribe( data => {
+            this.soldUnitRequirement.attachment4 = data.fileUrl;
+          });
+    }
+  }
+  public btnOpenSoldUnitRequirementAttachment5Click(e: Event) : void {
+    var target: HTMLInputElement = e.target as HTMLInputElement;
+    if(target.files.length > 0) {
+      this.soldUnitService.uploadSoldUnitAttachment(target.files[0],"SOLDUNIT5-" + this.soldUnit.soldUnitNumber + "-" + this.soldUnitRequirement.checklistRequirementNo + "-" + Date.now());
+      this.soldUnitRequirementAttachmentSub = this.soldUnitService.soldUnitRequirementAttachmentObservable
+          .subscribe( data => {
+            this.soldUnitRequirement.attachment5 = data.fileUrl;
+          });
+    }
   }
 
   // detail line1 line (checklist requirement activities) list operations

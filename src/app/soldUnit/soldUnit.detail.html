@@ -506,18 +506,19 @@
                                     type="text" 
                                     class="form-control">
                             </div>
-                            <button 
-                                id="btnOpenSoldUnitRequirementAttachment1"
-                                class="btn btn-info col-sm-1 mr-1" 
-                                (click)="btnUploadSoldUnitRequirementAttachmentClick(1)">
+                            <label class="btn btn-info col-sm-1 mr-1">
+                                <input type="file" 
+                                        (change)="btnOpenSoldUnitRequirementAttachment1Click($event)" 
+                                        name="btnOpenSoldUnitRequirementAttachment1" 
+                                        accept="image/*" 
+                                        style="display:none;" >
                                 <i class="fa fa-floppy-o fa-fw"></i>
-                            </button>
-                            <button 
-                                id="btnOpenSoldUnitRequirementAttachment1"
-                                class="btn btn-info col-sm-1" 
-                                (click)="btnOpenSoldUnitRequirementAttachmentClick(1)">
-                                <i class="fa fa-search fa-fw"></i>
-                            </button>
+                            </label>
+                            <label class="btn btn-info col-sm-1 mr-1">
+                                <a [href]="soldUnitRequirement.attachment1" target="blank" style="color:white;">
+                                    <i class="fa fa-search fa-fw"></i>
+                                </a>
+                            </label>    
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label text-right">Attachment 2</label>
@@ -528,18 +529,19 @@
                                     type="text" 
                                     class="form-control">
                             </div>
-                            <button 
-                                id="btnOpenSoldUnitRequirementAttachment2"
-                                class="btn btn-info col-sm-1 mr-1" 
-                                (click)="btnUploadSoldUnitRequirementAttachmentClick(2)">
+                            <label class="btn btn-info col-sm-1 mr-1">
+                                <input type="file" 
+                                        (change)="btnOpenSoldUnitRequirementAttachment2Click($event)" 
+                                        name="btnOpenSoldUnitRequirementAttachment2" 
+                                        accept="image/*" 
+                                        style="display:none;" >
                                 <i class="fa fa-floppy-o fa-fw"></i>
-                            </button>
-                            <button 
-                                id="btnOpenSoldUnitRequirementAttachment2"
-                                class="btn btn-info col-sm-1" 
-                                (click)="btnOpenSoldUnitRequirementAttachmentClick(2)">
-                                <i class="fa fa-search fa-fw"></i>
-                            </button>
+                            </label>
+                            <label class="btn btn-info col-sm-1 mr-1">
+                                <a [href]="soldUnitRequirement.attachment2" target="blank" style="color:white;">
+                                    <i class="fa fa-search fa-fw"></i>
+                                </a>
+                            </label> 
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label text-right">Attachment 3</label>
@@ -550,18 +552,19 @@
                                     type="text" 
                                     class="form-control">
                             </div>
-                            <button 
-                                id="btnOpenSoldUnitRequirementAttachment3"
-                                class="btn btn-info col-sm-1 mr-1" 
-                                (click)="btnUploadSoldUnitRequirementAttachmentClick(3)">
+                            <label class="btn btn-info col-sm-1 mr-1">
+                                <input type="file" 
+                                        (change)="btnOpenSoldUnitRequirementAttachment3Click($event)" 
+                                        name="btnOpenSoldUnitRequirementAttachment3" 
+                                        accept="image/*" 
+                                        style="display:none;" >
                                 <i class="fa fa-floppy-o fa-fw"></i>
-                            </button>
-                            <button 
-                                id="btnOpenSoldUnitRequirementAttachment3"
-                                class="btn btn-info col-sm-1" 
-                                (click)="btnOpenSoldUnitRequirementAttachmentClick(3)">
-                                <i class="fa fa-search fa-fw"></i>
-                            </button>
+                            </label>
+                            <label class="btn btn-info col-sm-1 mr-1">
+                                <a [href]="soldUnitRequirement.attachment3" target="blank" style="color:white;">
+                                    <i class="fa fa-search fa-fw"></i>
+                                </a>
+                            </label> 
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label text-right">Attachment 4</label>
@@ -572,18 +575,19 @@
                                     type="text" 
                                     class="form-control">
                             </div>
-                            <button 
-                                id="btnOpenSoldUnitRequirementAttachment4"
-                                class="btn btn-info col-sm-1 mr-1" 
-                                (click)="btnUploadSoldUnitRequirementAttachmentClick(4)">
+                            <label class="btn btn-info col-sm-1 mr-1">
+                                <input type="file" 
+                                        (change)="btnOpenSoldUnitRequirementAttachment4Click($event)" 
+                                        name="btnOpenSoldUnitRequirementAttachment4" 
+                                        accept="image/*" 
+                                        style="display:none;" >
                                 <i class="fa fa-floppy-o fa-fw"></i>
-                            </button>
-                            <button 
-                                id="btnOpenSoldUnitRequirementAttachment4"
-                                class="btn btn-info col-sm-1" 
-                                (click)="btnOpenSoldUnitRequirementAttachmentClick(4)">
-                                <i class="fa fa-search fa-fw"></i>
-                            </button>
+                            </label>
+                            <label class="btn btn-info col-sm-1 mr-1">
+                                <a [href]="soldUnitRequirement.attachment4" target="blank" style="color:white;">
+                                    <i class="fa fa-search fa-fw"></i>
+                                </a>
+                            </label> 
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label text-right">Attachment 5</label>
@@ -594,18 +598,19 @@
                                     type="text" 
                                     class="form-control">
                             </div>
-                            <button 
-                                id="btnOpenSoldUnitRequirementAttachment5"
-                                class="btn btn-info col-sm-1 mr-1" 
-                                (click)="btnUploadSoldUnitRequirementAttachmentClick(5)">
+                            <label class="btn btn-info col-sm-1 mr-1">
+                                <input type="file" 
+                                        (change)="btnOpenSoldUnitRequirementAttachment5Click($event)" 
+                                        name="btnOpenSoldUnitRequirementAttachment5" 
+                                        accept="image/*" 
+                                        style="display:none;" >
                                 <i class="fa fa-floppy-o fa-fw"></i>
-                            </button>
-                            <button 
-                                id="btnOpenSoldUnitRequirementAttachment5"
-                                class="btn btn-info col-sm-1" 
-                                (click)="btnOpenSoldUnitRequirementAttachmentClick(5)">
-                                <i class="fa fa-search fa-fw"></i>
-                            </button>
+                            </label>
+                            <label class="btn btn-info col-sm-1 mr-1">
+                                <a [href]="soldUnitRequirement.attachment5" target="blank" style="color:white;">
+                                    <i class="fa fa-search fa-fw"></i>
+                                </a>
+                            </label> 
                         </div>
                     </div>
                     <div [ngClass]="{'active': tabDetail1Modal1[2], 'tab-pane': true }" role="tabpanel">

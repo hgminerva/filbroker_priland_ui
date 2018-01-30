@@ -24,6 +24,7 @@ import { MstCustomer } from '../model/model.mst.customer';
 import { MstBroker } from '../model/model.mst.broker';
 import { MstChecklist } from '../model/model.mst.checklist';
 import { SysDropDown } from '../model/model.sys.dropDown';
+import { SysBlob } from '../model/model.sys.blob';
 
 @Injectable()
 export class SoldUnitService {
@@ -89,6 +90,10 @@ export class SoldUnitService {
     // detail line1 (checklist requirements) list
     public soldUnitRequirementsSource = new Subject<ObservableArray>();
     public soldUnitRequirementsObservable = this.soldUnitRequirementsSource.asObservable();
+
+    // detail line1 (checklist requirements) detail attachment blob
+    public soldUnitRequirementAttachmentSource = new Subject<SysBlob>();
+    public soldUnitRequirementAttachmentObservable = this.soldUnitRequirementAttachmentSource.asObservable();
 
     // detail line1 line1 (checklist requirements activities) list
     public soldUnitRequirementActivitiesSource = new Subject<ObservableArray>();
@@ -508,6 +513,40 @@ export class SoldUnitService {
                 }
             }
         );
+    }
+
+    // upload attachments
+    public uploadSoldUnitAttachment(file: File, fileName: string) : void {
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/Blob/Upload";
+        let blob : SysBlob;
+
+        var formData: FormData = new FormData();
+        formData.append("image", file, fileName);
+
+        this.http
+            .post(url, formData)
+            .subscribe(
+                response => {
+                    var results = new ObservableArray(response.json());
+                    if (results.length > 0) {
+                        blob = {
+                            fileName : results[0].FileName,
+                            fileUrl : results[0].FileUrl,
+                            fileSizeInBytes : results[0].FileSizeInBytes,
+                            fileSizeInKb : results[0].FileSizeInKb,
+                        };
+                        this.soldUnitRequirementAttachmentSource.next(blob);
+                        this.toastr.success("Upload successful.");
+                    } else {
+                        this.soldUnitRequirementAttachmentSource.next(blob);
+                        this.toastr.error("Uploading failed.");  
+                    }
+                },
+                error => {
+                    this.soldUnitRequirementAttachmentSource.next(blob);
+                    this.toastr.error("Server error.");
+                }    
+            );
     }
 
     // list operations

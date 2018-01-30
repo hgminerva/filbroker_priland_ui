@@ -23,6 +23,8 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { AppComponent } from './app.component';
 import { HomeLanding } from './home/home.landing';
 import { AccountLogin } from './account/account.login';
+import { AccountRegister } from './account/account.register';
+import { AccountChangePassword } from './account/account.change.password';
 import { MenuIndex } from './menu/menu.index';
 import { MenuDashboard } from './menu/menu.dashboard';
 import { FooterIndex } from './footer/footer.index';
@@ -64,6 +66,8 @@ import { PDFService } from './pdf/pdf.service';
 const routes: Routes = [
   { path: '', component: HomeLanding },
   { path: 'account/login', component: AccountLogin },
+  { path: 'account/register', component: AccountRegister },
+  { path: 'account/changePassword', component: AccountChangePassword },
   { path: 'menu', component: MenuDashboard },
   { path: 'broker', component: BrokerList },
   { path: 'broker/:id', component: BrokerDetail },
@@ -90,7 +94,7 @@ const routes: Routes = [
   declarations: [
     AppComponent,
     HomeLanding,
-    AccountLogin,
+    AccountLogin, AccountRegister, AccountChangePassword,
     MenuIndex,MenuDashboard,
     FooterIndex,
     BrokerList, BrokerDetail,
