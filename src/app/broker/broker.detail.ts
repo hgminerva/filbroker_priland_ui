@@ -1,6 +1,7 @@
 // angular
 import { Component, ViewContainerRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 
 // wijmo
 import { ObservableArray, CollectionView } from 'wijmo/wijmo';
@@ -10,6 +11,7 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
 // service(s)
 import { BrokerService } from './broker.service';
+import { SecurityService } from '../security/security.service';
 
 // model(s)
 import { MstBroker } from '../model/model.mst.broker';
@@ -99,13 +101,20 @@ export class BrokerDetail {
     private toastr: ToastsManager,
     private viewContainer: ViewContainerRef,
     private activatedRoute: ActivatedRoute,
+    private securityService: SecurityService,
+    private location: Location
   ) {
     this.toastr.setRootViewContainerRef(viewContainer);
   }
 
   // ng
   ngOnInit() {
-    this.getBroker();
+    if(this.securityService.openPage("BROKER DETAIL") == true) {
+      this.getBroker();
+    } else {
+      this.toastr.error("No rights to open page.")
+      setTimeout(() => { this.location.back(); }, 1000);  
+    }
   }
   ngOnDestroy() {
     if (this.brokerSub != null) this.brokerSub.unsubscribe();

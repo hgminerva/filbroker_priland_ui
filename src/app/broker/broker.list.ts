@@ -1,9 +1,11 @@
 // angular
 import { Component, ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 // services
 import { BrokerService } from './broker.service';
+import { SecurityService } from '../security/security.service';
 
 // wijmo
 import { ObservableArray, CollectionView } from 'wijmo/wijmo';
@@ -93,7 +95,9 @@ export class BrokerList {
     private brokerService: BrokerService,
     private toastr: ToastsManager,
     private viewContainer: ViewContainerRef,
-    private router: Router
+    private router: Router,
+    private securityService: SecurityService,
+    private location: Location
   ) {
     this.toastr.setRootViewContainerRef(viewContainer);
   }
@@ -103,7 +107,12 @@ export class BrokerList {
     this.fgdBrokerData = new ObservableArray();
     this.fgdBrokerCollection = new CollectionView(this.fgdBrokerData);
 
-    this.getBrokers();
+    if(this.securityService.openPage("BROKER LIST") == true) {
+      this.getBrokers();
+    } else {
+      this.toastr.error("No rights to open page.")
+      setTimeout(() => { this.location.back(); }, 1000);  
+    }
   }
   ngOnDestroy() {
     if( this.brokersSub != null) this.brokersSub.unsubscribe();

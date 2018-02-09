@@ -1,6 +1,7 @@
 // angular
 import { Component,ViewContainerRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 
 // wijmo
 import {ObservableArray, CollectionView} from 'wijmo/wijmo';
@@ -10,6 +11,7 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
 // service(s)
 import { UserService } from './user.service';
+import { SecurityService } from '../security/security.service';
 
 // model(s)
 import { MstUser } from '../model/model.mst.user';
@@ -65,6 +67,7 @@ export class UserDetail {
     user: "",
     pageId: 0,
     page:  "",
+    pageUrl: "",
     canEdit: false,
     canSave: false,
     canLock: false,
@@ -96,6 +99,8 @@ export class UserDetail {
     private toastr: ToastsManager,
     private viewContainer: ViewContainerRef,
     private activatedRoute: ActivatedRoute,
+    private securityService: SecurityService,
+    private location: Location
   ) {
     this.toastr.setRootViewContainerRef(viewContainer);
   }
@@ -105,7 +110,12 @@ export class UserDetail {
     this.fgdUserRightsData = new ObservableArray();
     this.fgdUserRightsCollection = new CollectionView(this.fgdUserRightsData);
 
-    this.getUser();
+    if(this.securityService.openPage("USER DETAIL") == true) {
+      this.getUser();
+    } else {
+        this.toastr.error("No rights to open page.")
+        setTimeout(() => { this.location.back(); }, 1000);  
+    } 
   }
   ngOnDestroy() {
     if( this.userSub != null) this.userSub.unsubscribe();

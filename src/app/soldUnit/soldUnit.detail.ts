@@ -1,6 +1,7 @@
 // angular
 import { Component, ViewContainerRef, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 
 // wijmo
 import {ObservableArray, CollectionView} from 'wijmo/wijmo';
@@ -10,6 +11,7 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
 // service(s)
 import { SoldUnitService } from './soldUnit.service';
+import { SecurityService } from '../security/security.service';
 
 // model(s)
 import { TrnSoldUnit } from '../model/model.trn.soldUnit';
@@ -178,6 +180,8 @@ export class SoldUnitDetail {
     private toastr: ToastsManager,
     private viewContainer: ViewContainerRef,
     private activatedRoute: ActivatedRoute,
+    private securityService: SecurityService,
+    private location: Location
   ) {
     this.toastr.setRootViewContainerRef(viewContainer);
   }
@@ -190,7 +194,12 @@ export class SoldUnitDetail {
     this.fgdSoldUnitRequirementActivitiesData = new ObservableArray();
     this.fgdSoldUnitRequirementActivitiesCollection = new CollectionView(this.fgdSoldUnitRequirementActivitiesData);
 
-    this.getSoldUnit(); 
+    if(this.securityService.openPage("SOLD UNIT DETAIL") == true) {
+      this.getSoldUnit(); 
+    } else {
+      this.toastr.error("No rights to open page.")
+      setTimeout(() => { this.location.back(); }, 1000);  
+    } 
   }
   ngOnDestroy() {
     if( this.soldUnitSub != null) this.soldUnitSub.unsubscribe();

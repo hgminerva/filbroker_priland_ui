@@ -1,6 +1,7 @@
 // angular
 import { Component, ViewContainerRef, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 
 // wijmo
 import {ObservableArray, CollectionView} from 'wijmo/wijmo';
@@ -10,6 +11,7 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
 // service(s)
 import { UnitService } from './unit.service';
+import { SecurityService } from '../security/security.service';
 
 // model(s)
 import { MstUnit } from '../model/model.mst.unit';
@@ -80,13 +82,20 @@ export class UnitDetail {
     private toastr: ToastsManager,
     private viewContainer: ViewContainerRef,
     private activatedRoute: ActivatedRoute,
+    private securityService: SecurityService,
+    private location: Location
   ) {
     this.toastr.setRootViewContainerRef(viewContainer);
   }
 
   // ng
   ngOnInit() {
-    this.getUnit();
+    if(this.securityService.openPage("UNIT DETAIL") == true) {
+      this.getUnit(); 
+    } else {
+      this.toastr.error("No rights to open page.")
+      setTimeout(() => { this.location.back(); }, 1000);  
+    } 
   }
   ngOnDestroy() {
     if( this.unitSub != null) this.unitSub.unsubscribe();

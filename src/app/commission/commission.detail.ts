@@ -1,6 +1,7 @@
 // angular
 import { Component, ViewContainerRef, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 
 // wijmo
 import {ObservableArray, CollectionView} from 'wijmo/wijmo';
@@ -10,6 +11,7 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
 // service(s)
 import { CommissionService } from './commission.service';
+import { SecurityService } from '../security/security.service';
 
 // model(s)
 import { TrnCommissionRequest } from '../model/model.trn.commissionRequest';
@@ -89,14 +91,21 @@ export class CommissionDetail {
     private router: Router,
     private toastr: ToastsManager,
     private viewContainer: ViewContainerRef,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private securityService: SecurityService,
+    private location: Location
   ) {
     this.toastr.setRootViewContainerRef(viewContainer);
   }
 
   // ng
   ngOnInit() {
-    this.getCommission(); 
+    if(this.securityService.openPage("COMMISSION DETAIL") == true) {
+      this.getCommission(); 
+    } else {
+      this.toastr.error("No rights to open page.")
+      setTimeout(() => { this.location.back(); }, 1000);  
+    }
   }
   ngOnDestroy() {
     if( this.commissionSub != null) this.commissionSub.unsubscribe();

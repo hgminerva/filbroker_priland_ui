@@ -1,9 +1,11 @@
 // angular
 import { Component,ViewContainerRef,ViewChild,ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 // services
 import { UnitService } from './unit.service';
+import { SecurityService } from '../security/security.service';
 
 // wijmo
 import {ObservableArray, CollectionView} from 'wijmo/wijmo';
@@ -84,7 +86,9 @@ export class UnitList {
       private unitService : UnitService,
       private toastr : ToastsManager,
       private viewContainer : ViewContainerRef,
-      private router : Router
+      private router : Router,
+      private securityService: SecurityService,
+      private location: Location
   ) {
       this.toastr.setRootViewContainerRef(viewContainer);
   }
@@ -94,7 +98,12 @@ export class UnitList {
     this.fgdUnitsData = new ObservableArray();
     this.fgdUnitsCollection = new CollectionView(this.fgdUnitsData);
 
-    this.getProjects();
+    if(this.securityService.openPage("UNIT LIST") == true) {
+      this.getProjects(); 
+    } else {
+      this.toastr.error("No rights to open page.")
+      setTimeout(() => { this.location.back(); }, 1000);  
+    } 
   }
   ngOnDestroy() {
     if( this.unitsSub != null) this.unitsSub.unsubscribe();

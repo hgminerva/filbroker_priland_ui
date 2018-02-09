@@ -1,6 +1,7 @@
 // angular
 import { Component, ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 // wijmo
 import { ObservableArray, CollectionView } from 'wijmo/wijmo';
@@ -10,6 +11,7 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
 // services
 import { ReportsService } from './reports.service';
+import { SecurityService } from '../security/security.service';
 
 @Component({
   templateUrl: './reports.index.html'
@@ -55,7 +57,9 @@ export class ReportsIndex {
     private reportsService: ReportsService,
     private toastr: ToastsManager,
     private viewContainer: ViewContainerRef,
-    private router: Router
+    private router: Router,
+    private securityService: SecurityService,
+    private location: Location
   ) {
     this.toastr.setRootViewContainerRef(viewContainer);
   }
@@ -71,7 +75,12 @@ export class ReportsIndex {
     this.fgdRequirementActivitiesData = new ObservableArray();
     this.fgdRequirementActivitiesCollection = new CollectionView(this.fgdRequirementActivitiesData);
 
-    this.getReports();
+    if(this.securityService.openPage("REPORTS") == true) {
+      this.getReports();
+    } else {
+      this.toastr.error("No rights to open page.")
+      setTimeout(() => { this.location.back(); }, 1000);  
+    } 
   }
   ngOnDestroy() {
     if( this.soldUnitsSub != null) this.soldUnitsSub.unsubscribe();

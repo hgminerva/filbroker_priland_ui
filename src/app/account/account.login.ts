@@ -56,7 +56,6 @@ export class AccountLogin {
         }
       }
     );
-
   }
 
   public loginClick(): void {

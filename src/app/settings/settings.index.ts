@@ -1,6 +1,7 @@
 // angular
 import { Component,ViewContainerRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 
 // wijmo
 import {ObservableArray, CollectionView} from 'wijmo/wijmo';
@@ -10,6 +11,7 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
 // service(s)
 import { SettingsService } from './settings.service';
+import { SecurityService } from '../security/security.service';
 
 // model(s)
 import { SysSettings } from '../model/model.sys.settings';
@@ -93,6 +95,8 @@ export class SettingsIndex {
     private toastr: ToastsManager,
     private viewContainer: ViewContainerRef,
     private activatedRoute: ActivatedRoute,
+    private securityService: SecurityService,
+    private location: Location
   ) {
     this.toastr.setRootViewContainerRef(viewContainer);
   }
@@ -101,8 +105,12 @@ export class SettingsIndex {
   ngOnInit() {
     this.fgdDropDownsData = new ObservableArray();
     this.fgdDropDownsCollection = new CollectionView(this.fgdDropDownsData);
-
-    this.getSettings();
+    if(this.securityService.openPage("SETTINGS") == true) {
+      this.getSettings();
+    } else {
+      this.toastr.error("No rights to open page.")
+      setTimeout(() => { this.location.back(); }, 1000);  
+    } 
   }
   ngOnDestroy() {
     if( this.settingsSub != null) this.settingsSub.unsubscribe();

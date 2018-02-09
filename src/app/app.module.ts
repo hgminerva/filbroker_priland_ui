@@ -62,6 +62,7 @@ import { UserService } from './user/user.service';
 import { ReportsService } from './reports/reports.service';
 import { FooterService } from './footer/footer.service';
 import { PDFService } from './pdf/pdf.service';
+import { SecurityService } from './security/security.service';
 
 const routes: Routes = [
   { path: '', component: HomeLanding },
@@ -138,7 +139,8 @@ const routes: Routes = [
     UserService,
     ReportsService,
     FooterService,
-    PDFService
+    PDFService,
+    SecurityService
   ],
   bootstrap: [AppComponent]
 })

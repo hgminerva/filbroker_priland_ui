@@ -13,6 +13,7 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { parseHttpResponse } from "selenium-webdriver/http";
 
 import { ObservableArray } from 'wijmo/wijmo';
+import { pureObjectDef } from "@angular/core/src/view/pure_expression";
 
 @Injectable()
 export class AccountService {
@@ -63,12 +64,47 @@ export class AccountService {
                 localStorage.setItem('token_type', response.json().token_type);
                 localStorage.setItem('username', response.json().userName);
 
+                this.getUserRights(response.json().userName);
                 this.loginSource.next(1);
             },
             error => {
                 this.loginSource.next(0);
             }
         )
+    }
+
+    public getUserRights(username: string): void {
+        let url = 'https://filbrokerwebsite-priland.azurewebsites.net/api/MstUserRight/ListPerUserByUsername/' + username;
+        let headers = new Headers({
+                                'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                                'Content-Type': 'application/json'
+                            });
+        let options = new RequestOptions({ headers: headers })
+        let userRights = new Array();
+        this.http.get(url, options).subscribe(
+            response => {
+                var results = new ObservableArray(response.json());
+                if (results.length > 0) {
+                    for (var i = 0; i <= results.length - 1; i++) {
+                        userRights.push({
+                            id: results[i].Id,
+                            userId: results[i].UserId,
+                            user: username,
+                            pageId: results[i].PageId,
+                            page: results[i].Page,
+                            pageUrl: results[i].PageURL, 
+                            canEdit: results[i].CanEdit,
+                            canSave: results[i].CanSave,
+                            canLock: results[i].CanLock,
+                            canUnlock: results[i].CanUnLock,
+                            canPrint: results[i].CanPrint,
+                            canDelete: results[i].CanDelete
+                        });
+                    }
+                    localStorage.setItem('userRights', JSON.stringify(userRights));
+                } 
+            }
+        );
     }
 
     public register(user: User): void {
@@ -88,7 +124,7 @@ export class AccountService {
         var passwordErrorMessageArray = new ObservableArray();
         var confirmPasswordErrorMessageArray = new ObservableArray();
 
-        let url = "http://localhost:10136/api/account/Register";
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/account/register";
         this.http.post(url, JSON.stringify(regObj), this.options).subscribe(
             response => {
                 if (response != null) {

@@ -1,19 +1,35 @@
-// Angular
+// angular
 import { Component } from '@angular/core';
 
+// wijmo
 import { ObservableArray, CollectionView } from 'wijmo/wijmo';
+
+import { ViewContainerRef } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+
+import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+
+// services
+import { SecurityService } from '../security/security.service';
 
 @Component({
   templateUrl: './menu.dashboard.html'
 })
-
 export class MenuDashboard {
-    public title = 'Dashboard';
+    private title = 'Dashboard';
 
-    public menuData : ObservableArray;
-    public menuCollection : CollectionView;
+    private menuData : ObservableArray;
+    private menuCollection : CollectionView;
 
-    public ngOnInit() {
+    constructor(private securityService: SecurityService,
+                private toastr: ToastsManager,
+                private viewContainer: ViewContainerRef,
+                private router: Router
+      ) {
+        this.toastr.setRootViewContainerRef(viewContainer);
+    }
+
+    ngOnInit() {
         let data = new ObservableArray();
         data.push({
             menu1: "project",

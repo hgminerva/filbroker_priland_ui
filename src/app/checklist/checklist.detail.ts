@@ -1,6 +1,7 @@
 // angular
 import { Component, ViewContainerRef, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 
 // wijmo
 import {ObservableArray, CollectionView} from 'wijmo/wijmo';
@@ -10,6 +11,7 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
 // service(s)
 import { ChecklistService } from './checklist.service';
+import { SecurityService } from '../security/security.service';
 
 // model(s)
 import { MstChecklist } from '../model/model.mst.checklist';
@@ -100,6 +102,8 @@ export class ChecklistDetail {
     private toastr:ToastsManager,
     private viewContainer:ViewContainerRef,
     private activatedRoute:ActivatedRoute,
+    private securityService: SecurityService,
+    private location: Location
   ){
     this.toastr.setRootViewContainerRef(viewContainer);
   }
@@ -109,7 +113,12 @@ export class ChecklistDetail {
     this.fgdChecklistRequirementsData = new ObservableArray();
     this.fgdChecklistRequirementsCollection = new CollectionView(this.fgdChecklistRequirementsData);
 
-    this.getChecklist();
+    if(this.securityService.openPage("CHECKLIST DETAIL") == true) {
+      this.getChecklist();
+    } else {
+      this.toastr.error("No rights to open page.")
+      setTimeout(() => { this.location.back(); }, 1000);  
+    }
   }
   ngOnDestroy(){
     if(this.checklistSub!=null)this.checklistSub.unsubscribe();

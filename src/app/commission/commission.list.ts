@@ -1,6 +1,7 @@
 // angular
 import { Component,ViewContainerRef,ViewChild,ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 // wijmo
 import {ObservableArray, CollectionView} from 'wijmo/wijmo';
@@ -10,6 +11,7 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
 // service(s)
 import { CommissionService } from './commission.service';
+import { SecurityService } from '../security/security.service';
 
 // model(s)
 import { TrnCommissionRequest } from '../model/model.trn.commissionRequest';
@@ -85,7 +87,9 @@ export class CommissionList {
     private commissionService : CommissionService,
     private toastr : ToastsManager,
     private viewContainer : ViewContainerRef,
-    private router : Router) {
+    private router : Router,
+    private securityService: SecurityService,
+    private location: Location) {
     this.toastr.setRootViewContainerRef(viewContainer);
   }
 
@@ -94,7 +98,12 @@ export class CommissionList {
     this.fgdCommissionData = new ObservableArray();
     this.fgdCommissionCollection = new CollectionView(this.fgdCommissionData);
 
-    this.getCommissions();
+    if(this.securityService.openPage("COMMISSION LIST") == true) {
+      this.getCommissions();
+    } else {
+      this.toastr.error("No rights to open page.")
+      setTimeout(() => { this.location.back(); }, 1000);  
+    }
   }
   ngOnDestroy() {
     if( this.commissionsSub != null) this.commissionsSub.unsubscribe();

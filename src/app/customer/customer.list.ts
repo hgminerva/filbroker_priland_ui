@@ -1,6 +1,7 @@
 // angular
 import { Component,ViewContainerRef } from '@angular/core';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 // wijmo
 import {ObservableArray, CollectionView} from 'wijmo/wijmo';
@@ -10,6 +11,7 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
 // service(s)
 import { CustomerService } from './customer.service';
+import { SecurityService } from '../security/security.service';
 
 // model(s)
 import { MstCustomer } from '../model/model.mst.customer';
@@ -99,7 +101,9 @@ export class CustomerList {
         private customerService : CustomerService,
         private toastr : ToastsManager,
         private viewContainer : ViewContainerRef,
-        private router : Router
+        private router : Router,
+        private securityService: SecurityService,
+        private location: Location
     ) {
         this.toastr.setRootViewContainerRef(viewContainer);
     }
@@ -109,7 +113,12 @@ export class CustomerList {
         this.fgdCustomersData = new ObservableArray();
         this.fgdCustomersCollection = new CollectionView(this.fgdCustomersData);
 
-        this.getCustomers();
+        if(this.securityService.openPage("CUSTOMER LIST") == true) {
+            this.getCustomers();
+        } else {
+            this.toastr.error("No rights to open page.")
+            setTimeout(() => { this.location.back(); }, 1000);  
+        }
     }
     ngOnDestroy() {
         if( this.customersSub != null) this.customersSub.unsubscribe();

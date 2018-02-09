@@ -4,6 +4,7 @@ export class MstUserRight {
 	user: string;
 	pageId: number;
 	page: string;
+	pageUrl: string;
 	canEdit: boolean;
 	canSave: boolean;
 	canLock: boolean;
