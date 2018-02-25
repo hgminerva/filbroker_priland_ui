@@ -1,0 +1,81 @@
+<div id="mdlUnitQueryModal" class="modal fade" role="dialog" 
+     [ngStyle]="{'display': isShowing ? 'block' : 'none', 'opacity': 1}"> 
+     <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Unit Query</h4>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="form-horizontal">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    Project:
+                                </span>
+                                <wj-combo-box #cmbProjects 
+                                    [itemsSource]="cmbProjectsData" 
+                                    [placeholder]="'Select Project'" 
+                                    [isEditable]="false" 
+                                    [isRequired]="true"
+                                    [displayMemberPath]="'project'" 
+                                    [selectedValuePath]="'id'" 
+                                    (selectedIndexChanged)="cmbProjectsChange()">
+                                </wj-combo-box>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <wj-flex-grid #fgdUnits [itemsSource]="fgdUnitsCollection" [selectionMode]="3" [frozenColumns]="2">
+                            <wj-flex-grid-filter></wj-flex-grid-filter>
+                            <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
+                                <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
+                                    <button 
+                                        class="btn btn-primary btn-sm btn-block" 
+                                        (click)="btnPickUnitClick()" 
+                                        data-toggle="modal" 
+                                        data-backdrop="static"
+                                        data-keyboard="false"> 
+                                            <i class="fa fa-edit fa-fw"></i> Pick
+                                    </button>
+                                </ng-template>
+                            </wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'Unit'"          [binding]="'unitCode'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'Model'"         [binding]="'houseModel'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'FA (sqm)'"      [binding]="'tfa'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'LA (sqm)'"      [binding]="'tla'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                            <wj-flex-grid-column [header]="'Price'"         [binding]="'price'" [isReadOnly]="true" [width]="150"></wj-flex-grid-column>
+                        </wj-flex-grid>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-sm-12 btn-group" id="">
+                                <button type="button" class="btn btn-info" (click)="fgdUnitsCollection.moveToFirstPage()">
+                                    <i class="fa fa-fast-backward"></i> First
+                                </button>
+                                <button type="button" class="btn btn-info" (click)="fgdUnitsCollection.moveToPreviousPage()">
+                                    <i class="fa fa-step-backward"></i> Previous
+                                </button>
+                                <button type="button" class="btn btn-info" disabled style="width:100px">
+                                    {{ fgdUnitsCollection.pageIndex + 1 }} / {{ fgdUnitsCollection.pageCount }}
+                                </button>
+                                <button type="button" class="btn btn-info" (click)="fgdUnitsCollection.moveToNextPage()">
+                                    Next
+                                    <i class="fa fa-step-forward"></i>
+                                </button>
+                                <button type="button" class="btn btn-info" (click)="fgdUnitsCollection.moveToLastPage()">
+                                    Last
+                                    <i class="fa fa-fast-forward"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+            <div class="modal-footer" align="right">
+                <button type="button" id="btnCloseUnitQueryModal" class="btn btn-danger" (click)="btnCloseUnitQueryModalClick()">
+                    <i class="fa fa-times fa-fw"></i> Close </button>
+            </div>
+        </div>
+    </div>
+</div>

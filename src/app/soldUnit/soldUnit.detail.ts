@@ -12,11 +12,16 @@ import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 // service(s)
 import { SoldUnitService } from './soldUnit.service';
 import { SecurityService } from '../security/security.service';
+import { UnitService } from '../unit/unit.service';
 
 // model(s)
+import { MstUnit } from '../model/model.mst.unit';
 import { TrnSoldUnit } from '../model/model.trn.soldUnit';
 import { TrnSoldUnitRequirement } from '../model/model.trn.soldUnit.requirement';
 import { TrnSoldUnitRequirementActivity } from '../model/model.trn.soldUnit.requirement.activity';
+
+// components
+import { UnitQuery } from '../unit/unit.query';
 
 @Component({
   templateUrl: './soldUnit.detail.html'
@@ -65,7 +70,7 @@ export class SoldUnitDetail {
 
   // detail line1 (checklist requirements) combo boxes
   private cmbUnitSoldRequirementStatusSub : any;
-  
+
   // =================
   // public properties
   // =================
@@ -166,6 +171,9 @@ export class SoldUnitDetail {
   public mdlEditSoldUnitRequirementModalShow : boolean = false;
   public mdlSoldUnitRequirementActivityModalShow : boolean = false;
 
+  public mdlUnitQueryModalShow : boolean = false;
+  public mdlUnitQueryModalStatus : boolean = false;
+
   // element(s)
   @ViewChild("cmbProjects")
   public cmbProjects: ElementRef;
@@ -181,7 +189,8 @@ export class SoldUnitDetail {
     private viewContainer: ViewContainerRef,
     private activatedRoute: ActivatedRoute,
     private securityService: SecurityService,
-    private location: Location
+    private location: Location,
+    private unitService: UnitService
   ) {
     this.toastr.setRootViewContainerRef(viewContainer);
   }
@@ -275,7 +284,8 @@ export class SoldUnitDetail {
           this.soldUnit.updatedBy = data.updatedBy;
           this.soldUnit.updatedDateTime = data.updatedDateTime;
 
-          this.getCmbProjects(data);
+          this.getChecklistsPerProjectId(this.soldUnit);
+
           this.getCmbCustomers(data);
           this.getCmbBrokers(data);
           this.getCmbUsers(data);
@@ -287,17 +297,6 @@ export class SoldUnitDetail {
   }
 
   // detail combo boxes
-  public getCmbProjects(defaultValue: any) : void {
-    this.soldUnitService.getProjects();
-
-    this.cmbProjectsSub = this.soldUnitService.projectsObservable.subscribe(
-      data => {
-        this.cmbProjectsData = data;
-
-        setTimeout(() => { this.soldUnit.projectId = defaultValue.projectId; }, 100);
-      }
-    );
-  }
   public getCmbCustomers(defaultValue: any) : void {
     this.soldUnitService.getCustomers();
 
@@ -357,17 +356,6 @@ export class SoldUnitDetail {
   }
 
   // detail combo boxes when project is changed
-  public getUnitsPerProjectId(defaultValue: any) : void {
-    this.soldUnitService.getUnitsPerProject(this.soldUnit.projectId);
-
-    this.cmbUnitsSub = this.soldUnitService.unitsObservable.subscribe(
-      data => {
-        this.cmbUnitsData = data;
-
-        setTimeout(() => { this.soldUnit.unitId = defaultValue.unitId; }, 100);
-      }
-    );
-  }
   public getChecklistsPerProjectId(defaultValue: any) : void {
     this.soldUnitService.getChecklistsPerProject(this.soldUnit.projectId);
 
@@ -376,8 +364,8 @@ export class SoldUnitDetail {
         this.cmbChecklistsData = data;
 
         setTimeout(() => { this.soldUnit.checklistId = defaultValue.checklistId; }, 100);
-      }
-    );
+       }
+     );
   }
 
   // create new detail line1 (checklist requirements) list - IMPORTANT! this will remove the existing checklist requirements
@@ -461,10 +449,20 @@ export class SoldUnitDetail {
   // events
   // ======
 
-  // project combo box change
-  public cmbProjectsChange() : void {
-    this.getUnitsPerProjectId(this.soldUnit);
-    this.getChecklistsPerProjectId(this.soldUnit);
+  // unit query modal
+  public btnOpenUnitQueryModalClick(): void {
+    this.mdlUnitQueryModalShow = true;
+  }
+  public mdlUnitQueryModalClose(unit : MstUnit): void {
+    if( unit.id != null ) {
+      this.soldUnit.project = unit.project;
+      this.soldUnit.projectId = unit.projectId;
+      this.soldUnit.unitId = unit.id;
+      this.soldUnit.unit = unit.unitCode;
+
+      this.getChecklistsPerProjectId(this.soldUnit);
+    }
+    this.mdlUnitQueryModalShow = false;
   }
 
   // detail operations

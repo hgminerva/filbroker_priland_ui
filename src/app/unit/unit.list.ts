@@ -112,6 +112,7 @@ export class UnitList {
     if( this.unitDeletedSub != null) this.unitDeletedSub.unsubscribe();
   }
 
+
   // ==============
   // public methods
   // ==============

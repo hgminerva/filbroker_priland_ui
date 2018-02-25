@@ -395,25 +395,27 @@ export class SoldUnitService {
                 var results = new ObservableArray(response.json());
                 if (results.length > 0) {
                     for (var i = 0; i <= results.length - 1; i++) {
-                        units.push({
-                            id: results[i].Id,
-                            unitCode: results[i].UnitCode,
-                            block: results[i].Block,
-                            lot: results[i].Lot,
-                            projectId: results[i].ProjectId,
-                            project: results[i].Project,
-                            houseModelId: results[i].HouseModelId,
-                            houseModel: results[i].HouseModel,
-                            tla: results[i].TLA,
-                            tfa: results[i].TFA,
-                            price: results[i].Price,
-                            status: results[i].Status,
-                            isLocked: results[i].IsLocked,
-                            createdBy: results[i].CreatedBy,
-                            createdDateTime: results[i].CreatedDateTime,
-                            updatedBy: results[i].UpdatedBy,
-                            updatedDateTime: results[i].UpdatedDateTime,
-                        });
+                        if(results[i].Status == "OPEN") {
+                            units.push({
+                                id: results[i].Id,
+                                unitCode: results[i].UnitCode,
+                                block: results[i].Block,
+                                lot: results[i].Lot,
+                                projectId: results[i].ProjectId,
+                                project: results[i].Project,
+                                houseModelId: results[i].HouseModelId,
+                                houseModel: results[i].HouseModel,
+                                tla: results[i].TLA,
+                                tfa: results[i].TFA,
+                                price: results[i].Price,
+                                status: results[i].Status,
+                                isLocked: results[i].IsLocked,
+                                createdBy: results[i].CreatedBy,
+                                createdDateTime: results[i].CreatedDateTime,
+                                updatedBy: results[i].UpdatedBy,
+                                updatedDateTime: results[i].UpdatedDateTime,
+                            });
+                        }
                     }
                     this.unitsSource.next(units);
                 } else {

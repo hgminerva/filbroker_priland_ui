@@ -79,6 +79,7 @@
                 <div class="tab-content" style="width:100%">
                     <div [ngClass]="{'active': tabDetail1[0], 'tab-pane': true }" role="tabpanel">
                         <wj-flex-grid #fgdSoldUnits [itemsSource]="fgdSoldUnitsCollection" [selectionMode]="3">
+                            <wj-flex-grid-filter></wj-flex-grid-filter>
                             <wj-flex-grid-column [header]="'Number'"    [binding]="'soldUnitNumber'"    [isReadOnly]="true" [width]="120"></wj-flex-grid-column>
                             <wj-flex-grid-column [header]="'Date'"      [binding]="'soldUnitDate'"      [isReadOnly]="true" [width]="100"></wj-flex-grid-column>
                             <wj-flex-grid-column [header]="'Project'"   [binding]="'project'"           [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
@@ -110,6 +111,7 @@
                     </div>
                     <div [ngClass]="{'active': tabDetail1[1], 'tab-pane': true }" role="tabpanel">
                         <wj-flex-grid #fgdCommissionRequests [itemsSource]="fgdCommissionRequestsCollection" [selectionMode]="3">
+                            <wj-flex-grid-filter></wj-flex-grid-filter>
                             <wj-flex-grid-column [header]="'Number'"    [binding]="'commissionRequestNumber'"  [isReadOnly]="true" [width]="120"></wj-flex-grid-column>
                             <wj-flex-grid-column [header]="'Date'"      [binding]="'commissionRequestDate'"    [isReadOnly]="true" [width]="100"></wj-flex-grid-column>
                             <wj-flex-grid-column [header]="'Broker'"    [binding]="'broker'"                   [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
@@ -140,6 +142,7 @@
                     </div>
                     <div [ngClass]="{'active': tabDetail1[2], 'tab-pane': true }" role="tabpanel">
                         <wj-flex-grid #fgdRequirementActivities [itemsSource]="fgdRequirementActivitiesCollection" [selectionMode]="3">
+                            <wj-flex-grid-filter></wj-flex-grid-filter>
                             <wj-flex-grid-column [header]="'Date'"      [binding]="'activityDate'"      [isReadOnly]="true" [width]="100"></wj-flex-grid-column>
                             <wj-flex-grid-column [header]="'Activity'"  [binding]="'activity'"          [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
                             <wj-flex-grid-column [header]="'Remarks'"   [binding]="'remarks'"           [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>

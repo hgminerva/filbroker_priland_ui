@@ -69,6 +69,7 @@
             <!-- List -->
             <div class="card-body">
                 <wj-flex-grid #fgdCommission [itemsSource]="fgdCommissionCollection" [selectionMode]="3" [frozenColumns]="2">
+                    <wj-flex-grid-filter></wj-flex-grid-filter>
                     <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
                         <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
                             <button class="btn btn-primary btn-sm btn-block" (click)="btnEditCommissionClick()"> 

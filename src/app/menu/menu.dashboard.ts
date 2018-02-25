@@ -29,6 +29,8 @@ export class MenuDashboard {
         this.toastr.setRootViewContainerRef(viewContainer);
     }
 
+    unitQuery = false;
+
     ngOnInit() {
         let data = new ObservableArray();
         data.push({
@@ -49,5 +51,4 @@ export class MenuDashboard {
         this.menuData = data;
         this.menuCollection = new CollectionView(this.menuData);
     }
-
 }

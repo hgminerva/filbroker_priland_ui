@@ -69,6 +69,7 @@
             <!-- sold unit list -->
             <div class="card-body">
                 <wj-flex-grid #fgdSoldUnit [itemsSource]="fgdSoldUnitCollection" [selectionMode]="3" [frozenColumns]="2">
+                    <wj-flex-grid-filter></wj-flex-grid-filter>
                     <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
                         <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
                             <button 

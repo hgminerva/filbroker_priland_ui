@@ -155,6 +155,7 @@
                     </div>
                     <div class="col-md-12">
                         <wj-flex-grid #fgdChecklistRequirements [itemsSource]="fgdChecklistRequirementsCollection" [selectionMode]="3">
+                            <wj-flex-grid-filter></wj-flex-grid-filter>
                             <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
                                 <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
                                     <button class="btn btn-primary btn-sm btn-block" [disabled]="checklist.isLocked" (click)="btnEditChecklistRequirementsClick()">

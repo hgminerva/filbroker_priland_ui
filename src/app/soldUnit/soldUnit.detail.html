@@ -1,4 +1,5 @@
 <menu-root></menu-root>
+<unit-query [isShowing]="mdlUnitQueryModalShow" (pickedUnit)="mdlUnitQueryModalClose($event)"></unit-query>
 
 <br>
 <br>
@@ -94,8 +95,13 @@
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label text-right">Project</label>
-                            <div class="col-sm-9">
-                                <wj-combo-box #cmbProjects
+                            <div class="col-sm-8">
+                                <input 
+                                    [(ngModel)]="soldUnit.project"
+                                    disabled 
+                                    type="text" 
+                                    class="form-control">
+                                <!-- <wj-combo-box #cmbProjects
                                     [itemsSource]="cmbProjectsData" 
                                     [isDisabled]="soldUnit.isLocked" 
                                     [isEditable]="false" 
@@ -105,13 +111,25 @@
                                     (selectedIndexChanged)="cmbProjectsChange()"
                                     [(ngModel)]="soldUnit.projectId"
                                     style="width: 100%;">
-                                </wj-combo-box>
+                                </wj-combo-box> -->
                             </div>
+                            <button 
+                                id="btnOpenUnitQueryModal"
+                                class="btn btn-info col-sm-1" 
+                                [disabled]="soldUnit.isLocked"
+                                (click)="btnOpenUnitQueryModalClick()">
+                                <i class="fa fa-refresh fa-fw"></i>
+                            </button>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label text-right">Unit</label>
                             <div class="col-sm-9">
-                                <wj-combo-box #cmbUnits
+                                <input 
+                                    [(ngModel)]="soldUnit.unit" 
+                                    disabled 
+                                    type="text" 
+                                    class="form-control">
+                                <!-- <wj-combo-box #cmbUnits
                                     [itemsSource]="cmbUnitsData" 
                                     [isDisabled]="soldUnit.isLocked" 
                                     [isEditable]="false" 
@@ -120,7 +138,7 @@
                                     [selectedValuePath]="'id'"
                                     [(ngModel)]="soldUnit.unitId"
                                     style="width: 100%;">
-                                </wj-combo-box>
+                                </wj-combo-box> -->
                             </div>
                         </div>
                         <div class="form-group row">
@@ -288,6 +306,7 @@
                         <div [ngClass]="{'active': tabDetail1[0], 'tab-pane': true }" role="tabpanel">
 
                             <wj-flex-grid #fgdSoldUnitRequirements [itemsSource]="fgdSoldUnitRequirementsCollection" [selectionMode]="3" [frozenColumns]="1">
+                                <wj-flex-grid-filter></wj-flex-grid-filter>
                                 <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
                                     <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
                                         <button 
@@ -632,6 +651,7 @@
                             </div>
                             <div class="card-body">
                                 <wj-flex-grid #fgdSoldUnitRequirementActivities [itemsSource]="fgdSoldUnitRequirementActivitiesCollection" [selectionMode]="3" [frozenColumns]="2">
+                                    <wj-flex-grid-filter></wj-flex-grid-filter>
                                     <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
                                         <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
                                             <button 

@@ -13,6 +13,7 @@ import { AppToastOptions } from './app.toast.options';
 
 // Wijmo
 import { WjGridModule } from 'wijmo/wijmo.angular2.grid';
+import { WjGridFilterModule } from 'wijmo/wijmo.angular2.grid.filter';
 import { WjInputModule } from 'wijmo/wijmo.angular2.input';
 import { WjViewerModule } from 'wijmo/wijmo.angular2.viewer';
 
@@ -44,6 +45,7 @@ import { UnitList } from './unit/unit.list';
 import { UnitDetail } from './unit/unit.detail';
 import { UserList } from './user/user.list';
 import { UserDetail } from './user/user.detail';
+import { UnitQuery } from './unit/unit.query';
 import { SettingsIndex } from './settings/settings.index';
 import { ReportsIndex } from './reports/reports.index';
 import { PDFIndex } from './pdf/pdf.index';
@@ -104,7 +106,7 @@ const routes: Routes = [
     CustomerList, CustomerDetail,
     ProjectList, ProjectDetail,
     SoldUnitList, SoldUnitDetail,
-    UnitList, UnitDetail,
+    UnitList, UnitDetail, UnitQuery,
     UserList, UserDetail,
     SettingsIndex,
     ReportsIndex,
@@ -118,6 +120,7 @@ const routes: Routes = [
     BrowserModule,
     BrowserAnimationsModule,
     WjGridModule,
+    WjGridFilterModule,
     WjInputModule,
     WjViewerModule,
     PdfViewerModule
