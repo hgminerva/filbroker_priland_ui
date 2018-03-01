@@ -101,17 +101,6 @@
                                     disabled 
                                     type="text" 
                                     class="form-control">
-                                <!-- <wj-combo-box #cmbProjects
-                                    [itemsSource]="cmbProjectsData" 
-                                    [isDisabled]="soldUnit.isLocked" 
-                                    [isEditable]="false" 
-                                    [isRequired]="true"
-                                    [displayMemberPath]="'project'" 
-                                    [selectedValuePath]="'id'" 
-                                    (selectedIndexChanged)="cmbProjectsChange()"
-                                    [(ngModel)]="soldUnit.projectId"
-                                    style="width: 100%;">
-                                </wj-combo-box> -->
                             </div>
                             <button 
                                 id="btnOpenUnitQueryModal"
@@ -129,16 +118,6 @@
                                     disabled 
                                     type="text" 
                                     class="form-control">
-                                <!-- <wj-combo-box #cmbUnits
-                                    [itemsSource]="cmbUnitsData" 
-                                    [isDisabled]="soldUnit.isLocked" 
-                                    [isEditable]="false" 
-                                    [isRequired]="true"
-                                    [displayMemberPath]="'unitCode'" 
-                                    [selectedValuePath]="'id'"
-                                    [(ngModel)]="soldUnit.unitId"
-                                    style="width: 100%;">
-                                </wj-combo-box> -->
                             </div>
                         </div>
                         <div class="form-group row">
@@ -358,7 +337,8 @@
                                     <textarea 
                                         [disabled]="soldUnit.isLocked" 
                                         [(ngModel)]="soldUnit.totalInvestment" 
-                                        rows="6" 
+                                        rows="15" 
+                                        style="font-family:Courier New"
                                         class="form-control">
                                     </textarea>
                                 </div>
@@ -372,7 +352,8 @@
                                     <textarea 
                                         [disabled]="soldUnit.isLocked" 
                                         [(ngModel)]="soldUnit.paymentOptions" 
-                                        rows="6" 
+                                        rows="15" 
+                                        style="font-family:Courier New"
                                         class="form-control">
                                     </textarea>
                                 </div>
@@ -386,7 +367,8 @@
                                     <textarea 
                                         [disabled]="soldUnit.isLocked" 
                                         [(ngModel)]="soldUnit.financing" 
-                                        rows="6" 
+                                        rows="15" 
+                                        style="font-family:Courier New"
                                         class="form-control">
                                     </textarea>
                                 </div>

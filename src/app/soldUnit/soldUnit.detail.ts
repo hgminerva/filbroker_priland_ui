@@ -459,6 +459,7 @@ export class SoldUnitDetail {
       this.soldUnit.projectId = unit.projectId;
       this.soldUnit.unitId = unit.id;
       this.soldUnit.unit = unit.unitCode;
+      this.soldUnit.price = unit.price;
 
       this.getChecklistsPerProjectId(this.soldUnit);
     }

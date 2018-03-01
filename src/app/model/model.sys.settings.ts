@@ -13,4 +13,7 @@ export class SysSettings {
 	commissionRequestApprovedByUser: string;
 	proposalFootNote: string;
 	brokerFootNote: string;
+	totalInvestment: string;
+	paymentOptions: string;
+	financing: string;
 }

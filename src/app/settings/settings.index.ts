@@ -67,7 +67,10 @@ export class SettingsIndex {
 	commissionRequestApprovedBy: 0,
 	commissionRequestApprovedByUser: "",
 	proposalFootNote: "",
-	brokerFootNote: ""
+  brokerFootNote: "",
+	totalInvestment: "",
+	paymentOptions: "",
+	financing: ""
   };
   public dropDown: SysDropDown = {
     id: 0,
@@ -153,6 +156,9 @@ export class SettingsIndex {
             this.settings.commissionRequestApprovedBy = data.commissionRequestApprovedBy;
             this.settings.proposalFootNote = data.proposalFootNote;
             this.settings.brokerFootNote = data.brokerFootNote;
+            this.settings.totalInvestment = data.totalInvestment;
+            this.settings.paymentOptions = data.paymentOptions;
+            this.settings.financing = data.financing;
 
             this.getUsers(data);
             this.getDropDowns();

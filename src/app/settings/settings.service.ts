@@ -92,7 +92,10 @@ export class SettingsService {
                         commissionRequestApprovedBy: result.CommissionRequestApprovedBy,
                         commissionRequestApprovedByUser: "",
                         proposalFootNote: result.ProposalFootNote,
-                        brokerFootNote: result.BrokerFootNote
+                        brokerFootNote: result.BrokerFootNote,
+                        totalInvestment: result.TotalInvestment,
+                        paymentOptions: result.PaymentOptions,
+                        financing: result.Financing
                     };
                     this.settingsSource.next(settings);
                 } else {

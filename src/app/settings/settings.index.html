@@ -113,21 +113,56 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">Proposal Foot Note</label>
-                            <div class="col-sm-9">
+                            <label class="col-sm-4 col-form-label text-right">Proposal Foot Note</label>
+                            <div class="col-sm-8">
                                 <textarea 
                                     [(ngModel)]="settings.proposalFootNote" 
-                                    rows="3" 
+                                    rows="8" 
+                                    style="font-family:Courier New"
                                     class="form-control">
                                 </textarea>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label text-right">Broker Foot Note</label>
-                            <div class="col-sm-9">
+                            <label class="col-sm-4 col-form-label text-right">Broker Foot Note</label>
+                            <div class="col-sm-8">
                                 <textarea 
                                     [(ngModel)]="settings.brokerFootNote" 
-                                    rows="3" 
+                                    rows="8" 
+                                    style="font-family:Courier New"
+                                    class="form-control">
+                                </textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label text-right">Total Investment</label>
+                            <div class="col-sm-8">
+                                <textarea 
+                                    [(ngModel)]="settings.totalInvestment" 
+                                    rows="8" 
+                                    style="font-family:Courier New"
+                                    class="form-control">
+                                </textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label text-right">Payment Options</label>
+                            <div class="col-sm-8">
+                                <textarea 
+                                    [(ngModel)]="settings.paymentOptions" 
+                                    rows="8" 
+                                    style="font-family:Courier New"
+                                    class="form-control">
+                                </textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label text-right">Financing</label>
+                            <div class="col-sm-8">
+                                <textarea 
+                                    [(ngModel)]="settings.financing" 
+                                    rows="8" 
+                                    style="font-family:Courier New"
                                     class="form-control">
                                 </textarea>
                             </div>
