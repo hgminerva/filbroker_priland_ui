@@ -27,6 +27,11 @@ export class MstBroker {
 	organization: string;
 	remarks: string;
 	picture: string;
+	attachment1: string;
+	attachment2: string;
+	attachment3: string;
+	attachment4: string;
+	attachment5: string;
 	status: string;
 	isLocked: boolean;
 	createdBy: number;

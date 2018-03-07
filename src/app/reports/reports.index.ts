@@ -25,6 +25,7 @@ export class ReportsIndex {
   private soldUnitsSub : any;
   private commissionRequestsSub : any;
   private requirementActivitiesSub : any;
+  private checklistRequirementsSub : any;
 
   // =================
   // public properties
@@ -35,14 +36,17 @@ export class ReportsIndex {
 
   public fgdSoldUnitsData : ObservableArray;
   public fgdSoldUnitsCollection : CollectionView;
+  
+  public fgdRequirementActivitiesData : ObservableArray;
+  public fgdRequirementActivitiesCollection : CollectionView;
+
+  public fgdChecklistRequirementsData : ObservableArray;
+  public fgdChecklistRequirementsCollection : CollectionView;
 
   public fgdCommissionRequestsData : ObservableArray;
   public fgdCommissionRequestsCollection : CollectionView;
 
-  public fgdRequirementActivitiesData : ObservableArray;
-  public fgdRequirementActivitiesCollection : CollectionView;
-
-  public tabDetail1 = new Array(true, false, false);
+  public tabDetail1 = new Array(true, false, false, false);
 
   // filters
   public calDateStartData = new Date();
@@ -86,6 +90,7 @@ export class ReportsIndex {
     if( this.soldUnitsSub != null) this.soldUnitsSub.unsubscribe();
     if( this.commissionRequestsSub != null) this.commissionRequestsSub.unsubscribe();
     if( this.requirementActivitiesSub != null) this.requirementActivitiesSub.unsubscribe();
+    if( this.checklistRequirementsSub != null) this.checklistRequirementsSub.unsubscribe();
   }
 
   // ==============
@@ -99,6 +104,7 @@ export class ReportsIndex {
     this.getUnitSolds(dateStart,dateEnd);
     this.getCommissionRequests(dateStart,dateEnd);
     this.getRequirementActivities(dateStart,dateEnd);
+    this.getChecklistRequirements(dateStart,dateEnd);
   }
 
   public getUnitSolds(dateStart: string, dateEnd: string) : void {
@@ -137,23 +143,88 @@ export class ReportsIndex {
       }
     );
   }
+  public getChecklistRequirements(dateStart: string, dateEnd: string) : void {
+    this.reportsService.getSoldUnitChecklistSummary(dateStart,dateEnd);
+
+    this.checklistRequirementsSub = this.reportsService.soldUnitChecklistRequirementObservable.subscribe(
+      data => {
+        this.fgdChecklistRequirementsData = data;
+        this.fgdChecklistRequirementsCollection = new CollectionView(this.fgdChecklistRequirementsData);
+        this.fgdChecklistRequirementsCollection.pageSize = 15;
+        this.fgdChecklistRequirementsCollection.trackChanges = true;  
+      }
+    );
+  }
 
   // ======
   // events
   // ======
 
+  // report activity
+  public btnCSVReportClick() : void {
+    var data = "";
+    var items;
+    var fileName = "";
+
+    if(this.tabDetail1[0] == true) {
+      data = 'Sold Unit Summary Report' + '\r\n\n';
+      items = this.fgdSoldUnitsCollection.items;
+      fileName = "report-soldUnit.csv";
+    } else if(this.tabDetail1[1] == true) {
+      data = 'Sold Unit Checklist Requirement Report' + '\r\n\n';
+      items = this.fgdChecklistRequirementsCollection.items;
+      fileName = "report-soldUnitChecklist.csv";
+    } else if(this.tabDetail1[2] == true) {
+      data = 'Sold Unit Checklist Requirement Activity Report' + '\r\n\n';
+      items = this.fgdRequirementActivitiesCollection.items;
+      fileName = "report-soldUnitChecklistActivities.csv";
+    } else if(this.tabDetail1[3] == true) {
+      data = 'Commission Request Summary Report' + '\r\n\n';
+      items = this.fgdCommissionRequestsCollection.items;
+      fileName = "report-commissionRequest.csv";
+    }
+
+    if(data != "")  {
+      var label = '';
+      for (var s in items[0]) {
+        label += s + ',';
+      }
+      label = label.slice(0, -1);
+
+      data +=  label + '\r\n';
+
+      for (var i = 0; i < items.length; i++) {
+          var row = '';
+          for (var s in items[i]) {
+            row += '"' + items[i][s] + '",';
+          }
+          row.slice(0, row.length - 1);
+          data += row + '\r\n';
+      }
+
+      var csvData = new Blob([data], {type: 'text/csv;charset=utf-8;'});
+      var csvURL = window.URL.createObjectURL(csvData);
+      var tempLink = document.createElement('a');
+
+      tempLink.href = csvURL;
+      tempLink.setAttribute('download', fileName);
+      tempLink.click();
+    } 
+  }
+  
   // detail tab index click
-  public tabDetail1Click(index: number) {
+  public tabDetail1Click(index: number) : void {
     let dateStart : string = [this.calDateStartData.getFullYear(), this.calDateStartData.getMonth() + 1, this.calDateStartData.getDate()].join('-');
     let dateEnd : string = [this.calDateEndData.getFullYear(), this.calDateEndData.getMonth() + 1, this.calDateEndData.getDate()].join('-');
 
     for (var i = 0; i <= this.tabDetail1.length - 1; i++) {
-      if(index==i) this.tabDetail1[i] = true;
+      if(index == i) this.tabDetail1[i] = true;
       else this.tabDetail1[i] = false;
     }
 
     if(index==0) this.getUnitSolds(dateStart,dateEnd);
-    if(index==1) this.getCommissionRequests(dateStart,dateEnd);
+    if(index==1) this.getChecklistRequirements(dateStart,dateEnd);
     if(index==2) this.getRequirementActivities(dateStart,dateEnd);
+    if(index==3) this.getCommissionRequests(dateStart,dateEnd);
   }
 }

@@ -42,6 +42,8 @@ export class SoldUnitDetail {
   private soldUnitSavedSub : any;
   private soldUnitLockedSub : any;
   private soldUnitUnlockedSub : any;
+  private soldUnitCancelSub : any;
+  private soldUnitTransferSub : any;
 
   // detail line1 (checklist requirements)
   private soldUnitRequirementsSub : any;
@@ -90,9 +92,23 @@ export class SoldUnitDetail {
     customer: "",
     brokerId: 0,
     broker: "",
+    agent: "",
+    brokerCoordinator: "",
     checklistId: 0,
     checklist: "",
     price: 0,
+    equityValue: 0,
+    equityPercent: 0,
+    discount: 0,
+    reservation: 0,
+    netEquity: 0,
+    netEquityInterest: 0,
+    netEquityNoOfPayments: 0,
+    netEquityAmortization: 0,
+    balance: 0,
+    balanceInterest: 0,
+    balanceNoOfPayments: 0,
+    balanceAmortization: 0,
     totalInvestment: "",
     paymentOptions: "",
     financing: "",
@@ -174,6 +190,9 @@ export class SoldUnitDetail {
   public mdlUnitQueryModalShow : boolean = false;
   public mdlUnitQueryModalStatus : boolean = false;
 
+  public mdlSoldUnitCancelModalShow : boolean = false;
+  public mdlSoldUnitTransferModalShow : boolean = false;
+
   // element(s)
   @ViewChild("cmbProjects")
   public cmbProjects: ElementRef;
@@ -216,6 +235,8 @@ export class SoldUnitDetail {
     if( this.soldUnitSavedSub != null) this.soldUnitSavedSub.unsubscribe();
     if( this.soldUnitLockedSub != null) this.soldUnitLockedSub.unsubscribe();
     if( this.soldUnitUnlockedSub != null) this.soldUnitUnlockedSub.unsubscribe();
+    if( this.soldUnitCancelSub != null) this.soldUnitCancelSub.unsubscribe();
+    if( this.soldUnitTransferSub != null) this.soldUnitTransferSub.unsubscribe();
 
     if( this.soldUnitRequirementsSub != null) this.soldUnitRequirementsSub.unsubscribe();
     if( this.soldUnitRequirementAttachmentSub != null) this.soldUnitRequirementAttachmentSub.unsubscribe();
@@ -264,9 +285,23 @@ export class SoldUnitDetail {
           this.soldUnit.customer = data.customer;
           this.soldUnit.brokerId = data.brokerId;
           this.soldUnit.broker = data.broker;
+          this.soldUnit.agent = data.agent;
+          this.soldUnit.broker = data.broker;
           this.soldUnit.checklistId = data.checklistId;
           this.soldUnit.checklist = data.checklist;
           this.soldUnit.price = data.price;
+          this.soldUnit.equityValue = data.equityValue;
+          this.soldUnit.equityPercent = data.equityPercent;
+          this.soldUnit.discount = data.discount;
+          this.soldUnit.reservation = data.reservation;
+          this.soldUnit.netEquity = data.netEquity;
+          this.soldUnit.netEquityInterest = data.netEquityInterest;
+          this.soldUnit.netEquityNoOfPayments = data.netEquityNoOfPayments;
+          this.soldUnit.netEquityAmortization = data.netEquityAmortization;
+          this.soldUnit.balance = data.balance;
+          this.soldUnit.balanceInterest = data.balanceInterest;
+          this.soldUnit.balanceNoOfPayments = data.balanceNoOfPayments;
+          this.soldUnit.balanceAmortization = data.balanceAmortization;
           this.soldUnit.totalInvestment = data.totalInvestment;
           this.soldUnit.paymentOptions = data.paymentOptions;
           this.soldUnit.financing = data.financing;
@@ -511,32 +546,47 @@ export class SoldUnitDetail {
     );
   }
   public btnUnlockSoldUnitClick() : void {
-    let btnUnlockSoldUnit:Element = document.getElementById("btnUnlockSoldUnit");
+    if(this.soldUnit.status == "SOLD") {
+      let btnUnlockSoldUnit:Element = document.getElementById("btnUnlockSoldUnit");
 
-    btnUnlockSoldUnit.setAttribute("disabled","disabled");
-    btnUnlockSoldUnit.innerHTML = "<i class='fa fa-plus fa-fw'></i> Unlocking...";
+      btnUnlockSoldUnit.setAttribute("disabled","disabled");
+      btnUnlockSoldUnit.innerHTML = "<i class='fa fa-plus fa-fw'></i> Unlocking...";
 
-    this.soldUnitService.unlockSoldUnit(this.soldUnit);
-    this.soldUnitUnlockedSub = this.soldUnitService.soldUnitUnlockedObservable.subscribe(
-      data => {
-          if(data == 1) {
-              this.toastr.success("Unlocking successful.");
-              this.soldUnit.isLocked = false;
-              btnUnlockSoldUnit.removeAttribute("disabled");
-              btnUnlockSoldUnit.innerHTML = "<i class='fa fa-lock fa-fw'></i> Unlock";
-          } else if(data == 0) {
-              this.toastr.error("Unlocking failed.");   
-              btnUnlockSoldUnit.removeAttribute("disabled");
-              btnUnlockSoldUnit.innerHTML = "<i class='fa fa-lock fa-fw'></i> Unlock";
-          }
-      }
-    );
+      this.soldUnitService.unlockSoldUnit(this.soldUnit);
+      this.soldUnitUnlockedSub = this.soldUnitService.soldUnitUnlockedObservable.subscribe(
+        data => {
+            if(data == 1) {
+                this.toastr.success("Unlocking successful.");
+                this.soldUnit.isLocked = false;
+                btnUnlockSoldUnit.removeAttribute("disabled");
+                btnUnlockSoldUnit.innerHTML = "<i class='fa fa-lock fa-fw'></i> Unlock";
+            } else if(data == 0) {
+                this.toastr.error("Unlocking failed.");   
+                btnUnlockSoldUnit.removeAttribute("disabled");
+                btnUnlockSoldUnit.innerHTML = "<i class='fa fa-lock fa-fw'></i> Unlock";
+            }
+        }
+      );
+    } else {
+      this.toastr.error("This unit is not sold.");
+    }
   }
   public btnPrintSoldUnitClick() : void {
-    if(this.soldUnit.isLocked==true) {
-      this.router.navigate(['/pdf', 'soldunitcontract',this.soldUnit.id]); 
+    if(this.soldUnit.status == "SOLD") {
+      if(this.soldUnit.isLocked == true) {
+        this.router.navigate(['/pdf', 'soldunitcontract',this.soldUnit.id]); 
+      } else {
+        this.router.navigate(['/pdf', 'soldunitproposal',this.soldUnit.id]); 
+      }
     } else {
-      this.router.navigate(['/pdf', 'soldunitproposal',this.soldUnit.id]); 
+      this.toastr.error("This unit is not sold.");
+    }
+  }
+  public btnCancelSoldUnitClick() : void {
+    if(this.soldUnit.status == "SOLD") {
+      this.mdlSoldUnitCancelModalShow = true;
+    } else {
+      this.toastr.error("This unit is not sold.");
     }
   }
 
@@ -783,6 +833,174 @@ export class SoldUnitDetail {
   }
   public btnCloseSoldUnitRequirementActivityModalClick() {
     this.mdlSoldUnitRequirementActivityModalShow = false;    
+  }
+
+  // keyups
+  private computeNetEquity() : void {
+    this.soldUnit.netEquity = this.soldUnit.equityValue - this.soldUnit.discount - this.soldUnit.reservation;
+
+    if(this.soldUnit.netEquityInterest > 0) {
+      var r = this.soldUnit.netEquityInterest / 100;
+      var n = this.soldUnit.netEquityNoOfPayments;
+  
+      var an = r * Math.pow(1+r,n);
+      var ad = Math.pow(1+r,n) - 1;
+  
+      if (ad != 0) {
+        this.soldUnit.netEquityAmortization = this.soldUnit.netEquity * (an/ad);
+      }
+    } else {
+      var n = this.soldUnit.netEquityNoOfPayments;
+
+      if(n > 0 ) {
+        this.soldUnit.netEquityAmortization = this.soldUnit.netEquity / n;
+      }
+    }
+
+    this.computeBalance();
+  }
+  private computeBalance() : void {
+    this.soldUnit.balance = this.soldUnit.price - this.soldUnit.equityValue;
+
+    if(this.soldUnit.balanceInterest > 0) {
+      var r = this.soldUnit.balanceInterest / 100;
+      var n = this.soldUnit.balanceNoOfPayments;
+  
+      var an = r * Math.pow(1+r,n);
+      var ad = Math.pow(1+r,n) - 1;
+  
+      if (ad != 0) {
+        this.soldUnit.balanceAmortization = this.soldUnit.balance * (an/ad);
+      }
+    } else {
+      var n = this.soldUnit.balanceNoOfPayments;
+
+      if(n > 0 ) {
+        this.soldUnit.balanceAmortization = this.soldUnit.balance / n;
+      }
+    }
+  }
+  public txtEquityPercentKeyup() : void {
+    if(this.soldUnit.price > 0) {
+      this.soldUnit.equityValue = this.soldUnit.price * (this.soldUnit.equityPercent/100);
+      this.computeNetEquity();
+    }
+  }
+  public txtEquityValueKeyup() : void {
+    if(this.soldUnit.price > 0) {
+      this.soldUnit.equityPercent = (this.soldUnit.equityValue / this.soldUnit.price) * 100;
+      this.computeNetEquity();
+    }
+  }
+  public txtDiscountKeyup() : void {
+    this.computeNetEquity();
+  }
+  public txtReservationKeyup() : void {
+    this.computeNetEquity();
+  }
+  public txtNetEquityInterestKeyup() : void {
+    this.computeNetEquity();
+  }
+  public txtNetEquityNoOfPaymentsKeyup() : void {
+    this.computeNetEquity();
+  }
+  public txtBalanceInterestKeyup() : void {
+    this.computeBalance();
+  }
+  public txtBalanceNoOfPaymentsKeyup(): void {
+    this.computeBalance();
+  }
+
+  // writes
+  public addSpaces(numberOfSpaces: number) : string {
+    var spaces = ""
+    for(var i=0; i<numberOfSpaces; i++) {
+      spaces = spaces + " ";
+    }
+    return spaces;
+  }
+  public btnWriteTotalInvestmentClick() : void {
+    var totalInvestment = "";
+    
+    totalInvestment = totalInvestment + "TOTAL CONTRACT PRICE (TCP) \n";
+    totalInvestment = totalInvestment + "      Included: Transfer Charges and Misc.        P " + this.soldUnit.price.toLocaleString('en-us', {minimumFractionDigits: 2}) + "\n";
+    totalInvestment = totalInvestment + "      Other Charges: \n";
+    totalInvestment = totalInvestment + "            * Move-in Fee (To be paid upon signing of Certificate of Turnover) \n";
+
+    this.soldUnit.totalInvestment = totalInvestment;
+  }
+  public btnWritePaymentOptionsClick() : void {
+    var paymentOptions = "";
+
+    paymentOptions = paymentOptions + "FINANCING SCHEME \n";
+    paymentOptions = paymentOptions + "      Equity: Percentage                               P " + this.addSpaces(15-this.soldUnit.equityPercent.toLocaleString('en-us', {minimumFractionDigits: 2}).length) + this.soldUnit.equityPercent.toLocaleString('en-us', {minimumFractionDigits: 2}) + "\n";
+    paymentOptions = paymentOptions + "              Value                                    P " + this.addSpaces(15-this.soldUnit.equityValue.toLocaleString('en-us', {minimumFractionDigits: 2}).length) + this.soldUnit.equityValue.toLocaleString('en-us', {minimumFractionDigits: 2}) + "\n";
+    paymentOptions = paymentOptions + "      LESS:   Discount                                 P " + this.addSpaces(15-this.soldUnit.discount.toLocaleString('en-us', {minimumFractionDigits: 2}).length) + this.soldUnit.discount.toLocaleString('en-us', {minimumFractionDigits: 2}) + "\n";
+    paymentOptions = paymentOptions + "              Reservation                              P " + this.addSpaces(15-this.soldUnit.reservation.toLocaleString('en-us', {minimumFractionDigits: 2}).length) + this.soldUnit.reservation.toLocaleString('en-us', {minimumFractionDigits: 2}) + "\n";
+    paymentOptions = paymentOptions + "      NET EQUITY                                       P " + this.addSpaces(15-this.soldUnit.netEquity.toLocaleString('en-us', {minimumFractionDigits: 2}).length) + this.soldUnit.netEquity.toLocaleString('en-us', {minimumFractionDigits: 2}) + "\n";
+    paymentOptions = paymentOptions + "* P " + this.soldUnit.netEquityAmortization.toLocaleString('en-us', {minimumFractionDigits: 2}) + " spread over " + this.soldUnit.netEquityNoOfPayments + " month(s) at "  + this.soldUnit.netEquityInterest + " interest \n";
+    paymentOptions = paymentOptions + "* Payee: PRILAND DEVELOPMENT CORPORATION \n";
+
+    this.soldUnit.paymentOptions = paymentOptions;
+  }
+  public btnWriteFinancingClick() : void {
+    var financing = "";
+
+    financing = financing + "BALANCE \n";
+    financing = financing + "      The remaining balance                               P " + this.soldUnit.balance.toLocaleString('en-us', {minimumFractionDigits: 2}) + "\n";
+    financing = financing + "* P " + this.soldUnit.balanceAmortization.toLocaleString('en-us', {minimumFractionDigits: 2}) + " spread over " + this.soldUnit.balanceNoOfPayments + " month(s) at "  + this.soldUnit.balanceInterest + " interest \n";
+
+    this.soldUnit.financing = financing;
+  }
+
+  // cancel
+  public btnSoldUnitCancelModalOkClick() : void {
+    let btnSoldUnitCancelModalOk:Element = document.getElementById("btnSoldUnitCancelModalOk");
+    let btnSoldUnitCancelModalClose:Element = document.getElementById("btnSoldUnitCancelModalClose");
+
+    btnSoldUnitCancelModalOk.setAttribute("disabled","disabled");
+    btnSoldUnitCancelModalOk.innerHTML = "<i class='fa fa-ban fa-fw'></i> Canceling...";
+    btnSoldUnitCancelModalClose.setAttribute("disabled","disabled");
+
+    this.soldUnitService.cancelSoldUnit(this.soldUnit);
+    this.soldUnitCancelSub =  this.soldUnitService.soldUnitCancelObservable.subscribe(
+      data => {
+          if(data == 1) {
+              this.toastr.success("Canceling successful.");
+              btnSoldUnitCancelModalOk.removeAttribute("disabled");
+              btnSoldUnitCancelModalOk.innerHTML = "<i class='fa fa-ban fa-fw'></i> Cancel";
+              btnSoldUnitCancelModalClose.removeAttribute("disabled");
+
+              this.mdlSoldUnitCancelModalShow = false;
+          } else if(data == 0) {
+              this.toastr.error("Canceling failed.");   
+              btnSoldUnitCancelModalOk.removeAttribute("disabled");
+              btnSoldUnitCancelModalOk.innerHTML = "<i class='fa fa-ban fa-fw'></i> Cancel";
+              btnSoldUnitCancelModalClose.removeAttribute("disabled");
+
+              this.mdlSoldUnitCancelModalShow = false;
+          }
+      },
+      error => {
+        this.toastr.error("Server error.");   
+        btnSoldUnitCancelModalOk.removeAttribute("disabled");
+        btnSoldUnitCancelModalOk.innerHTML = "<i class='fa fa-ban fa-fw'></i> Cancel";
+        btnSoldUnitCancelModalClose.removeAttribute("disabled");
+
+        this.mdlSoldUnitCancelModalShow = false;
+      }
+    );
+  }
+  public btnSoldUnitCancelModalCloseClick() : void {
+    this.mdlSoldUnitCancelModalShow = false;
+  }
+
+  // transfer
+  public btnSoldUnitTransferModalOkClick() : void {
+
+  }
+  public btnSoldUnitTransferModalCloseClick() : void {
+    this.mdlSoldUnitTransferModalShow = false;    
   }
 
   // tabs

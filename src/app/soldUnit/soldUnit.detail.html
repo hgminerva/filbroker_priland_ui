@@ -26,11 +26,11 @@
             <div class="card-header">
                 <table border="0" style="width: 100%;">
                     <tr>
-                        <td style="width: 59%;">
+                        <td style="width: 39%;">
                             <h4>{{title}}</h4>
                         </td>
                         <td style="width: 1%;"></td>
-                        <td style="width: 40%;" align="right">
+                        <td style="width: 60%;" align="right">
                             <button 
                                 id="btnPrintSoldUnit"
                                 class="btn btn-primary" 
@@ -57,6 +57,20 @@
                                 class="btn btn-primary" 
                                 (click)="btnSaveSoldUnitClick()">
                                 <i class="fa fa-save fa-fw"></i> Save
+                            </button>
+                            <button 
+                                id="btnCancelSoldUnit"
+                                [disabled]="!soldUnit.isLocked" 
+                                class="btn btn-warning" 
+                                (click)="btnCancelSoldUnitClick()">
+                                <i class="fa fa-ban fa-fw"></i> Cancel
+                            </button>
+                            <button 
+                                id="btnTransferSoldUnit"
+                                [disabled]="!soldUnit.isLocked" 
+                                class="btn btn-warning" 
+                                (click)="btnTransferSoldUnitClick()">
+                                <i class="fa fa-share-square-o fa-fw"></i> Transfer
                             </button>
                             <button 
                                 id="btnCloseSoldUnit"
@@ -151,6 +165,29 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Agent</label>
+                            <div class="col-sm-9">
+                                <input 
+                                    [(ngModel)]="soldUnit.agent" 
+                                    [disabled]="soldUnit.isLocked" 
+                                    type="text" 
+                                    class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Broker Coordinator</label>
+                            <div class="col-sm-9">
+                                <input 
+                                    [(ngModel)]="soldUnit.brokerCoordinator" 
+                                    [disabled]="soldUnit.isLocked" 
+                                    type="text" 
+                                    class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
                             <label class="col-sm-3 col-form-label text-right">Checklist</label>
                             <div class="col-sm-8">
                                 <wj-combo-box #cmbChecklists
@@ -172,9 +209,6 @@
                                 <i class="fa fa-refresh fa-fw"></i>
                             </button>
                         </div>
-                    </div>
-
-                    <div class="col-md-6">
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label text-right">Selling Price</label>
                             <div class="col-sm-9">
@@ -242,7 +276,7 @@
                             <div class="col-sm-9">
                                 <wj-combo-box #cmbStatus
                                     [itemsSource]="cmbStatusData"
-                                    [isDisabled]="soldUnit.isLocked" 
+                                    [isDisabled]=true 
                                     [isEditable]="false" 
                                     [isRequired]="true"
                                     [displayMemberPath]="'value'" 
@@ -334,6 +368,15 @@
                         <div [ngClass]="{'active': tabDetail1[1], 'tab-pane': true }" role="tabpanel">
                             <div class="form-group row">
                                 <div class="col-md-12">
+                                    <button 
+                                        id="btnWriteTotalInvestment"
+                                        class="btn btn-info col-sm-1 float-right" 
+                                        [disabled]="soldUnit.isLocked"
+                                        (click)="btnWriteTotalInvestmentClick()">
+                                        <i class="fa fa-pencil-square-o fa-fw"></i>
+                                    </button>
+                                </div>
+                                <div class="col-md-12">
                                     <textarea 
                                         [disabled]="soldUnit.isLocked" 
                                         [(ngModel)]="soldUnit.totalInvestment" 
@@ -347,30 +390,180 @@
 
                         <!-- tab3 detail item (payment options) -->
                         <div [ngClass]="{'active': tabDetail1[2], 'tab-pane': true }" role="tabpanel">
-                            <div class="form-group row">
-                                <div class="col-md-12">
-                                    <textarea 
-                                        [disabled]="soldUnit.isLocked" 
-                                        [(ngModel)]="soldUnit.paymentOptions" 
-                                        rows="15" 
-                                        style="font-family:Courier New"
-                                        class="form-control">
-                                    </textarea>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Equity (%)</label>
+                                        <div class="col-sm-9">
+                                            <wj-input-number 
+                                                [(value)]="soldUnit.equityPercent"
+                                                [isDisabled]="soldUnit.isLocked"
+                                                (textChanged)="txtEquityPercentKeyup()">
+                                            </wj-input-number>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Equity</label>
+                                        <div class="col-sm-9">
+                                            <wj-input-number 
+                                                [(value)]="soldUnit.equityValue"
+                                                [isDisabled]="soldUnit.isLocked"
+                                                (textChanged)="txtEquityValueKeyup()">
+                                            </wj-input-number>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Discount</label>
+                                        <div class="col-sm-9">
+                                            <wj-input-number 
+                                                [(value)]="soldUnit.discount"
+                                                [isDisabled]="soldUnit.isLocked"
+                                                (textChanged)="txtDiscountKeyup()">
+                                            </wj-input-number>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Reservation</label>
+                                        <div class="col-sm-9">
+                                            <wj-input-number 
+                                                [(value)]="soldUnit.reservation"
+                                                [isDisabled]="soldUnit.isLocked"
+                                                (textChanged)="txtReservationKeyup()">
+                                            </wj-input-number>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Net Equity</label>
+                                        <div class="col-sm-9">
+                                            <wj-input-number 
+                                                [(value)]="soldUnit.netEquity"
+                                                [isDisabled]=true>
+                                            </wj-input-number>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Interest</label>
+                                        <div class="col-sm-9">
+                                            <wj-input-number 
+                                                [(value)]="soldUnit.netEquityInterest"
+                                                [isDisabled]="soldUnit.isLocked"
+                                                (textChanged)="txtNetEquityInterestKeyup()">
+                                            </wj-input-number>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">No. of Payments</label>
+                                        <div class="col-sm-9">
+                                            <wj-input-number 
+                                                [(value)]="soldUnit.netEquityNoOfPayments"
+                                                [isDisabled]="soldUnit.isLocked"
+                                                (textChanged)="txtNetEquityNoOfPaymentsKeyup()">
+                                            </wj-input-number>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Amortization</label>
+                                        <div class="col-sm-9">
+                                            <wj-input-number 
+                                                [(value)]="soldUnit.netEquityAmortization"
+                                                [isDisabled]=true>
+                                            </wj-input-number>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <button 
+                                            id="btnWritePaymentOptions"
+                                            class="btn btn-info col-sm-1 float-right" 
+                                            [disabled]="soldUnit.isLocked"
+                                            (click)="btnWritePaymentOptionsClick()">
+                                            <i class="fa fa-pencil-square-o fa-fw"></i>
+                                        </button>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <textarea 
+                                            [disabled]="soldUnit.isLocked" 
+                                            [(ngModel)]="soldUnit.paymentOptions" 
+                                            rows="15" 
+                                            style="font-family:Courier New"
+                                            class="form-control">
+                                        </textarea>
+                                    </div>
+                                </div>
+                            </div> 
+
                         </div>
 
                        <!-- tab4 detail item (financing) -->
                         <div [ngClass]="{'active': tabDetail1[3], 'tab-pane': true }" role="tabpanel">
-                            <div class="form-group row">
-                                <div class="col-md-12">
-                                    <textarea 
-                                        [disabled]="soldUnit.isLocked" 
-                                        [(ngModel)]="soldUnit.financing" 
-                                        rows="15" 
-                                        style="font-family:Courier New"
-                                        class="form-control">
-                                    </textarea>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Balance</label>
+                                        <div class="col-sm-9">
+                                            <wj-input-number 
+                                                [(value)]="soldUnit.balance"
+                                                [isDisabled]=true>
+                                            </wj-input-number>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Interest</label>
+                                        <div class="col-sm-9">
+                                            <wj-input-number 
+                                                [(value)]="soldUnit.balanceInterest"
+                                                [isDisabled]="soldUnit.isLocked"
+                                                (textChanged)="txtBalanceInterestKeyup()">
+                                            </wj-input-number>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">No. of Payments</label>
+                                        <div class="col-sm-9">
+                                            <wj-input-number 
+                                                [(value)]="soldUnit.balanceNoOfPayments"
+                                                [isDisabled]="soldUnit.isLocked"
+                                                (textChanged)="txtBalanceNoOfPaymentsKeyup()">
+                                            </wj-input-number>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Amortization</label>
+                                        <div class="col-sm-9">
+                                            <wj-input-number 
+                                                [(value)]="soldUnit.balanceAmortization"
+                                                [isDisabled]="soldUnit.isLocked">
+                                            </wj-input-number>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <button 
+                                            id="btnWriteFinancing"
+                                            class="btn btn-info col-sm-1 float-right" 
+                                            [disabled]="soldUnit.isLocked"
+                                            (click)="btnWriteFinancingClick()">
+                                            <i class="fa fa-pencil-square-o fa-fw"></i>
+                                        </button>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <textarea 
+                                            [disabled]="soldUnit.isLocked" 
+                                            [(ngModel)]="soldUnit.financing" 
+                                            rows="15" 
+                                            style="font-family:Courier New"
+                                            class="form-control">
+                                        </textarea>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -749,6 +942,67 @@
                 <button type="button" id="btnSaveSoldUnitRequirementActivityModal" class="btn btn-success" (click)="btnSaveSoldUnitRequirementActivityModalClick()">
                     <i class="fa fa-check fa-fw"></i> Save</button>
                 <button type="button" id="btnCloseSoldUnitRequirementActivityModal" class="btn btn-danger" (click)="btnCloseSoldUnitRequirementActivityModalClick()">
+                    <i class="fa fa-times fa-fw"></i> Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!-- cancel sold unit modal -->
+<div id="mdlSoldUnitCancelModal" 
+     class="modal fade" role="dialog"
+     [ngStyle]="{'display': mdlSoldUnitCancelModalShow ? 'block' : 'none', 'opacity': 1}">
+     <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Cancel Sold Unit</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Reason for cancelation:</label>
+                    <div class="col-sm-9">
+                        <textarea 
+                            [(ngModel)]="soldUnit.remarks" 
+                            rows="3" 
+                            class="form-control">
+                        </textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" align="right">
+                <button type="button" id="btnSoldUnitCancelModalOk" class="btn btn-warning" (click)="btnSoldUnitCancelModalOkClick()">
+                    <i class="fa fa-ban fa-fw"></i> Ok</button>
+                <button type="button" id="btnSoldUnitCancelModalClose" class="btn btn-danger" (click)="btnSoldUnitCancelModalCloseClick()">
+                    <i class="fa fa-times fa-fw"></i> Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!-- transfer sold unit modal -->
+<div id="mdlSoldUnitTransferModal" 
+     class="modal fade" role="dialog"
+     [ngStyle]="{'display': mdlSoldUnitTransferModalShow ? 'block' : 'none', 'opacity': 1}">
+     <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Transfer Sold Unit</h4>
+            </div>
+            <div class="modal-body">
+                Transfer sold unit?
+            </div>
+            <div class="modal-footer" align="right">
+                <button type="button" id="btnSoldUnitTransferModalOk" class="btn btn-success" (click)="btnSoldUnitTransferModalOkClick()">
+                    <i class="fa fa-check fa-fw"></i> Ok</button>
+                <button type="button" id="btnSoldUnitTransferModalClose" class="btn btn-danger" (click)="btnSoldUnitTransferModalCloseClick()">
                     <i class="fa fa-times fa-fw"></i> Close</button>
             </div>
         </div>

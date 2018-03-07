@@ -74,6 +74,11 @@ export class BrokerDetail {
     organization: "",
     remarks: "",
     picture: "",
+    attachment1: "",
+    attachment2: "",
+    attachment3: "",
+    attachment4: "",
+    attachment5: "",
     status: "ACTIVE",
     isLocked: false,
     createdBy: 1,
@@ -88,7 +93,7 @@ export class BrokerDetail {
   public cmbGenderData: ObservableArray;
 
   // detail tab index (if large number of fields)
-  public tabDetail1 = new Array(true, false);
+  public tabDetail1 = new Array(true, false, false);
 
   // =======
   // angular
@@ -177,6 +182,11 @@ export class BrokerDetail {
           this.broker.organization = data.organization;
           this.broker.remarks = data.remarks;
           this.broker.picture = data.picture;
+          this.broker.attachment1 = data.attachment1;
+          this.broker.attachment2 = data.attachment2;
+          this.broker.attachment3 = data.attachment3;
+          this.broker.attachment4 = data.attachment4;
+          this.broker.attachment5 = data.attachment5;
           this.broker.status = data.status;
           this.broker.isLocked = data.isLocked;
           this.broker.createdBy = data.createdBy;
@@ -323,4 +333,55 @@ export class BrokerDetail {
     }
   }
 
+  // attachments
+  public btnOpenBrokerAttachment1Click(e: Event) : void {
+    var target: HTMLInputElement = e.target as HTMLInputElement;
+    if(target.files.length > 0) {
+      this.brokerService.uploadBrokerPicture(target.files[0],"BROKERFILE1-" + this.broker.brokerCode + "-" + Date.now());
+      this.brokerPictureSub = this.brokerService.brokerPictureObservable
+          .subscribe( data => {
+            this.broker.attachment1 = data.fileUrl;
+          });
+    }
+  }
+  public btnOpenBrokerAttachment2Click(e: Event) : void {
+    var target: HTMLInputElement = e.target as HTMLInputElement;
+    if(target.files.length > 0) {
+      this.brokerService.uploadBrokerPicture(target.files[0],"BROKERFILE2-" + this.broker.brokerCode + "-" + Date.now());
+      this.brokerPictureSub = this.brokerService.brokerPictureObservable
+          .subscribe( data => {
+            this.broker.attachment2 = data.fileUrl;
+          });
+    }
+  }
+  public btnOpenBrokerAttachment3Click(e: Event) : void {
+    var target: HTMLInputElement = e.target as HTMLInputElement;
+    if(target.files.length > 0) {
+      this.brokerService.uploadBrokerPicture(target.files[0],"BROKERFILE3-" + this.broker.brokerCode + "-" + Date.now());
+      this.brokerPictureSub = this.brokerService.brokerPictureObservable
+          .subscribe( data => {
+            this.broker.attachment3 = data.fileUrl;
+          });
+    }
+  }
+  public btnOpenBrokerAttachment4Click(e: Event) : void {
+    var target: HTMLInputElement = e.target as HTMLInputElement;
+    if(target.files.length > 0) {
+      this.brokerService.uploadBrokerPicture(target.files[0],"BROKERFILE4-" + this.broker.brokerCode + "-" + Date.now());
+      this.brokerPictureSub = this.brokerService.brokerPictureObservable
+          .subscribe( data => {
+            this.broker.attachment4 = data.fileUrl;
+          });
+    }
+  }
+  public btnOpenBrokerAttachment5Click(e: Event) : void {
+    var target: HTMLInputElement = e.target as HTMLInputElement;
+    if(target.files.length > 0) {
+      this.brokerService.uploadBrokerPicture(target.files[0],"BROKERFILE5-" + this.broker.brokerCode + "-" + Date.now());
+      this.brokerPictureSub = this.brokerService.brokerPictureObservable
+          .subscribe( data => {
+            this.broker.attachment5 = data.fileUrl;
+          });
+    }
+  }
 }

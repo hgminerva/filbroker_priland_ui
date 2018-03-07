@@ -46,6 +46,10 @@ export class ReportsService {
     public soldUnitRequirementActivitiesSource = new Subject<ObservableArray>();
     public soldUnitRequirementActivitiesObservable = this.soldUnitRequirementActivitiesSource.asObservable();
 
+    // sold unit checklist requirement
+    public soldUnitChecklistRequirementSource = new Subject<ObservableArray>();
+    public soldUnitChecklistRequirementObservable = this.soldUnitChecklistRequirementSource.asObservable();
+
     // =======
     // angular
     // =======
@@ -78,9 +82,23 @@ export class ReportsService {
                             customer: results[i].Customer,
                             brokerId: results[i].BrokerId,
                             broker: results[i].Broker,
+                            agent: results[i].Agent,
+                            brokerCoordinator: results[i].BrokerCoordinator,
                             checklistId: results[i].ChecklistId,
                             checklist: results[i].Checklist,
                             price: results[i].Price,
+                            equityValue: results[i].EquityValue,
+                            equityPercent: results[i].EquityPercent,
+                            discount: results[i].Discount,
+                            reservation: results[i].Reservation,
+                            netEquity: results[i].NetEquity,
+                            netEquityInterest: results[i].NetEquityInterest,
+                            netEquityNoOfPayments: results[i].NetEquityNoOfPayments,
+                            netEquityAmortization: results[i].NetEquityAmortization,
+                            balance: results[i].Balance,
+                            balanceInterest: results[i].BalanceInterest,
+                            balanceNoOfPayments: results[i].BalanceNoOfPayments,
+                            balanceAmortization: results[i].BalanceAmortization,
                             totalInvestment: results[i].TotalInvestment,
                             paymentOptions: results[i].PaymentOptions,
                             financing: results[i].Financing,
@@ -179,6 +197,48 @@ export class ReportsService {
                 } else {
                     this.soldUnitRequirementActivitiesSource.next(soldUnitRequirementActivities);
                     this.toastr.error("No sold unit requirement activities.");   
+                }
+            }
+        );
+    }
+
+    public getSoldUnitChecklistSummary(dateStart: string, dateEnd: string) : void {
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/RepSummary/ListSoldUnitChecklistPerDates/" + dateStart + "/" + dateEnd;
+        let soldUnitChecklist = new ObservableArray();
+
+        this.http.get(url, this.options).subscribe(
+            response => {
+                var results = new ObservableArray(response.json());
+                if (results.length > 0) {
+                    for (var i = 0; i <= results.length - 1; i++) {
+                        soldUnitChecklist.push({
+                            id : results[i].Id,
+                            soldUnitId : results[i].SoldUnitId,
+                            checklistRequirementId : results[i].ChecklistRequirementId,
+                            checklistRequirement : results[i].ChecklistRequirement,
+                            checklistRequirementNo : results[i].ChecklistRequirementNo,
+                            checklistCategory : results[i].ChecklistCategory,
+                            checklistType : results[i].ChecklistType,
+                            checklistWithAttachments : results[i].ChecklistWithAttachments,
+                            attachment1 : results[i].Attachment1,
+                            attachment2 : results[i].Attachment2,
+                            attachment3 : results[i].Attachment3,
+                            attachment4 : results[i].Attachment4,
+                            attachment5 : results[i].Attachment5,
+                            remarks : results[i].Remarks,
+                            status : results[i].Status,
+                            statusDate : results[i].StatusDate,
+                            soldUnitNumber : results[i].SoldUnitNumber,
+                            soldUnitDate : results[i].SoldUnitDate,
+                            project : results[i].Project,
+                            unit : results[i].Unit,
+                            customer : results[i].Customer
+                        });
+                    }
+                    this.soldUnitChecklistRequirementSource.next(soldUnitChecklist);
+                } else {
+                    this.soldUnitChecklistRequirementSource.next(soldUnitChecklist);
+                    this.toastr.error("No sold unit checklist requirements.");   
                 }
             }
         );

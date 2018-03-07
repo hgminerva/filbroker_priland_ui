@@ -65,6 +65,9 @@ export class SoldUnitService {
     public soldUnitUnlockedSource = new Subject<number>();
     public soldUnitUnlockedObservable = this.soldUnitUnlockedSource.asObservable();  
 
+    public soldUnitCancelSource = new Subject<number>();
+    public soldUnitCancelObservable = this.soldUnitCancelSource.asObservable();  
+
     // detail combo boxes
     public projectsSource = new Subject<ObservableArray>();
     public projectsObservable = this.projectsSource.asObservable();
@@ -149,9 +152,23 @@ export class SoldUnitService {
                             customer: results[i].Customer,
                             brokerId: results[i].BrokerId,
                             broker: results[i].Broker,
+                            agent: results[i].Agent,
+                            brokerCoordinator: results[i].BrokerCoordinator,
                             checklistId: results[i].ChecklistId,
                             checklist: results[i].Checklist,
                             price: results[i].Price,
+                            equityValue: results[i].EquityValue,
+                            equityPercent: results[i].EquityPercent,
+                            discount: results[i].Discount,
+                            reservation: results[i].Reservation,
+                            netEquity: results[i].NetEquity,
+                            netEquityInterest: results[i].NetEquityInterest,
+                            netEquityNoOfPayments: results[i].NetEquityNoOfPayments,
+                            netEquityAmortization: results[i].NetEquityAmortization,
+                            balance: results[i].Balance,
+                            balanceInterest: results[i].BalanceInterest,
+                            balanceNoOfPayments: results[i].BalanceNoOfPayments,
+                            balanceAmortization: results[i].BalanceAmortization,
                             totalInvestment: results[i].TotalInvestment,
                             paymentOptions: results[i].PaymentOptions,
                             financing: results[i].Financing,
@@ -200,9 +217,23 @@ export class SoldUnitService {
                         customer: result.Customer,
                         brokerId: result.BrokerId,
                         broker: result.Broker,
+                        agent: result.Agent,
+                        brokerCoordinator: result.BrokerCoordinator,
                         checklistId: result.ChecklistId,
                         checklist: result.Checklist,
                         price: result.Price,
+                        equityValue: result.EquityValue,
+                        equityPercent: result.EquityPercent,
+                        discount: result.Discount,
+                        reservation: result.Reservation,
+                        netEquity: result.NetEquity,
+                        netEquityInterest: result.NetEquityInterest,
+                        netEquityNoOfPayments: result.NetEquityNoOfPayments,
+                        netEquityAmortization: result.NetEquityAmortization,
+                        balance: result.Balance,
+                        balanceInterest: result.BalanceInterest,
+                        balanceNoOfPayments: result.BalanceNoOfPayments,
+                        balanceAmortization: result.BalanceAmortization,
                         totalInvestment: result.TotalInvestment,
                         paymentOptions: result.PaymentOptions,
                         financing: result.Financing,
@@ -618,6 +649,17 @@ export class SoldUnitService {
             },
             error => {
                 this.soldUnitUnlockedSource.next(0);
+            }
+        )
+    }
+    public cancelSoldUnit(soldUnit: TrnSoldUnit) : void {
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/TrnSoldUnit/Cancel";
+        this.http.put(url, JSON.stringify(soldUnit), this.options).subscribe(
+            response => {
+                this.soldUnitCancelSource.next(1);
+            },
+            error => {
+                this.soldUnitCancelSource.next(0);
             }
         )
     }
