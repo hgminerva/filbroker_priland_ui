@@ -171,6 +171,50 @@
                 </div> 
 
             </div> <!-- <div class="card-body"> -->
+            
+            <div class="card-body">
+                <div class="col-md-12">
+                    <ul class="nav nav-pills" role="tablist" style="width:100%">
+                        <li class="nav-item">
+                            <a [ngClass]="{'active': true, 'nav-link': true }" data-toggle="tab" role="tab">Change Price History</a>
+                        </li>
+                    </ul>
+                </div>
+                <br>
+                <div class="col-md-12">
+                    <div class="tab-content" style="width:100%">
+                        <div [ngClass]="{'active': true, 'tab-pane': true }" role="tabpanel">
+
+                            <wj-flex-grid #fgdUnitPrices [itemsSource]="fgdUnitPricesCollection" [selectionMode]="3">
+                                <wj-flex-grid-filter></wj-flex-grid-filter>
+                                <wj-flex-grid-column [header]="'Date'"  [binding]="'priceDate'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                                <wj-flex-grid-column [header]="'Price'" [binding]="'price'"  [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                            </wj-flex-grid>
+                            <div class="col-sm-12 btn-group" style="padding: 5px 0px 5px 0px;">
+                                <button type="button" class="btn btn-info" (click)="fgdUnitPricesCollection.moveToFirstPage()">
+                                    <i class="fa fa-fast-backward"></i> First
+                                </button>
+                                <button type="button" class="btn btn-info"  (click)="fgdUnitPricesCollection.moveToPreviousPage()">
+                                    <i class="fa fa-step-backward"></i> Previous
+                                </button>
+                                <button type="button" class="btn btn-info" disabled style="width:100px">
+                                    {{ fgdUnitPricesCollection.pageIndex + 1 }} / {{ fgdUnitPricesCollection.pageCount }}
+                                </button>
+                                <button type="button" class="btn btn-info" (click)="fgdUnitPricesCollection.moveToNextPage()">
+                                    Next
+                                    <i class="fa fa-step-forward"></i>
+                                </button>
+                                <button type="button" class="btn btn-info" (click)="fgdUnitPricesCollection.moveToLastPage()">
+                                    Last
+                                    <i class="fa fa-fast-forward"></i>
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- <div class="card-body"> -->
+
 
         </div> <!-- <div class="card"> -->
 

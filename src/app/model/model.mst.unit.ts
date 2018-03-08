@@ -16,4 +16,5 @@ export class MstUnit {
     createdDateTime: string;
     updatedBy: number;
     updatedDateTime: string;
+    customer: string;
   }

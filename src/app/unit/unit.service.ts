@@ -40,6 +40,10 @@ export class UnitService {
     public unitsSource = new Subject<ObservableArray>();
     public unitsObservable = this.unitsSource.asObservable();
 
+    // change unit prices history
+    public unitPricesSource = new Subject<ObservableArray>();
+    public unitPricesObservable = this.unitPricesSource.asObservable();
+
     // unit detail
     public unitSource = new Subject<MstUnit>();
     public unitObservable = this.unitSource.asObservable();
@@ -57,6 +61,9 @@ export class UnitService {
 
     public unitUnlockedSource = new Subject<number>();
     public unitUnlockedObservable = this.unitUnlockedSource.asObservable();  
+
+    public unitUpdatePriceSource = new Subject<number>();
+    public unitUpdatePriceObservable = this.unitUpdatePriceSource.asObservable();  
 
     // combo boxes
     public projectsSource = new Subject<ObservableArray>();
@@ -108,6 +115,96 @@ export class UnitService {
                     this.projectsSource.next(projects);
                 } else {
                     this.toastr.error("No projects.");   
+                }
+            }
+        );
+    }
+    public getUnitsPerProjectId(projectId: number): void {
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstUnit/ListPerProjectId/" + projectId;
+        let units = new ObservableArray();
+        this.http.get(url, this.options).subscribe(
+            response => {
+                var results = new ObservableArray(response.json());
+                if (results.length > 0) {
+                    for (var i = 0; i <= results.length - 1; i++) {
+                        units.push({
+                            id: results[i].Id,
+                            unitCode: results[i].UnitCode,
+                            block: results[i].Block,
+                            lot: results[i].Lot,
+                            projectId: results[i].ProjectId,
+                            project: results[i].Project,
+                            houseModelId: results[i].HouseModelId,
+                            houseModel: results[i].HouseModel,
+                            tla: results[i].TLA,
+                            tfa: results[i].TFA,
+                            price: results[i].Price,
+                            status: results[i].Status,
+                            isLocked: results[i].IsLocked,
+                            createdBy: results[i].CreatedBy,
+                            createdDateTime: results[i].CreatedDateTime,
+                            updatedBy: results[i].UpdatedBy,
+                            updatedDateTime: results[i].UpdatedDateTime,
+                            customer: results[i].Customer
+                        });
+                    }
+                    this.unitsSource.next(units);
+                } else {
+                    this.unitsSource.next(units);
+                    this.toastr.error("No units for this project.");   
+                }
+            }
+        );
+    }
+    public getHouseModelsPerProject(id : number) : void {
+        let houseModels  = new ObservableArray();
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstHouseModel/ListPerProjectId/" + id;
+
+        this.http.get(url, this.options).subscribe(
+            response => {
+                var results = new ObservableArray(response.json());
+                if (results.length > 0) {
+                    for (var i = 0; i <= results.length - 1; i++) {
+                        houseModels.push({
+                            id: results[i].Id,
+                            houseModelCode: results[i].HouseModelCode,
+                            houseModel: results[i].HouseModel,
+                            projectId: results[i].ProjectId,
+                            project: results[i].Project,
+                            tfa: results[i].TFA,
+                            price: results[i].Price,
+                            isLocked: results[i].IsLocked,
+                            createdBy: results[i].CreatedBy,
+                            createdDateTime: results[i].CreatedDateTime,
+                            updatedBy: results[i].UpdatedBy,
+                            updatedDateTime: results[i].UpdatedDateTime,
+                        });
+                    }
+                    this.houseModelsSource.next(houseModels);
+                } else {
+                    this.houseModelsSource.next(houseModels);
+                    this.toastr.error("No models for this project.");   
+                }
+            }
+        );
+    }
+    public getUnitPricesPerUnitId(unitId: number) : void {
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstUnitPrice/ListPerUnitId/" + unitId;
+        let unitPrices = new ObservableArray();
+        this.http.get(url, this.options).subscribe(
+            response => {
+                var results = new ObservableArray(response.json());
+                if (results.length > 0) {
+                    for (var i = 0; i <= results.length - 1; i++) {
+                        unitPrices.push({
+                            priceDate: results[i].PriceDate,
+                            price: results[i].Price,
+                            unitId: results[i].UnitId
+                        });
+                    }
+                    this.unitPricesSource.next(unitPrices);
+                } else {
+                    this.unitPricesSource.next(unitPrices);
                 }
             }
         );
@@ -176,6 +273,7 @@ export class UnitService {
                         createdDateTime: result.CreatedDateTime,
                         updatedBy: result.UpdatedBy,
                         updatedDateTime: result.UpdatedDateTime,
+                        customer: result.Customer
                     };
                     this.unitSource.next(unit);
                 } else {
@@ -222,76 +320,26 @@ export class UnitService {
             }
         )
     }
+    public updateUnitPrices(projectId: number, unitCode: string, price: number) : void {
 
-    // combo boxes
-    public getUnitsPerProjectId(projectId: number): void {
-        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstUnit/ListPerProjectId/" + projectId;
-        let units = new ObservableArray();
-        this.http.get(url, this.options).subscribe(
-            response => {
-                var results = new ObservableArray(response.json());
-                if (results.length > 0) {
-                    for (var i = 0; i <= results.length - 1; i++) {
-                        units.push({
-                            id: results[i].Id,
-                            unitCode: results[i].UnitCode,
-                            block: results[i].Block,
-                            lot: results[i].Lot,
-                            projectId: results[i].ProjectId,
-                            project: results[i].Project,
-                            houseModelId: results[i].HouseModelId,
-                            houseModel: results[i].HouseModel,
-                            tla: results[i].TLA,
-                            tfa: results[i].TFA,
-                            price: results[i].Price,
-                            status: results[i].Status,
-                            isLocked: results[i].IsLocked,
-                            createdBy: results[i].CreatedBy,
-                            createdDateTime: results[i].CreatedDateTime,
-                            updatedBy: results[i].UpdatedBy,
-                            updatedDateTime: results[i].UpdatedDateTime,
-                        });
-                    }
-                    this.unitsSource.next(units);
-                } else {
-                    this.unitsSource.next(units);
-                    this.toastr.error("No units for this project.");   
-                }
-            }
-        );
-    }
-    public getHouseModelsPerProject(id : number) : void {
-        let houseModels  = new ObservableArray();
-        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstHouseModel/ListPerProjectId/" + id;
+        let unitPrice : any = {
+            projectId: projectId,
+            unitCode: unitCode,
+            price: price    
+        };
 
-        this.http.get(url, this.options).subscribe(
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/MstUnit/UpdatePrice";
+        this.http.put(url, JSON.stringify(unitPrice), this.options).subscribe(
             response => {
-                var results = new ObservableArray(response.json());
-                if (results.length > 0) {
-                    for (var i = 0; i <= results.length - 1; i++) {
-                        houseModels.push({
-                            id: results[i].Id,
-                            houseModelCode: results[i].HouseModelCode,
-                            houseModel: results[i].HouseModel,
-                            projectId: results[i].ProjectId,
-                            project: results[i].Project,
-                            tfa: results[i].TFA,
-                            price: results[i].Price,
-                            isLocked: results[i].IsLocked,
-                            createdBy: results[i].CreatedBy,
-                            createdDateTime: results[i].CreatedDateTime,
-                            updatedBy: results[i].UpdatedBy,
-                            updatedDateTime: results[i].UpdatedDateTime,
-                        });
-                    }
-                    this.houseModelsSource.next(houseModels);
-                } else {
-                    this.houseModelsSource.next(houseModels);
-                    this.toastr.error("No models for this project.");   
-                }
+                this.unitUpdatePriceSource.next(1);
+            },
+            error => {
+                this.unitUpdatePriceSource.next(0);
             }
-        );
+        )
     }
+
+    // drop downs
     public getDropDowns() : void {
         let dropDowns  = new ObservableArray();
         let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/SysDropDown/List";

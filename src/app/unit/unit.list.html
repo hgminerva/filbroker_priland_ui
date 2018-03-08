@@ -27,6 +27,12 @@
                         </td>
                         <td style="width: 1%;"></td>
                         <td style="width: 40%;" align="right">
+                            <button id="btnChangePriceUnit" class="btn btn-primary" (click)="btnChangePriceUnitClick()">
+                                <i class="fa fa-eraser fa-fw"></i> Update Prices
+                            </button>
+                            <button id="btnCSVUnit" class="btn btn-primary" (click)="btnCSVUnitClick()">
+                                <i class="fa fa-file-excel-o fa-fw"></i> CSV
+                            </button>
                             <button class="btn btn-primary" (click)="btnAddUnitClick()" id="btnAddUnit">
                                 <i class="fa fa-plus fa-fw"></i> Add
                             </button>
@@ -91,6 +97,8 @@
                     <wj-flex-grid-column [header]="'Lot Area'" [binding]="'tla'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
                     <wj-flex-grid-column [header]="'Price'" [binding]="'price'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
                     <wj-flex-grid-column [header]="'L'" [binding]="'isLocked'" [isReadOnly]="true" [width]="50"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Status'" [binding]="'status'" [isReadOnly]="true" [width]="100"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Customer'" [binding]="'customer'" [isReadOnly]="true" [width]="150"></wj-flex-grid-column>
                 </wj-flex-grid>
                 <div class="col-sm-12 btn-group" style="padding: 5px 0px 5px 0px;">
                     <button type="button" class="btn btn-info" (click)="fgdUnitsCollection.moveToFirstPage()">
@@ -142,6 +150,66 @@
                     <i class="fa fa-trash fa-fw"></i> Ok
                 </button>
                 <button id="btnCloseUnitDeleteModal" class="btn btn-primary" (click)="btnCloseUnitDeleteModalClick()">
+                    <i class="fa fa-close fa-fw"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!-- change unit price in bulk -->
+<div id="mdlChangeBulkUnitPrice" 
+     class="modal fade" 
+     role="dialog"
+     [ngStyle]="{'display': mdlChangeBulkUnitPriceShow ? 'block' : 'none', 'opacity': 1}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Change Unit Price</h4>
+            </div>
+            <div class="modal-body">  
+                <label class="btn btn-primary" [hidden]="btnUploadCSVFileHide">
+                    <input type="file" 
+                            (change)="btnUploadCSVFileClick($event)" 
+                            name="btnUploadCSVFile" 
+                            accept="csv/*" 
+                            style="display:none;" >
+                    Upload CSV File
+                </label>
+                <wj-flex-grid #fgdUnitPrices [itemsSource]="fgdUnitPricesCollection" [selectionMode]="3">
+                    <wj-flex-grid-filter></wj-flex-grid-filter>
+                    <wj-flex-grid-column [header]="'Unit'"  [binding]="'unit'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                    <wj-flex-grid-column [header]="'Price'" [binding]="'price'" [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                </wj-flex-grid>
+                <div class="col-sm-12 btn-group" style="padding: 5px 0px 5px 0px;">
+                    <button type="button" class="btn btn-info" (click)="fgdUnitPricesCollection.moveToFirstPage()">
+                        <i class="fa fa-fast-backward"></i> First
+                    </button>
+                    <button type="button" class="btn btn-info" (click)="fgdUnitPricesCollection.moveToPreviousPage()">
+                        <i class="fa fa-step-backward"></i> Previous
+                    </button>
+                    <button type="button" class="btn btn-info" disabled style="width:100px">
+                        {{ fgdUnitPricesCollection.pageIndex + 1 }} / {{ fgdUnitPricesCollection.pageCount }}
+                    </button>
+                    <button type="button" class="btn btn-info" (click)="fgdUnitPricesCollection.moveToNextPage()">
+                        Next
+                        <i class="fa fa-step-forward"></i>
+                    </button>
+                    <button type="button" class="btn btn-info" (click)="fgdUnitPricesCollection.moveToLastPage()">
+                        Last
+                        <i class="fa fa-fast-forward"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer" align="right">
+                <button id="btnOkChangeBulkUnitPriceModal" class="btn btn-primary" (click)="btnOkChangeBulkUnitPriceModalClick()">
+                    <i class="fa fa-eraser fa-fw"></i> Update Prices
+                </button>
+                <button id="btnCloseChangeBulkUnitPriceModal" class="btn btn-danger" (click)="btnCloseChangeBulkUnitPriceModalClick()">
                     <i class="fa fa-close fa-fw"></i> Close
                 </button>
             </div>

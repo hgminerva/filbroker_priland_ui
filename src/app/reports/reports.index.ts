@@ -26,6 +26,7 @@ export class ReportsIndex {
   private commissionRequestsSub : any;
   private requirementActivitiesSub : any;
   private checklistRequirementsSub : any;
+  private sendEmailSub : any;
 
   // =================
   // public properties
@@ -91,6 +92,7 @@ export class ReportsIndex {
     if( this.commissionRequestsSub != null) this.commissionRequestsSub.unsubscribe();
     if( this.requirementActivitiesSub != null) this.requirementActivitiesSub.unsubscribe();
     if( this.checklistRequirementsSub != null) this.checklistRequirementsSub.unsubscribe();
+    if( this.sendEmailSub != null) this.sendEmailSub.unsubscribe();
   }
 
   // ==============
@@ -161,57 +163,102 @@ export class ReportsIndex {
   // ======
 
   // report activity
-  public btnCSVReportClick() : void {
+  public generateCSV() : Blob {
     var data = "";
-    var items;
+    var collection;
     var fileName = "";
 
     if(this.tabDetail1[0] == true) {
       data = 'Sold Unit Summary Report' + '\r\n\n';
-      items = this.fgdSoldUnitsCollection.items;
+      collection = this.fgdSoldUnitsCollection;
       fileName = "report-soldUnit.csv";
     } else if(this.tabDetail1[1] == true) {
       data = 'Sold Unit Checklist Requirement Report' + '\r\n\n';
-      items = this.fgdChecklistRequirementsCollection.items;
+      collection = this.fgdChecklistRequirementsCollection;
       fileName = "report-soldUnitChecklist.csv";
     } else if(this.tabDetail1[2] == true) {
       data = 'Sold Unit Checklist Requirement Activity Report' + '\r\n\n';
-      items = this.fgdRequirementActivitiesCollection.items;
+      collection = this.fgdRequirementActivitiesCollection;
       fileName = "report-soldUnitChecklistActivities.csv";
     } else if(this.tabDetail1[3] == true) {
       data = 'Commission Request Summary Report' + '\r\n\n';
-      items = this.fgdCommissionRequestsCollection.items;
+      collection = this.fgdCommissionRequestsCollection;
       fileName = "report-commissionRequest.csv";
     }
 
     if(data != "")  {
       var label = '';
-      for (var s in items[0]) {
+      for (var s in collection.items[0]) {
         label += s + ',';
       }
       label = label.slice(0, -1);
 
       data +=  label + '\r\n';
 
-      for (var i = 0; i < items.length; i++) {
+      collection.moveToFirstPage();
+      for (var p = 0; p < collection.pageCount; p++) {
+        for (var i = 0; i < collection.items.length; i++) {
           var row = '';
-          for (var s in items[i]) {
-            row += '"' + items[i][s] + '",';
+          for (var s in collection.items[i]) {
+            row += '"' + collection.items[i][s] + '",';
           }
           row.slice(0, row.length - 1);
           data += row + '\r\n';
+        }
+        collection.moveToNextPage();
       }
+    }
 
-      var csvData = new Blob([data], {type: 'text/csv;charset=utf-8;'});
-      var csvURL = window.URL.createObjectURL(csvData);
-      var tempLink = document.createElement('a');
-
-      tempLink.href = csvURL;
-      tempLink.setAttribute('download', fileName);
-      tempLink.click();
-    } 
+    return new Blob([data], {type: 'text/csv;charset=utf-8;'});
   }
-  
+  public btnCSVReportClick() : void {
+    var fileName = "";
+
+    if(this.tabDetail1[0] == true) {
+      fileName = "report-soldUnit.csv";
+    } else if(this.tabDetail1[1] == true) {
+      fileName = "report-soldUnitChecklist.csv";
+    } else if(this.tabDetail1[2] == true) {
+      fileName = "report-soldUnitChecklistActivities.csv";
+    } else if(this.tabDetail1[3] == true) {
+      fileName = "report-commissionRequest.csv";
+    }
+
+    var csvData = this.generateCSV();
+    var csvURL = window.URL.createObjectURL(csvData);
+    var tempLink = document.createElement('a');
+
+    tempLink.href = csvURL;
+    tempLink.setAttribute('download', fileName);
+    tempLink.click();
+  }
+  public btnEmailReportClick() : void {
+    var csvData = this.generateCSV();
+    var fileName = "";
+
+    if(this.tabDetail1[0] == true) {
+      fileName = "report-soldUnit.csv";
+    } else if(this.tabDetail1[1] == true) {
+      fileName = "report-soldUnitChecklist.csv";
+    } else if(this.tabDetail1[2] == true) {
+      fileName = "report-soldUnitChecklistActivities.csv";
+    } else if(this.tabDetail1[3] == true) {
+      fileName = "report-commissionRequest.csv";
+    }
+
+    this.reportsService.sendEmail(csvData,fileName);
+
+    this.sendEmailSub = this.reportsService.sendEmailObservable.subscribe(
+      data => {
+        if(data == 1) {
+          this.toastr.success("Email sent.");
+        } else {
+          this.toastr.error("Error sending email.");
+        }
+      }
+    );
+  }
+
   // detail tab index click
   public tabDetail1Click(index: number) : void {
     let dateStart : string = [this.calDateStartData.getFullYear(), this.calDateStartData.getMonth() + 1, this.calDateStartData.getDate()].join('-');

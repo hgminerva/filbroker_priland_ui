@@ -36,6 +36,9 @@ export class UnitDetail {
   private unitLockedSub : any;
   private unitUnlockedSub : any;
 
+  // change price history
+  private unitPricesSub : any;
+
   // combo boxes
   private cmbHouseModelSub : any;
   private cmbUnitStatusSub : any;
@@ -64,12 +67,17 @@ export class UnitDetail {
     createdBy: 1,
     createdDateTime: this.currentDateString,
     updatedBy: 1,
-    updatedDateTime: this.currentDateString
+    updatedDateTime: this.currentDateString,
+    customer: ""
   };
 
   // combo boxes data
   public cmbHouseModelData : ObservableArray;
   public cmbUnitStatusData : ObservableArray;
+
+  // change price history
+  public fgdUnitPricesData : ObservableArray;
+  public fgdUnitPricesCollection : CollectionView;
 
   // =======
   // angular
@@ -90,6 +98,9 @@ export class UnitDetail {
 
   // ng
   ngOnInit() {
+    this.fgdUnitPricesData = new ObservableArray();
+    this.fgdUnitPricesCollection = new CollectionView(this.fgdUnitPricesData);
+
     if(this.securityService.openPage("UNIT DETAIL") == true) {
       this.getUnit(); 
     } else {
@@ -106,6 +117,8 @@ export class UnitDetail {
 
     if( this.cmbHouseModelSub != null) this.cmbHouseModelSub.unsubscribe();
     if( this.cmbUnitStatusSub != null) this.cmbUnitStatusSub.unsubscribe();
+
+    if( this.unitPricesSub != null) this.unitPricesSub.unsubscribe();
   }
 
   // ===============
@@ -151,8 +164,22 @@ export class UnitDetail {
 
           this.getHouseModelsPerProject(data.houseModelId);
           this.getUnitStatuses(data.status);
+          this.getUnitPrices(data.id);
         }
       );
+  }
+  public getUnitPrices(unitId) {
+    this.unitService.getUnitPricesPerUnitId(unitId);
+
+    this.unitPricesSub = this.unitService.unitPricesObservable.subscribe(
+      data => {
+        console.log(data);
+        this.fgdUnitPricesData = data;
+        this.fgdUnitPricesCollection = new CollectionView(this.fgdUnitPricesData);
+        this.fgdUnitPricesCollection.pageSize = 15;
+        this.fgdUnitPricesCollection.trackChanges = true;  
+      }
+    );
   }
 
   // combo boxes

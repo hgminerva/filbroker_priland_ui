@@ -50,6 +50,10 @@ export class ReportsService {
     public soldUnitChecklistRequirementSource = new Subject<ObservableArray>();
     public soldUnitChecklistRequirementObservable = this.soldUnitChecklistRequirementSource.asObservable();
 
+    // sending email
+    public sendEmailSource =  new Subject<number>();
+    public sendEmailObservable = this.sendEmailSource.asObservable();
+
     // =======
     // angular
     // =======
@@ -242,6 +246,32 @@ export class ReportsService {
                 }
             }
         );
+    }
+
+    public sendEmail(attachment : Blob, filename : string) : void {
+        let mailgunUrl: string = "sandbox56506e2182a34cddae6690198eb6627f.mailgun.org";
+        let apiKey: string = "YXBpOmtleS1iYmIxNmY2ZTZmZGU0MGQ2YWJkZTNmOWJiYjAyMTlhZA==";
+        let url : string  = "https://api.mailgun.net/v3/" + mailgunUrl + "/messages";
+
+        var formData = new FormData();
+        formData.append('to', 'hgminerva@gmail.com');
+        formData.append('from', "hgminerva@innosoft.ph");
+        formData.append('subject', "PRILAND REPORTS");
+        formData.append('text', "See attachments.");
+        formData.append('attachment', attachment, filename);
+
+        let emailHeaders = new Headers({
+                "Authorization": "Basic " + apiKey
+            }
+        );
+        let emailOptions = new RequestOptions({ headers: emailHeaders });
+
+        this.http.post(url, formData, emailOptions)
+            .subscribe(result => {
+                this.sendEmailSource.next(1);
+            }, error => {
+                this.sendEmailSource.next(0);
+        });
     }
 
 }
