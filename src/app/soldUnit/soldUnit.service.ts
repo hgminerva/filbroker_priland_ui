@@ -116,6 +116,15 @@ export class SoldUnitService {
     public soldUnitRequirementAcvitityDeleteSource = new Subject<number>();
     public soldUnitRequirementActivityDeleteObservable = this.soldUnitRequirementAcvitityDeleteSource.asObservable();  
 
+    // detail line2 (equity payment schedule) list
+    public soldUnitEquityScheduleSource = new Subject<ObservableArray>();
+    public soldUnitEquityScheduleObservable = this.soldUnitEquityScheduleSource.asObservable();
+
+    // detail line2 (equity payment schedule) detail operations, e.g., saved, etc.
+    public soldUnitEquityPaymentSavedSource = new Subject<number>();
+    public soldUnitEquityPaymentSavedObservable = this.soldUnitEquityPaymentSavedSource.asObservable();  
+
+
     // =======
     // angular
     // =======
@@ -360,6 +369,64 @@ export class SoldUnitService {
                 } else {
                     this.soldUnitRequirementActivitiesSource.next(soldUnitRequirementActivities);
                     this.toastr.error("No activities for this sold unit requirement.");   
+                }
+            }
+        );
+    }
+
+    // detail line2 (equity payment schedule)
+    public getNewSoldUnitEquitySchedule(soldUnitId : number) {
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/TrnSoldUnitEquitySchedule/ListNewTrnSoldUnitEquitySchedule/" + soldUnitId;
+        let soldUnitEquitySchedule = new ObservableArray();
+
+        this.http.get(url, this.options).subscribe(
+            response => {
+                var results = new ObservableArray(response.json());
+                if (results.length > 0) {
+                    for (var i = 0; i <= results.length - 1; i++) {
+                        soldUnitEquitySchedule.push({
+                            id: results[i].Id,
+                            soldUnitId: results[i].SoldUnitId,
+                            paymentDate: results[i].PaymentDate,
+                            amortization: results[i].Amortization,
+                            checkNumber: results[i].CheckNumber,
+                            checkDate: results[i].CheckDate,
+                            checkBank: results[i].CheckBank,
+                            remarks: results[i].Remarks
+                        });
+                    }
+                    this.soldUnitEquityScheduleSource.next(soldUnitEquitySchedule);
+                } else {
+                    this.soldUnitEquityScheduleSource.next(soldUnitEquitySchedule);
+                    this.toastr.error("No equity payment schedule for this sold unit.");   
+                }
+            }
+        );
+    }
+    public getSoldUnitEquitySchedule(soldUnitId : number) {
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/TrnSoldUnitEquitySchedule/ListPerUnitSold/" + soldUnitId;
+        let soldUnitEquitySchedule = new ObservableArray();
+
+        this.http.get(url, this.options).subscribe(
+            response => {
+                var results = new ObservableArray(response.json());
+                if (results.length > 0) {
+                    for (var i = 0; i <= results.length - 1; i++) {
+                        soldUnitEquitySchedule.push({
+                            id: results[i].Id,
+                            soldUnitId: results[i].SoldUnitId,
+                            paymentDate: results[i].PaymentDate,
+                            amortization: results[i].Amortization,
+                            checkNumber: results[i].CheckNumber,
+                            checkDate: results[i].CheckDate,
+                            checkBank: results[i].CheckBank,
+                            remarks: results[i].Remarks
+                        });
+                    }
+                    this.soldUnitEquityScheduleSource.next(soldUnitEquitySchedule);
+                } else {
+                    this.soldUnitEquityScheduleSource.next(soldUnitEquitySchedule);
+                    this.toastr.error("No equity payment schedule for this sold unit.");   
                 }
             }
         );
@@ -712,4 +779,16 @@ export class SoldUnitService {
         )
     }
 
+    // detail line2 (equity payment schedule) operations
+    public saveSoldUnitEquitySchedule(soldUnitEquitySchedule: TrnSoldUnitEquitySchedule): void {
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/TrnSoldUnitEquitySchedule/Save";
+        this.http.put(url, JSON.stringify(soldUnitEquitySchedule), this.options).subscribe(
+            response => {
+                this.soldUnitEquityPaymentSavedSource.next(1);
+            },
+            error => {
+                this.soldUnitEquityPaymentSavedSource.next(0);
+            }
+        )
+    }
 }

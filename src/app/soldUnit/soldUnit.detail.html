@@ -366,16 +366,24 @@
                         
                         <!-- tab2 detail item (total investments) -->
                         <div [ngClass]="{'active': tabDetail1[1], 'tab-pane': true }" role="tabpanel">
+                            <table border="0" style="width: 100%;">
+                                <tr>
+                                    <td style="width: 39%;">
+                                        Total Investments (press the "Write" button to generate text) =>
+                                    </td>
+                                    <td style="width: 1%;"></td>
+                                    <td style="width: 60%;" align="right">
+                                        <button 
+                                            id="btnWriteTotalInvestment"
+                                            class="btn btn-info"
+                                            [disabled]="soldUnit.isLocked"
+                                            (click)="btnWriteTotalInvestmentClick()">
+                                            <i class="fa fa-pencil-square-o fa-fw"></i> Write
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
                             <div class="form-group row">
-                                <div class="col-md-12">
-                                    <button 
-                                        id="btnWriteTotalInvestment"
-                                        class="btn btn-info col-sm-1 float-right" 
-                                        [disabled]="soldUnit.isLocked"
-                                        (click)="btnWriteTotalInvestmentClick()">
-                                        <i class="fa fa-pencil-square-o fa-fw"></i>
-                                    </button>
-                                </div>
                                 <div class="col-md-12">
                                     <textarea 
                                         [disabled]="soldUnit.isLocked" 
@@ -476,16 +484,24 @@
                             </div>
 
                             <div class="col-md-12">
+                                <table border="0" style="width: 100%;">
+                                    <tr>
+                                        <td style="width: 39%;">
+                                            Payment Options (press the "Write" button to generate text) =>
+                                        </td>
+                                        <td style="width: 1%;"></td>
+                                        <td style="width: 60%;" align="right">
+                                            <button 
+                                                id="btnWritePaymentOptions"
+                                                class="btn btn-info"
+                                                [disabled]="soldUnit.isLocked"
+                                                (click)="btnWritePaymentOptionsClick()">
+                                                <i class="fa fa-pencil-square-o fa-fw"></i> Write
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </table>
                                 <div class="form-group row">
-                                    <div class="col-md-12">
-                                        <button 
-                                            id="btnWritePaymentOptions"
-                                            class="btn btn-info col-sm-1 float-right" 
-                                            [disabled]="soldUnit.isLocked"
-                                            (click)="btnWritePaymentOptionsClick()">
-                                            <i class="fa fa-pencil-square-o fa-fw"></i>
-                                        </button>
-                                    </div>
                                     <div class="col-sm-12">
                                         <textarea 
                                             [disabled]="soldUnit.isLocked" 
@@ -497,6 +513,74 @@
                                     </div>
                                 </div>
                             </div> 
+                            
+                            <div class="col-md-12">
+
+                                <table border="0" style="width: 100%;">
+                                    <tr>
+                                        <td style="width: 39%;">
+                                            Equity Payment Schedule
+                                        </td>
+                                        <td style="width: 1%;"></td>
+                                        <td style="width: 60%;" align="right">
+                                            <button 
+                                                id="btnPrintEquityPaymentSchedule"
+                                                class="btn btn-primary"
+                                                (click)="btnPrintEquityPaymentScheduleClick()">
+                                                <i class="fa fa-print fa-fw"></i> Print
+                                            </button>
+                                            <button 
+                                                id="btnCreateEquityPaymentSchedule"
+                                                class="btn btn-info"
+                                                [disabled]="soldUnit.isLocked"
+                                                (click)="btnCreateEquityPaymentScheduleClick()">
+                                                <i class="fa fa-magic fa-fw"></i> Create
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <wj-flex-grid #fgdSoldUnitEquitySchedule [itemsSource]="fgdSoldUnitEquityScheduleCollection" [selectionMode]="3" [frozenColumns]="1">
+                                    <wj-flex-grid-filter></wj-flex-grid-filter>
+                                    <wj-flex-grid-column [header]="Edit" [isReadOnly]="true" [isContentHtml]="true" [width]="90">
+                                        <ng-template wjFlexGridCellTemplate [cellType]="'Cell'" let-cell="cell">
+                                            <button 
+                                                class="btn btn-primary btn-sm btn-block" 
+                                                (click)="btnEditSoldUnitEquityScheduleClick()" 
+                                                data-toggle="modal" 
+                                                data-backdrop="static"
+                                                data-keyboard="false"> 
+                                                    <i class="fa fa-edit fa-fw"></i> Edit
+                                            </button>
+                                        </ng-template>
+                                    </wj-flex-grid-column>
+                                    <wj-flex-grid-column [header]="'Date'"            [binding]="'paymentDate'"     [isReadOnly]="true" [width]="120"></wj-flex-grid-column>
+                                    <wj-flex-grid-column [header]="'Amortization'"    [binding]="'amortization'"    [isReadOnly]="true" [width]="150"></wj-flex-grid-column>
+                                    <wj-flex-grid-column [header]="'Check No'"        [binding]="'checkNumber'"     [isReadOnly]="true" [width]="150"></wj-flex-grid-column>
+                                    <wj-flex-grid-column [header]="'Check Date'"      [binding]="'checkDate'"       [isReadOnly]="true" [width]="120"></wj-flex-grid-column>
+                                    <wj-flex-grid-column [header]="'Check Bank'"      [binding]="'checkBank'"       [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>
+                                    <wj-flex-grid-column [header]="'Remarks'"         [binding]="'remarks'"         [isReadOnly]="true" [width]="'*'"></wj-flex-grid-column>     
+                                </wj-flex-grid>
+                                <div class="col-sm-12 btn-group" style="padding: 5px 0px 5px 0px;">
+                                    <button type="button" class="btn btn-info" (click)="fgdSoldUnitEquityScheduleCollection.moveToFirstPage()">
+                                        <i class="fa fa-fast-backward"></i> First
+                                    </button>
+                                    <button type="button" class="btn btn-info"  (click)="fgdSoldUnitEquityScheduleCollection.moveToPreviousPage()">
+                                        <i class="fa fa-step-backward"></i> Previous
+                                    </button>
+                                    <button type="button" class="btn btn-info" disabled style="width:100px">
+                                        {{ fgdSoldUnitEquityScheduleCollection.pageIndex + 1 }} / {{ fgdSoldUnitEquityScheduleCollection.pageCount }}
+                                    </button>
+                                    <button type="button" class="btn btn-info" (click)="fgdSoldUnitEquityScheduleCollection.moveToNextPage()">
+                                        Next
+                                        <i class="fa fa-step-forward"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-info" (click)="fgdSoldUnitEquityScheduleCollection.moveToLastPage()">
+                                        Last
+                                        <i class="fa fa-fast-forward"></i>
+                                    </button>
+                                </div> 
+                            </div>
 
                         </div>
 
@@ -545,16 +629,24 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
+                                <table border="0" style="width: 100%;">
+                                    <tr>
+                                        <td style="width: 39%;">
+                                            Financing (press the "Write" button to generate text) =>
+                                        </td>
+                                        <td style="width: 1%;"></td>
+                                        <td style="width: 60%;" align="right">
+                                            <button 
+                                                id="btnWriteFinancing"
+                                                class="btn btn-info"
+                                                [disabled]="soldUnit.isLocked"
+                                                (click)="btnWriteFinancingClick()">
+                                                <i class="fa fa-pencil-square-o fa-fw"></i> Write
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </table>
                                 <div class="form-group row">
-                                    <div class="col-md-12">
-                                        <button 
-                                            id="btnWriteFinancing"
-                                            class="btn btn-info col-sm-1 float-right" 
-                                            [disabled]="soldUnit.isLocked"
-                                            (click)="btnWriteFinancingClick()">
-                                            <i class="fa fa-pencil-square-o fa-fw"></i>
-                                        </button>
-                                    </div>
                                     <div class="col-md-12">
                                         <textarea 
                                             [disabled]="soldUnit.isLocked" 
@@ -1003,6 +1095,86 @@
                 <button type="button" id="btnSoldUnitTransferModalOk" class="btn btn-success" (click)="btnSoldUnitTransferModalOkClick()">
                     <i class="fa fa-check fa-fw"></i> Ok</button>
                 <button type="button" id="btnSoldUnitTransferModalClose" class="btn btn-danger" (click)="btnSoldUnitTransferModalCloseClick()">
+                    <i class="fa fa-times fa-fw"></i> Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- equity payment schedule  -->
+<div id="mdlSoldUnitEquityScheduleModal" 
+     class="modal fade" role="dialog"
+     [ngStyle]="{'display': mdlSoldUnitEquityScheduleModalShow ? 'block' : 'none', 'opacity': 1}">
+     <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Equity Payment</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Payment Date</label>
+                    <div class="col-sm-9">
+                        <input 
+                            [(ngModel)]="soldUnitEquitySchedule.paymentDate" 
+                            disabled 
+                            type="text" 
+                            class="form-control">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Amortization</label>
+                    <div class="col-sm-9">
+                        <wj-input-number 
+                            [(value)]="soldUnitEquitySchedule.amortization"
+                            [isDisabled]=true>
+                        </wj-input-number>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Check No.</label>
+                    <div class="col-sm-9">
+                        <input 
+                            [(ngModel)]="soldUnitEquitySchedule.checkNumber" 
+                            type="text" 
+                            class="form-control">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Check Date</label>
+                    <div class="col-sm-9">
+                        <wj-input-date
+                            [(text)]="soldUnitEquitySchedule.checkDate"
+                            format="M/d/yyyy">
+                        </wj-input-date>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Check Bank</label>
+                    <div class="col-sm-9">
+                        <input 
+                            [(ngModel)]="soldUnitEquitySchedule.checkBank" 
+                            type="text" 
+                            class="form-control">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Remarks</label>
+                    <div class="col-sm-9">
+                        <textarea 
+                            [(ngModel)]="soldUnitEquitySchedule.remarks" 
+                            rows="3" 
+                            class="form-control">
+                        </textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" align="right">
+                <button type="button" id="btnSaveSoldUnitEquityScheduleModal" class="btn btn-success" (click)="btnSaveSoldUnitEquityScheduleModalClick()">
+                    <i class="fa fa-save fa-fw"></i> Save</button>
+                <button type="button" id="btnCloseSoldUnitEquityScheduleModal" class="btn btn-danger" (click)="btnCloseSoldUnitEquityScheduleModalClick()">
                     <i class="fa fa-times fa-fw"></i> Close</button>
             </div>
         </div>

@@ -19,6 +19,7 @@ import { MstUnit } from '../model/model.mst.unit';
 import { TrnSoldUnit } from '../model/model.trn.soldUnit';
 import { TrnSoldUnitRequirement } from '../model/model.trn.soldUnit.requirement';
 import { TrnSoldUnitRequirementActivity } from '../model/model.trn.soldUnit.requirement.activity';
+import { TrnSoldUnitEquitySchedule } from '../model/model.trn.soldUnit.equitySchedule';
 
 // components
 import { UnitQuery } from '../unit/unit.query';
@@ -60,6 +61,12 @@ export class SoldUnitDetail {
   // detail line1 line1 (checklist requirement activities) operations
   private soldUnitRequirementActivitySavedSub : any;
   private soldUnitRequirementActivityDeleteSub : any;
+
+  // detail line2 (equity payment schedule) operations
+  private soldUnitEquityScheduleSub : any
+
+  // detail line2 (equity payment schedule) operations
+  private soldUnitEquityScheduleSavedSub : any
 
   // detail combo boxes
   private cmbProjectsSub : any;
@@ -147,7 +154,7 @@ export class SoldUnitDetail {
     statusDate: this.currentDateString
   };
 
-   // detail line1 line1 model
+  // detail line1 line1 model
   public soldUnitRequirementActivity : TrnSoldUnitRequirementActivity = {
     id: 0,
     soldUnitRequirementId: 0,
@@ -156,6 +163,18 @@ export class SoldUnitDetail {
     remarks: "",
     userId: 0,
     user: ""
+  };
+
+  // detail line2 model
+  public soldUnitEquitySchedule : TrnSoldUnitEquitySchedule = {
+	  id: 0,
+	  soldUnitId: 0,
+    paymentDate: "",
+    amortization: 0,
+	  checkNumber: "",
+	  checkDate: "",
+    checkBank: "",
+    remarks: "",
   };
 
   // detail combo boxes data
@@ -178,6 +197,10 @@ export class SoldUnitDetail {
   public fgdSoldUnitRequirementActivitiesData : ObservableArray;
   public fgdSoldUnitRequirementActivitiesCollection : CollectionView;
 
+  // equity schedule
+  public fgdSoldUnitEquityScheduleData : ObservableArray;
+  public fgdSoldUnitEquityScheduleCollection : CollectionView;
+
   // tabs
   public tabDetail1 = new Array(true, false, false, false);
   public tabDetail1Modal1 = new Array(true, false, false);
@@ -186,6 +209,7 @@ export class SoldUnitDetail {
   public mdlSoldUnitRequirementsModalShow : boolean = false;
   public mdlEditSoldUnitRequirementModalShow : boolean = false;
   public mdlSoldUnitRequirementActivityModalShow : boolean = false;
+  public mdlSoldUnitEquityScheduleModalShow : boolean = false;
 
   public mdlUnitQueryModalShow : boolean = false;
   public mdlUnitQueryModalStatus : boolean = false;
@@ -222,6 +246,9 @@ export class SoldUnitDetail {
     this.fgdSoldUnitRequirementActivitiesData = new ObservableArray();
     this.fgdSoldUnitRequirementActivitiesCollection = new CollectionView(this.fgdSoldUnitRequirementActivitiesData);
 
+    this.fgdSoldUnitEquityScheduleData = new ObservableArray();
+    this.fgdSoldUnitEquityScheduleCollection = new CollectionView(this.fgdSoldUnitEquityScheduleData);
+
     if(this.securityService.openPage("SOLD UNIT DETAIL") == true) {
       this.getSoldUnit(); 
     } else {
@@ -243,6 +270,9 @@ export class SoldUnitDetail {
     
     if( this.soldUnitRequirementActivitiesSub != null) this.soldUnitRequirementActivitiesSub.unsubscribe();
 
+    if( this.soldUnitEquityScheduleSub != null) this.soldUnitEquityScheduleSub.unsubscribe();
+    if( this.soldUnitEquityScheduleSavedSub != null) this.soldUnitEquityScheduleSavedSub.unsubscribe();
+    
     if( this.cmbProjectsSub != null) this.cmbProjectsSub.unsubscribe();
     if( this.cmbUnitsSub != null) this.cmbUnitsSub.unsubscribe();
     if( this.cmbChecklistsSub != null) this.cmbChecklistsSub.unsubscribe();
@@ -327,6 +357,7 @@ export class SoldUnitDetail {
           this.getCmbStatus(data);
 
           this.getSoldUnitRequirements();
+          this.getSoldUnitEquitySchedule();
         }
       );
   }
@@ -403,7 +434,9 @@ export class SoldUnitDetail {
      );
   }
 
-  // create new detail line1 (checklist requirements) list - IMPORTANT! this will remove the existing checklist requirements
+  // - create new detail line1 (checklist requirements) list - IMPORTANT! this will remove 
+  //   the existing checklist requirements
+  // - detail line1 (checklist requirements) list
   public getNewSoldUnitRequirements() : void {
     this.soldUnitService.getNewSoldUnitRequirements(this.soldUnit.id,this.soldUnit.checklistId);
 
@@ -418,8 +451,6 @@ export class SoldUnitDetail {
       }
     );
   }
-
-  // detail line1 (checklist requirements) list
   public getSoldUnitRequirements() : void {
     this.soldUnitService.getSoldUnitRequirements(this.soldUnit.id);
 
@@ -476,6 +507,34 @@ export class SoldUnitDetail {
         this.fgdSoldUnitRequirementActivitiesCollection = new CollectionView(this.fgdSoldUnitRequirementActivitiesData);
         this.fgdSoldUnitRequirementActivitiesCollection.pageSize = 15;
         this.fgdSoldUnitRequirementActivitiesCollection.trackChanges = true;  
+      }
+    );
+  }
+
+  // - create new detail line2 (equity payment schedule) list - IMPORTANT! 
+  //   this will remove the existing schedule.  Make sure to save the sold unit first
+  // - detail line2 (equity payment schedule)
+  public getNewSoldUnitEquitySchedule() : void {
+    this.soldUnitService.getNewSoldUnitEquitySchedule(this.soldUnit.id);
+
+    this.soldUnitEquityScheduleSub = this.soldUnitService.soldUnitEquityScheduleObservable.subscribe(
+      data => {
+        this.fgdSoldUnitEquityScheduleData = data;
+        this.fgdSoldUnitEquityScheduleCollection = new CollectionView(this.fgdSoldUnitEquityScheduleData);
+        this.fgdSoldUnitEquityScheduleCollection.pageSize = 15;
+        this.fgdSoldUnitEquityScheduleCollection.trackChanges = true;  
+      }
+    );
+  }
+  public getSoldUnitEquitySchedule() : void {
+    this.soldUnitService.getSoldUnitEquitySchedule(this.soldUnit.id);
+
+    this.soldUnitEquityScheduleSub = this.soldUnitService.soldUnitEquityScheduleObservable.subscribe(
+      data => {
+        this.fgdSoldUnitEquityScheduleData = data;
+        this.fgdSoldUnitEquityScheduleCollection = new CollectionView(this.fgdSoldUnitEquityScheduleData);
+        this.fgdSoldUnitEquityScheduleCollection.pageSize = 15;
+        this.fgdSoldUnitEquityScheduleCollection.trackChanges = true;  
       }
     );
   }
@@ -672,7 +731,7 @@ export class SoldUnitDetail {
     this.mdlEditSoldUnitRequirementModalShow = false;
   }
 
-  // 
+  // attachments
   public btnOpenSoldUnitRequirementAttachment1Click(e: Event) : void {
     var target: HTMLInputElement = e.target as HTMLInputElement;
     console.log(target);
@@ -833,6 +892,60 @@ export class SoldUnitDetail {
   }
   public btnCloseSoldUnitRequirementActivityModalClick() {
     this.mdlSoldUnitRequirementActivityModalShow = false;    
+  }
+
+  // open, edit, save equity payment schedule events
+  public btnEditSoldUnitEquityScheduleClick() : void {
+    let selectedSoldUnitEquitySchedule = this.fgdSoldUnitEquityScheduleCollection.currentItem;
+
+	  this.soldUnitEquitySchedule.id = selectedSoldUnitEquitySchedule.id;
+	  this.soldUnitEquitySchedule.soldUnitId = selectedSoldUnitEquitySchedule.soldUnitId;
+    this.soldUnitEquitySchedule.paymentDate = selectedSoldUnitEquitySchedule.paymentDate;
+    this.soldUnitEquitySchedule.amortization = selectedSoldUnitEquitySchedule.amortization;
+	  this.soldUnitEquitySchedule.checkNumber = selectedSoldUnitEquitySchedule.checkNumber;
+	  this.soldUnitEquitySchedule.checkDate = selectedSoldUnitEquitySchedule.checkDate;
+    this.soldUnitEquitySchedule.checkBank = selectedSoldUnitEquitySchedule.checkBank;
+    this.soldUnitEquitySchedule.remarks = selectedSoldUnitEquitySchedule.remarks;
+
+    this.mdlSoldUnitEquityScheduleModalShow = true;
+  }
+  public btnSaveSoldUnitEquityScheduleModalClick() : void {
+    let btnSaveSoldUnitEquityScheduleModal:Element = document.getElementById("btnSaveSoldUnitEquityScheduleModal");
+    let btnCloseSoldUnitEquityScheduleModal:Element = document.getElementById("btnCloseSoldUnitEquityScheduleModal");
+
+    btnSaveSoldUnitEquityScheduleModal.setAttribute("disabled","disabled");
+    btnSaveSoldUnitEquityScheduleModal.innerHTML = "<i class='fa fa-save fa-fw'></i> Saving...";
+    btnCloseSoldUnitEquityScheduleModal.setAttribute("disabled","disabled");
+    
+    this.soldUnitService.saveSoldUnitEquitySchedule(this.soldUnitEquitySchedule);
+    this.soldUnitEquityScheduleSavedSub =  this.soldUnitService.soldUnitEquityPaymentSavedObservable.subscribe(
+      data => {
+          if(data == 1) {
+              this.toastr.success("Saving successful.");
+              btnSaveSoldUnitEquityScheduleModal.removeAttribute("disabled");
+              btnSaveSoldUnitEquityScheduleModal.innerHTML = "<i class='fa fa-save fa-fw'></i> Save";
+              btnCloseSoldUnitEquityScheduleModal.removeAttribute("disabled");
+
+              this.getSoldUnitEquitySchedule();
+              this.mdlSoldUnitEquityScheduleModalShow = false;
+          } else if(data == 0) {
+              this.toastr.error("Saving failed.");   
+              btnSaveSoldUnitEquityScheduleModal.removeAttribute("disabled");
+              btnSaveSoldUnitEquityScheduleModal.innerHTML = "<i class='fa fa-save fa-fw'></i> Save";
+              btnCloseSoldUnitEquityScheduleModal.removeAttribute("disabled");
+          }
+      },
+      error => {
+        this.toastr.error("Server error.");   
+        btnSaveSoldUnitEquityScheduleModal.removeAttribute("disabled");
+        btnSaveSoldUnitEquityScheduleModal.innerHTML = "<i class='fa fa-save fa-fw'></i> Save";
+        btnCloseSoldUnitEquityScheduleModal.removeAttribute("disabled");
+      }
+    );
+    
+  }
+  public btnCloseSoldUnitEquityScheduleModalClick() : void {
+    this.mdlSoldUnitEquityScheduleModalShow = false;
   }
 
   // keyups
@@ -1003,12 +1116,20 @@ export class SoldUnitDetail {
     this.mdlSoldUnitTransferModalShow = false;    
   }
 
+  // equity payment schedule
+  public btnCreateEquityPaymentScheduleClick() : void {
+    this.getNewSoldUnitEquitySchedule();
+  }
+
   // tabs
   public tabDetail1Click(index: number) {
     for (var i = 0; i <= this.tabDetail1.length - 1; i++) {
       if(index==i) this.tabDetail1[i] = true;
       else this.tabDetail1[i] = false;
     }
+
+    // refresh equity schedule
+    this. getSoldUnitEquitySchedule();
   }
   public tabDetail1Modal1Click(index: number) {
     for (var i = 0; i <= this.tabDetail1Modal1.length - 1; i++) {
