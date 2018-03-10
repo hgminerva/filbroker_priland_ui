@@ -42,8 +42,12 @@ export class PDFService {
 
     public pdfSoldUnitProposalSource = new Subject<Blob>();
     public pdfSoldUnitProposalObservable = this.pdfSoldUnitProposalSource.asObservable();
+
     public pdfSoldUnitContractSource = new Subject<Blob>();
     public pdfSoldUnitContractObservable = this.pdfSoldUnitContractSource.asObservable();
+
+    public pdfSoldUnitEquityScheduleSource = new Subject<Blob>();
+    public pdfSoldUnitEquityScheduleObservable = this.pdfSoldUnitEquityScheduleSource.asObservable();
 
     // =======
     // angular
@@ -82,8 +86,6 @@ export class PDFService {
     }
     public getPDFChecklist(id: number): void {
         let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/PDF/Checklist/" + id;
-        
-        console.log(url);
 
         this.http.get(url, { responseType: ResponseContentType.Blob }).subscribe((response) => {
             let pdf = new Blob([response.blob()], { type: 'application/pdf' });
@@ -92,8 +94,6 @@ export class PDFService {
     }
     public getPDFSoldUnitProposal(id: number): void {
         let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/PDF/SoldUnitProposal/" + id;
-        
-        console.log(url);
 
         this.http.get(url, { responseType: ResponseContentType.Blob }).subscribe((response) => {
             let pdf = new Blob([response.blob()], { type: 'application/pdf' });
@@ -103,11 +103,17 @@ export class PDFService {
     public getPDFSoldUnitContract(id: number): void {
         let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/PDF/SoldUnitContract/" + id;
         
-        console.log(url);
-
         this.http.get(url, { responseType: ResponseContentType.Blob }).subscribe((response) => {
             let pdf = new Blob([response.blob()], { type: 'application/pdf' });
             this.pdfSoldUnitContractSource.next(pdf);
+        });
+    }
+    public getPDFSoldUnitEquitySchedule(id: number) : void {
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/PDF/SoldUnitEquitySchedule/" + id;
+        
+        this.http.get(url, { responseType: ResponseContentType.Blob }).subscribe((response) => {
+            let pdf = new Blob([response.blob()], { type: 'application/pdf' });
+            this.pdfSoldUnitEquityScheduleSource.next(pdf);
         });
     }
     

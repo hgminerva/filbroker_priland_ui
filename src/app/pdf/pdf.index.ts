@@ -19,6 +19,7 @@ export class PDFIndex {
   private pdfChecklistSub : any;
   private pdfSoldUnitProposalSub : any;
   private pdfSoldUnitContractSub : any;
+  private pdfSoldUnitEquityScheduleSub : any;
 
   public title: string = "PDF";
   public report: string = "";
@@ -46,6 +47,7 @@ export class PDFIndex {
       if(this.report == "checklist") this.getPDFChecklist(this.id);
       if(this.report == "soldunitproposal") this.getPDFSoldUnitProposal(this.id);
       if(this.report == "soldunitcontract") this.getPDFSoldUnitContract(this.id);
+      if(this.report == "soldunitequityschedule") this.getPDFSoldUnitEquitySchedule(this.id);
     });
   }
   ngOnDestroy() {
@@ -54,6 +56,7 @@ export class PDFIndex {
     if( this.pdfChecklistSub != null) this.pdfChecklistSub.unsubscribe();
     if( this.pdfSoldUnitProposalSub != null) this.pdfSoldUnitProposalSub.unsubscribe();
     if( this.pdfSoldUnitContractSub != null) this.pdfSoldUnitContractSub.unsubscribe();
+    if( this.pdfSoldUnitEquityScheduleSub != null) this.pdfSoldUnitEquityScheduleSub.unsubscribe();
   }
 
   // ==============
@@ -107,6 +110,17 @@ export class PDFIndex {
   public getPDFSoldUnitContract(id: number) : void {
     this.pdfService.getPDFSoldUnitContract(id);
     this.pdfSoldUnitContractSub = this.pdfService.pdfSoldUnitContractObservable.subscribe(
+      data => {
+        this.pdfUrl = URL.createObjectURL(data);
+
+        let printPDF: Element = document.getElementById("printPDF");
+        printPDF.setAttribute("src",this.pdfUrl);
+      }
+    );
+  }
+  public getPDFSoldUnitEquitySchedule(id: number) : void {
+    this.pdfService.getPDFSoldUnitEquitySchedule(id);
+    this.pdfSoldUnitEquityScheduleSub = this.pdfService.pdfSoldUnitEquityScheduleObservable.subscribe(
       data => {
         this.pdfUrl = URL.createObjectURL(data);
 

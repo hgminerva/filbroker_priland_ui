@@ -17,6 +17,7 @@ import { Observable } from 'rxjs/Observable';
 import { TrnSoldUnit } from '../model/model.trn.soldUnit';
 import { TrnSoldUnitRequirement } from '../model/model.trn.soldUnit.requirement';
 import { TrnSoldUnitRequirementActivity } from '../model/model.trn.soldUnit.requirement.activity';
+import { TrnSoldUnitEquitySchedule } from '../model/model.trn.soldUnit.equitySchedule';
 
 import { MstProject } from '../model/model.mst.project';
 import { MstUnit } from '../model/model.mst.unit';

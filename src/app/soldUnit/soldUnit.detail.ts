@@ -1120,6 +1120,9 @@ export class SoldUnitDetail {
   public btnCreateEquityPaymentScheduleClick() : void {
     this.getNewSoldUnitEquitySchedule();
   }
+  public btnPrintEquityPaymentScheduleClick() : void {
+    this.router.navigate(['/pdf', 'soldunitequityschedule',this.soldUnit.id]); 
+  }
 
   // tabs
   public tabDetail1Click(index: number) {
