@@ -194,6 +194,17 @@
                                             </wj-combo-box>
                                         </div>
                                     </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Remarks</label>
+                                        <div class="col-sm-9">
+                                            <textarea 
+                                                [disabled]="customer.isLocked" 
+                                                [(ngModel)]="customer.remarks" 
+                                                rows="5" 
+                                                class="form-control">
+                                            </textarea>
+                                        </div>
+                                    </div>
                                 </div><!-- <div customer info column 1> -->
                                 <div class="col-md-6">
                                     <div class="form-group row">
@@ -276,14 +287,43 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-sm-3 col-form-label text-right">Remarks</label>
+                                        <label class="col-sm-3 col-form-label text-right">Spouse Last Name</label>
                                         <div class="col-sm-9">
-                                            <textarea 
+                                            <input 
+                                                [(ngModel)]="customer.spouseLastName" 
                                                 [disabled]="customer.isLocked" 
-                                                [(ngModel)]="customer.remarks" 
-                                                rows="5" 
+                                                type="text" 
                                                 class="form-control">
-                                            </textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Spouse First Name</label>
+                                        <div class="col-sm-9">
+                                            <input 
+                                                [(ngModel)]="customer.spouseFirstName" 
+                                                [disabled]="customer.isLocked" 
+                                                type="text" 
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Spouse Middle Name</label>
+                                        <div class="col-sm-9">
+                                            <input 
+                                                [(ngModel)]="customer.spouseMiddleName" 
+                                                [disabled]="customer.isLocked" 
+                                                type="text" 
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Spouse Birth Date</label>
+                                        <div class="col-sm-9">
+                                            <wj-input-date #calBirthDate
+                                                [(text)]="customer.spouseBirthDate"
+                                                [isDisabled]="customer.isLocked"
+                                                format="M/d/yyyy">
+                                            </wj-input-date>
                                         </div>
                                     </div>
                                 </div><!-- <div customer info column 2> -->

@@ -25,6 +25,10 @@ export class CustomerService {
     // private properties
     // ==================
 
+    // default date
+    private currentDate = new Date();
+    private currentDateString = [this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, this.currentDate.getDate()].join('-');
+
     private headers = new Headers({
         'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
         'Content-Type': 'application/json'
@@ -122,6 +126,10 @@ export class CustomerService {
                             employerZipCode: results[i].EmployerZipCode,
                             employerTelephoneNumber: results[i].EmployerTelephoneNumber,
                             employerMobileNumber: results[i].EmployerMobileNumber,
+                            spouseLastName: results[i].spouseLastName,
+                            spouseFirstName: results[i].spouseFirstName,
+                            spouseMiddleName: results[i].spouseMiddleName,
+                            spouseBirthDate: results[i].spouseBirthDate,
                             remarks: results[i].Remarks,
                             status: results[i].Status,
                             picture: results[i].Picture,
@@ -219,6 +227,10 @@ export class CustomerService {
                         employerZipCode: result.EmployerZipCode,
                         employerTelephoneNumber: result.EmployerTelephoneNumber,
                         employerMobileNumber: result.EmployerMobileNumber,
+                        spouseLastName: result.spouseLastName,
+                        spouseFirstName: result.spouseFirstName,
+                        spouseMiddleName: result.spouseMiddleName,
+                        spouseBirthDate: result.spouseBirthDate == "" ? this.currentDateString : result.spouseBirthDate,
                         remarks: result.Remarks,
                         status: result.Status,
                         picture: result.Picture,

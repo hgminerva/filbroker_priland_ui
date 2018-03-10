@@ -25,6 +25,10 @@ export class CustomerDetail {
   // private properties
   // ==================
 
+  // default date
+  private currentDate = new Date();
+  private currentDateString = [this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, this.currentDate.getDate()].join('-');
+
   // detail
   private customerSub: any;
 
@@ -77,6 +81,10 @@ export class CustomerDetail {
     employerZipCode: "",
     employerTelephoneNumber: "",
     employerMobileNumber: "",
+    spouseLastName: "",
+    spouseFirstName: "",
+    spouseMiddleName: "",
+    spouseBirthDate: this.currentDateString,
     remarks: "",
     status: "ACTIVE",
     picture: "",

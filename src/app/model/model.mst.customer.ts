@@ -31,6 +31,10 @@ export class MstCustomer {
 	employerZipCode: string;
 	employerTelephoneNumber: string;
 	employerMobileNumber: string;
+	spouseLastName: string;
+	spouseFirstName: string;
+	spouseMiddleName: string;
+	spouseBirthDate: string;
 	remarks: string;
 	status: string;
 	picture: string;

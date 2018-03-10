@@ -213,6 +213,7 @@ export class SoldUnitDetail {
 
   public mdlUnitQueryModalShow : boolean = false;
   public mdlUnitQueryModalStatus : boolean = false;
+  public mdlUnitQueryModalSequence : number = 1;
 
   public mdlSoldUnitCancelModalShow : boolean = false;
   public mdlSoldUnitTransferModalShow : boolean = false;
@@ -539,6 +540,11 @@ export class SoldUnitDetail {
     );
   }
 
+  // transfer sold unit
+  public transferSoldUnit() : void {
+    this.soldUnitService.transferSoldUnit(this.soldUnit);
+  }
+
   // ======
   // events
   // ======
@@ -546,17 +552,31 @@ export class SoldUnitDetail {
   // unit query modal
   public btnOpenUnitQueryModalClick(): void {
     this.mdlUnitQueryModalShow = true;
+    this.mdlUnitQueryModalSequence = 1;
   }
   public mdlUnitQueryModalClose(unit : MstUnit): void {
-    if( unit.id != null ) {
-      this.soldUnit.project = unit.project;
-      this.soldUnit.projectId = unit.projectId;
-      this.soldUnit.unitId = unit.id;
-      this.soldUnit.unit = unit.unitCode;
-      this.soldUnit.price = unit.price;
+    if(this.mdlUnitQueryModalSequence == 1) {
+      if( unit.id != null ) {
+        this.soldUnit.project = unit.project;
+        this.soldUnit.projectId = unit.projectId;
+        this.soldUnit.unitId = unit.id;
+        this.soldUnit.unit = unit.unitCode;
+        this.soldUnit.price = unit.price;
+  
+        this.getChecklistsPerProjectId(this.soldUnit);
+      }
+    } else if(this.mdlUnitQueryModalSequence == 2) {
+      if( unit.id != null ) {
+        this.soldUnit.project = unit.project;
+        this.soldUnit.projectId = unit.projectId;
+        this.soldUnit.unitId = unit.id;
+        this.soldUnit.unit = unit.unitCode;
+        this.soldUnit.price = unit.price;
 
-      this.getChecklistsPerProjectId(this.soldUnit);
+        this.transferSoldUnit();
+      }
     }
+
     this.mdlUnitQueryModalShow = false;
   }
 
@@ -644,6 +664,13 @@ export class SoldUnitDetail {
   public btnCancelSoldUnitClick() : void {
     if(this.soldUnit.status == "SOLD") {
       this.mdlSoldUnitCancelModalShow = true;
+    } else {
+      this.toastr.error("This unit is not sold.");
+    }
+  }
+  public btnTransferSoldUnitClick() : void {
+    if(this.soldUnit.status == "SOLD") {
+      this.mdlSoldUnitTransferModalShow = true;
     } else {
       this.toastr.error("This unit is not sold.");
     }
@@ -1110,7 +1137,10 @@ export class SoldUnitDetail {
 
   // transfer
   public btnSoldUnitTransferModalOkClick() : void {
+    this.mdlSoldUnitTransferModalShow = false;
 
+    this.mdlUnitQueryModalSequence = 2;
+    this.mdlUnitQueryModalShow = true;
   }
   public btnSoldUnitTransferModalCloseClick() : void {
     this.mdlSoldUnitTransferModalShow = false;    

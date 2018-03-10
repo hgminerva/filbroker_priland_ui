@@ -685,6 +685,28 @@ export class SoldUnitService {
             }
         )
     }
+    public transferSoldUnit(soldUnit: TrnSoldUnit) : void {
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/TrnSoldUnit/Transfer";
+        this.http.put(url, JSON.stringify(soldUnit), this.options).subscribe(
+            response => {
+                var id = response.json();
+                if (id > 0) {
+                    this.toastr.success("Transfer successful.");
+                    setTimeout(() => {
+                        this.router.navigate(['/soldUnit']);
+                    }, 1000);
+                    setTimeout(() => {
+                        this.router.navigate(['/soldUnit', id]);
+                    }, 1000);
+                } else {
+                    this.toastr.error("Transfer failed.");
+                }
+            },
+            error => {
+                this.toastr.error("Server error.");
+            }
+        )
+    }
 
     // detail operations
     public saveSoldUnit(soldUnit: TrnSoldUnit): void {

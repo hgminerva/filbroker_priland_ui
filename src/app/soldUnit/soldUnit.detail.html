@@ -1089,7 +1089,16 @@
                 <h4 class="modal-title">Transfer Sold Unit</h4>
             </div>
             <div class="modal-body">
-                Transfer sold unit?
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right">Reason for transfering:</label>
+                    <div class="col-sm-9">
+                        <textarea 
+                            [(ngModel)]="soldUnit.remarks" 
+                            rows="3" 
+                            class="form-control">
+                        </textarea>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer" align="right">
                 <button type="button" id="btnSoldUnitTransferModalOk" class="btn btn-success" (click)="btnSoldUnitTransferModalOkClick()">
