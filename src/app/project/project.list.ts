@@ -1,9 +1,11 @@
 // angular
 import { Component,ViewContainerRef,ViewChild,ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 // service(s)
 import { ProjectService } from './project.service';
+import { SecurityService } from '../security/security.service';
 
 // wijmo
 import { ObservableArray, CollectionView } from 'wijmo/wijmo';
@@ -39,10 +41,11 @@ export class ProjectList {
 
     public project : MstProject = {
         id: 0,
-        projectCode: "NA",
-        project: "NA",
-        address: "NA",
+        projectCode: "",
+        project: "",
+        address: "",
         status: "OPEN",
+        projectLogo: "",
         isLocked: false,
         createdBy: 1,
         createdDateTime: this.currentDateString,
@@ -64,7 +67,9 @@ export class ProjectList {
         private projectService : ProjectService,
         private toastr : ToastsManager,
         private viewContainer : ViewContainerRef,
-        private router : Router
+        private router : Router,
+        private location: Location,
+        private securityService: SecurityService
     ) {
         this.toastr.setRootViewContainerRef(viewContainer);
     }
@@ -74,7 +79,12 @@ export class ProjectList {
         this.fgdProjectsData = new ObservableArray();
         this.fgdProjectsCollection = new CollectionView(this.fgdProjectsData);
 
-        this.getProjects();
+        if(this.securityService.openPage("PROJECT LIST") == true) {
+            this.getProjects();
+        } else {
+            this.toastr.error("No rights to open page.")
+            setTimeout(() => { this.location.back(); }, 1000);  
+        }
     }
     ngOnDestroy() {
         if( this.projectDeletedSub != null) this.projectDeletedSub.unsubscribe();

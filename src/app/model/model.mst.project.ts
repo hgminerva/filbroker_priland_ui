@@ -4,6 +4,7 @@ export class MstProject {
     project: string;
     address: string;
     status: string;
+    projectLogo: string;
     isLocked: boolean;
     createdBy: number;
     createdDateTime: string;

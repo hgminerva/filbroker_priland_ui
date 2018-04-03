@@ -317,7 +317,7 @@ export class SoldUnitDetail {
           this.soldUnit.brokerId = data.brokerId;
           this.soldUnit.broker = data.broker;
           this.soldUnit.agent = data.agent;
-          this.soldUnit.broker = data.broker;
+          this.soldUnit.brokerCoordinator = data.brokerCoordinator;
           this.soldUnit.checklistId = data.checklistId;
           this.soldUnit.checklist = data.checklist;
           this.soldUnit.price = data.price;
@@ -395,7 +395,7 @@ export class SoldUnitDetail {
 
         setTimeout(() => { this.soldUnit.preparedBy = defaultValue.preparedBy; }, 100);
         setTimeout(() => { this.soldUnit.checkedBy = defaultValue.checkedBy; }, 100);
-        setTimeout(() => { this.soldUnit.approvedByUser = defaultValue.approvedByUser; }, 100);
+        setTimeout(() => { this.soldUnit.approvedBy = defaultValue.approvedBy; }, 100);
       }
     );
   }
@@ -1073,7 +1073,7 @@ export class SoldUnitDetail {
     var paymentOptions = "";
 
     paymentOptions = paymentOptions + "FINANCING SCHEME \n";
-    paymentOptions = paymentOptions + "      Equity: Percentage                               P " + this.addSpaces(15-this.soldUnit.equityPercent.toLocaleString('en-us', {minimumFractionDigits: 2}).length) + this.soldUnit.equityPercent.toLocaleString('en-us', {minimumFractionDigits: 2}) + "\n";
+    paymentOptions = paymentOptions + "      Equity: Percentage                                 " + this.addSpaces(15-this.soldUnit.equityPercent.toLocaleString('en-us', {minimumFractionDigits: 2}).length) + this.soldUnit.equityPercent.toLocaleString('en-us', {minimumFractionDigits: 2}) + "% \n";
     paymentOptions = paymentOptions + "              Value                                    P " + this.addSpaces(15-this.soldUnit.equityValue.toLocaleString('en-us', {minimumFractionDigits: 2}).length) + this.soldUnit.equityValue.toLocaleString('en-us', {minimumFractionDigits: 2}) + "\n";
     paymentOptions = paymentOptions + "      LESS:   Discount                                 P " + this.addSpaces(15-this.soldUnit.discount.toLocaleString('en-us', {minimumFractionDigits: 2}).length) + this.soldUnit.discount.toLocaleString('en-us', {minimumFractionDigits: 2}) + "\n";
     paymentOptions = paymentOptions + "              Reservation                              P " + this.addSpaces(15-this.soldUnit.reservation.toLocaleString('en-us', {minimumFractionDigits: 2}).length) + this.soldUnit.reservation.toLocaleString('en-us', {minimumFractionDigits: 2}) + "\n";
@@ -1148,7 +1148,29 @@ export class SoldUnitDetail {
 
   // equity payment schedule
   public btnCreateEquityPaymentScheduleClick() : void {
-    this.getNewSoldUnitEquitySchedule();
+    let btnSaveSoldUnit:Element = document.getElementById("btnSaveSoldUnit");
+
+    btnSaveSoldUnit.setAttribute("disabled","disabled");
+    btnSaveSoldUnit.innerHTML = "<i class='fa fa-plus fa-fw'></i> Saving...";
+    
+    this.soldUnitService.saveSoldUnit(this.soldUnit);
+    this.soldUnitSavedSub =  this.soldUnitService.soldUnitSavedObservable.subscribe(
+      data => {
+          if(data == 1) {
+            this.getNewSoldUnitEquitySchedule();
+
+            this.toastr.success("Saving successful.");
+
+            btnSaveSoldUnit.removeAttribute("disabled");
+            btnSaveSoldUnit.innerHTML = "<i class='fa fa-plus fa-fw'></i> Save";
+          } else if(data == 0) {
+            this.toastr.error("Saving failed.");   
+            btnSaveSoldUnit.removeAttribute("disabled");
+            btnSaveSoldUnit.innerHTML = "<i class='fa fa-plus fa-fw'></i> Save";
+          }
+      }
+    );
+    
   }
   public btnPrintEquityPaymentScheduleClick() : void {
     this.router.navigate(['/pdf', 'soldunitequityschedule',this.soldUnit.id]); 

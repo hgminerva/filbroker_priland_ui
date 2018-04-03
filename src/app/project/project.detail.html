@@ -87,6 +87,24 @@
                             </div>
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label text-right">Logo</label>   
+                        <div class="col-sm-9">
+                            <div class="col-sm-12">
+                                <img [src]="this.project.projectLogo" class="float-left img-responsive" style="width:600px; height:150px; padding: 5px 5px 5px 5px;">                
+                            </div>
+                            <div class="col-sm-12">   
+                                <label class="btn btn-primary" [hidden]="project.isLocked">
+                                    <input type="file" 
+                                            (change)="btnUploadProjectLogoClick($event)" 
+                                            name="btnUploadProjectLogo" 
+                                            accept="image/*" 
+                                            style="display:none;" >
+                                    Upload Logo
+                                </label>
+                            </div>
+                        </div>    
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12" style="padding-bottom: 5px">

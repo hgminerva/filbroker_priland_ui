@@ -8,6 +8,7 @@ export class MstCustomer {
 	civilStatus: string;
 	gender: string;
 	birthDate: string;
+	citizen: string;
 	tin: string;
 	idType: string;
 	idNumber: string;
@@ -35,6 +36,9 @@ export class MstCustomer {
 	spouseFirstName: string;
 	spouseMiddleName: string;
 	spouseBirthDate: string;
+	spouseCitizen : string;
+	spouseEmployer : string;
+	spouseTIN : string;
 	remarks: string;
 	status: string;
 	picture: string;

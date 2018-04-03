@@ -1,9 +1,11 @@
 // angular
 import { Component,ViewContainerRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 
 // service(s)
 import { ProjectService } from './project.service';
+import { SecurityService } from '../security/security.service';
 
 // wijmo
 import {ObservableArray, CollectionView} from 'wijmo/wijmo';
@@ -32,6 +34,9 @@ export class ProjectDetail {
   private projectLockedSub : any;
   private projectUnlockedSub : any;
 
+  // upload logo
+  private projectLogoSub : any;
+
   // combo boxes
   private projectStatusSub : any;
 
@@ -53,6 +58,7 @@ export class ProjectDetail {
     project: "",
     address: "",
     status: "",
+    projectLogo: "",
     isLocked: false,
     createdBy: 1,
     createdDateTime: "",
@@ -96,6 +102,8 @@ export class ProjectDetail {
     private toastr: ToastsManager,
     private viewContainer: ViewContainerRef,
     private activatedRoute: ActivatedRoute,
+    private location: Location,
+    private securityService: SecurityService
   ) {
     this.toastr.setRootViewContainerRef(viewContainer);
   }
@@ -105,7 +113,13 @@ export class ProjectDetail {
     this.fgdHouseModelsData = new ObservableArray();
     this.fgdHouseModelsCollection = new CollectionView(this.fgdHouseModelsData);
 
-    this.getProject();
+    if(this.securityService.openPage("PROJECT DETAIL") == true) {
+      this.getProject();
+    } else {
+        this.toastr.error("No rights to open page.")
+        setTimeout(() => { this.location.back(); }, 1000);  
+    }
+
   }
   ngOnDestroy() {
     if( this.projectSub != null) this.projectSub.unsubscribe();
@@ -149,6 +163,7 @@ export class ProjectDetail {
           this.project.project = data.project;
           this.project.address = data.address;
           this.project.status = data.status;
+          this.project.projectLogo = data.projectLogo;
           this.project.isLocked = data.isLocked;
           this.project.createdBy = data.createdBy;
           this.project.createdDateTime = data.createdDateTime;
@@ -377,6 +392,18 @@ export class ProjectDetail {
   }
   public btnCloseHouseModelEditModalClick() : void {
     this.mdlHouseModelEditShow = false;
+  }
+
+  // upload logo
+  public btnUploadProjectLogoClick(e: Event) : void {
+    var target: HTMLInputElement = e.target as HTMLInputElement;
+    if(target.files.length > 0) {
+      this.projectService.uploadProjectLogo(target.files[0],"PROJECT-" + this.project.projectCode + "-" + Date.now());
+      this.projectLogoSub = this.projectService.projectLogoObservable
+          .subscribe( data => {
+            this.project.projectLogo = data.fileUrl;
+          });
+    }
   }
 
 }

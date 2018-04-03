@@ -17,6 +17,7 @@ import { Observable } from 'rxjs/Observable';
 import { MstProject } from '../model/model.mst.project';
 import { SysDropDown } from '../model/model.sys.dropDown';
 import { MstHouseModel } from '../model/model.mst.houseModel';
+import { SysBlob } from '../model/model.sys.blob';
 
 @Injectable()
 export class ProjectService {
@@ -55,6 +56,10 @@ export class ProjectService {
 
     public projectUnlockedSource = new Subject<number>();
     public projectUnlockedObservable = this.projectUnlockedSource.asObservable();  
+
+    // Blob, logo pictire
+    public projectLogoSource = new Subject<SysBlob>();
+    public projectLogoObservable = this.projectLogoSource.asObservable();
 
     // dropdown list
     public dropDownsSource = new Subject<ObservableArray>();
@@ -101,6 +106,7 @@ export class ProjectService {
                             project: results[i].Project,
                             address: results[i].Address,
                             status: results[i].Status,
+                            projectLogo: results[i].ProjectLogo,
                             isLocked: results[i].IsLocked,
                             createdBy: results[i].CreatedBy,
                             createdDateTime: results[i].CreatedDateTime,
@@ -167,6 +173,7 @@ export class ProjectService {
                         project: result.Project,
                         address: result.Address,
                         status: result.Status,
+                        projectLogo: result.ProjectLogo,
                         isLocked: result.IsLocked,
                         createdBy: result.CreatedBy,
                         createdDateTime: result.CreatedDateTime,
@@ -218,6 +225,39 @@ export class ProjectService {
             }
         )
     }
+    public uploadProjectLogo(file: File, fileName: string) : void {
+        let url = "https://filbrokerwebsite-priland.azurewebsites.net/api/Blob/Upload";
+        let blob : SysBlob;
+
+        var formData: FormData = new FormData();
+        formData.append("image", file, fileName);
+
+        this.http
+            .post(url, formData)
+            .subscribe(
+                response => {
+                    var results = new ObservableArray(response.json());
+                    if (results.length > 0) {
+                        blob = {
+                            fileName : results[0].FileName,
+                            fileUrl : results[0].FileUrl,
+                            fileSizeInBytes : results[0].FileSizeInBytes,
+                            fileSizeInKb : results[0].FileSizeInKb,
+                        };
+                        this.projectLogoSource.next(blob);
+                        this.toastr.success("Upload successful.");
+                    } else {
+                        this.projectLogoSource.next(blob);
+                        this.toastr.error("Uploading failed.");  
+                    }
+                },
+                error => {
+                    this.projectLogoSource.next(blob);
+                    this.toastr.error("Server error.");
+                }    
+            );
+    }
+
 
     // combo boxes
     public getDropDowns()  {

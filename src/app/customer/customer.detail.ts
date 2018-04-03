@@ -58,6 +58,7 @@ export class CustomerDetail {
     civilStatus: "SINGLE",
     gender: "MALE",
     birthDate: "",
+    citizen: "",
     tin: "",
     idType: "DRIVERS LICENSE",
     idNumber: "",
@@ -85,6 +86,9 @@ export class CustomerDetail {
     spouseFirstName: "",
     spouseMiddleName: "",
     spouseBirthDate: this.currentDateString,
+    spouseCitizen : "",
+    spouseEmployer : "",
+    spouseTIN : "",
     remarks: "",
     status: "ACTIVE",
     picture: "",
@@ -172,6 +176,7 @@ export class CustomerDetail {
           this.customer.civilStatus = data.civilStatus;
           this.customer.gender = data.gender;
           this.customer.birthDate = data.birthDate;
+          this.customer.citizen = data.citizen;
           this.customer.tin = data.tin;
           this.customer.idType = data.idType;
           this.customer.idNumber = data.idNumber;
@@ -195,6 +200,13 @@ export class CustomerDetail {
           this.customer.employerZipCode = data.employerZipCode;
           this.customer.employerTelephoneNumber = data.employerTelephoneNumber;
           this.customer.employerMobileNumber = data.employerMobileNumber;
+          this.customer.spouseLastName = data.spouseLastName;
+          this.customer.spouseFirstName = data.spouseFirstName;
+          this.customer.spouseMiddleName = data.spouseMiddleName;
+          this.customer.spouseBirthDate = data.spouseBirthDate;
+          this.customer.spouseCitizen = data.spouseCitizen;
+          this.customer.spouseEmployer = data.spouseEmployer;
+          this.customer.spouseTIN = data.spouseTIN;
           this.customer.remarks = data.remarks;
           this.customer.status = data.status;
           this.customer.picture = data.picture;
